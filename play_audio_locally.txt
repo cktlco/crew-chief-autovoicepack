@@ -1,0 +1,1 @@
+find output/blake -type f -name '*.wav' | shuf | while read -r file; do echo "$file"; paplay "$file"; done
