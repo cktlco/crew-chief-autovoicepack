@@ -27,7 +27,7 @@ class VoiceEntry:
     text: str
 
 
-def parse_csv(file_path: str) -> List[VoiceEntry]:
+def parse_transcript_file(file_path: str) -> List[VoiceEntry]:
     entries: List[VoiceEntry] = []
 
     with open(file_path, newline="", encoding="utf-8") as csvfile:
@@ -66,7 +66,7 @@ def init_xtts_model() -> Any:
     model.load_checkpoint(
         config,
         checkpoint_dir=model_path,
-        use_deepspeed=False,
+        use_deepspeed=True,
     )
     model.cuda()
     return model
@@ -117,12 +117,7 @@ def generate_speech_coqui_tts(
             speed=speed,
             length_penalty=1.0,
             repetition_penalty=4.0,
-            enable_text_splitting=False,
-            # num_gpt_outputs=16,
-            # gpt_cond_len=90,
-            # gpt_cond_chunk_len=4,
-            # max_ref_len=30,
-            # sound_norm_refs=False
+            enable_text_splitting=False
         )
 
         torchaudio.save(
@@ -353,7 +348,7 @@ def activate_rules_by_category(
 def main():
     file_path = "./transcript.csv"
 
-    entries = parse_csv(file_path)
+    entries = parse_transcript_file(file_path)
     total_count = 0
     total_chars = 0
     total_cost = 0
@@ -374,8 +369,9 @@ def main():
         total_cost += COST_PER_CHAR * len(entry.text)
 
         filtered_text = apply_replacements(entry.text, replacement_rules)
+        filtered_text = f"{filtered_text}-"  # try to force the audio to terminate
 
-        for variant_id in range(1, variations):
+        for variant_id in range(0, variations):
             variant_suffix = chr(variant_id + ord('a'))
             variant_filename = f"{entry.audio_filename}-{variant_suffix}"
 
@@ -397,22 +393,33 @@ def main():
             #         "blake-3.wav",
             #     ],
             # )
+            # generate_speech_coqui_tts(
+            #     voice_name="belinda",
+            #     text=filtered_text,
+            #     speed=random.uniform(1.40, 1.51),
+            #     temperature=random.uniform(0.1, 0.3),
+            #     output_path=output_path,
+            #     output_filename=variant_filename,
+            #     reference_speaker_wav_paths=[
+            #         "belinda.wav"
+            #     ],
+            # ),
             generate_speech_coqui_tts(
-                voice_name="belinda",
+                voice_name="jackie",
                 text=filtered_text,
-                speed=random.uniform(1.40, 1.51),
-                temperature=random.uniform(0.1, 0.3),
+                speed=random.uniform(1.50, 1.75),
+                temperature=random.uniform(0.2, 0.2),
                 output_path=output_path,
                 output_filename=variant_filename,
                 reference_speaker_wav_paths=[
-                    "belinda.wav"
+                    #"jackie-stewart-1.wav",
+                    "jackie-stewart-2.wav",
+                    #"jackie-stewart-3.wav",
                 ],
             )
         print("")
-        print("")
 
     print("All done.")
-    # print(f"Total Cost: ${round(total_cost,2)} for {total_count} phrases and {total_chars} characters")
 
 
 if __name__ == "__main__":

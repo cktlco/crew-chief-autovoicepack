@@ -1,0 +1,18 @@
+#file: noinspection ComposeUnknownValues
+# run with: docker compose up -d crew-chief-autovoicepack
+# and tear down with: docker compose down crew-chief-autovoicepack
+services:
+  crew-chief-autovoicepack:
+    image: crew-chief-autovoicepack:v0.1
+    deploy:
+      replicas: 8
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: always
+    volumes:
+      - /mnt/w/dev/20240706-crew-chief-autovoicepack/output:/app/output
+    command: ["python3", "generate_voice_pack.py"]
