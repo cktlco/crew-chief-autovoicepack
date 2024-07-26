@@ -12,7 +12,7 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    restart: always
+    restart: no
     volumes:
       - /mnt/w/dev/20240706-crew-chief-autovoicepack/output:/app/output
     command: ["python3", "generate_voice_pack.py"]

@@ -1,6 +1,7 @@
 import os
 import random
 import shutil
+import string
 import subprocess
 from dataclasses import dataclass
 import csv
@@ -41,6 +42,26 @@ def parse_transcript_file(file_path: str) -> List[VoiceEntry]:
 
     return entries
 
+
+def apply_audio_effects(input_file: str, output_file: str) -> None:
+    # make it sound slightly more like a real motorsports radio call, note that not much noise is added
+    sox_command: List[str] = [
+        'sox', '-V1', '-q', input_file, output_file,
+        'equalizer', '100', '0.5q', '-12',
+        'equalizer', '200', '0.5q', '-6',
+        'equalizer', '300', '0.5q', '-3',
+        'equalizer', '3000', '0.5q', '12',
+        'equalizer', '6000', '0.5q', '9',
+        'equalizer', '12000', '0.5q', '6',
+        'silence', '1', '0.1', '0.1%',
+        'reverse', 'silence', '1', '0.1', '0.1%', 'reverse',
+        'norm'
+    ]
+
+    try:
+        subprocess.run(sox_command, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
 
 def make_louder_voicepack():
     """
@@ -93,12 +114,13 @@ def generate_speech_coqui_tts(
     speed: float = 1.0,
 ) -> requests.Response:
     full_output_path = f"output/{voice_name}{output_path}"
+    full_raw_filename = f"{full_output_path}/{output_filename}.raw.wav"
     full_output_filename = f"{full_output_path}/{output_filename}.wav"
 
     os.makedirs(full_output_path, exist_ok=True)
 
-    if os.path.isfile(full_output_filename):
-        print(f"File already exists: {full_output_filename}")
+    if os.path.isfile(full_output_filename) or os.path.isfile(full_raw_filename):
+        print(f"File already exists, skipping: {full_output_filename}")
     else:
         # these two calls are cached and only run the first time
         model = init_xtts_model()
@@ -121,8 +143,12 @@ def generate_speech_coqui_tts(
         )
 
         torchaudio.save(
-            full_output_filename, torch.tensor(out["wav"]).unsqueeze(0), 24000
+            full_raw_filename, torch.tensor(out["wav"]).unsqueeze(0), 24000
         )
+
+        # add a "radio effect" to the raw audio before saving as the final
+        apply_audio_effects(full_raw_filename, full_output_filename)
+        os.remove(full_raw_filename)
 
         print(f"File created at: {full_output_filename}")
 
@@ -321,7 +347,7 @@ replacement_rules: List[ReplacementRule] = [
         replacement="damn",
         probability=1.0,
     ),
-    ReplacementRule(category="fixes", regex=r"130R", replacement="one-thirty R", active=True),
+    ReplacementRule(category="fixes", regex=r"130R", replacement="one-thirty R"),
 ]
 
 
@@ -349,31 +375,41 @@ def main():
     file_path = "./transcript.csv"
 
     entries = parse_transcript_file(file_path)
+
+    if len(entries) > 0:
+        # write an attribution file which says something like "Created using crew-chief-autovoicepack: http://github.com/xxx"
+        pass
+
     total_count = 0
     total_chars = 0
     total_cost = 0
 
-    variations = 5  # keep it less than 25
+    variations = 3  # keep it less than 25 and remember the entire storage required grows by this size
 
     activate_rules_by_category(replacement_rules, "remove_mate")
     activate_rules_by_category(replacement_rules, "improve_bloody")
+    activate_rules_by_category(replacement_rules, "fixes")
 
     random.shuffle(entries)
     for entry_idx, entry in enumerate(entries, 1):
-        print(f"Generating audio for {entry_idx} - '{entry.text}'")
-        print(entry)
+        print(f"Generating audio for {entry_idx} - '{entry.text}': {entry}")
 
         output_path = f"{entry.filepath}"
+
         total_count += 1
         total_chars += len(entry.text)
         total_cost += COST_PER_CHAR * len(entry.text)
 
         filtered_text = apply_replacements(entry.text, replacement_rules)
-        filtered_text = f"{filtered_text}-"  # try to force the audio to terminate
 
-        for variant_id in range(0, variations):
-            variant_suffix = chr(variant_id + ord('a'))
-            variant_filename = f"{entry.audio_filename}-{variant_suffix}"
+        for variant_id in range(0, variations+1):
+            if variations == 0:
+                # no changes, use the original filename
+                variant_filename = entry.audio_filename
+            else:
+                # otherwise, adjust the filename so that it's unique
+                variant_tag = chr(variant_id + ord('a'))
+                variant_filename = f"{entry.audio_filename}-{variant_tag}"
 
             # generate_speech_elevenlabs(text=filtered_text, output_path=output_path, output_filename=entry.audio_filename)
             # generate_speech_alltalk(voice_name="mercury", text=filtered_text, output_path=output_path, output_filename=entry.audio_filename,
@@ -384,7 +420,7 @@ def main():
             #     voice_name="blake",
             #     text=filtered_text,
             #     speed=random.uniform(1.49, 1.51),
-            #     temperature=random.uniform(0.01, 0.1),
+            #     temperature=random.uniform(0.05, 0.1),
             #     output_path=output_path,
             #     output_filename=variant_filename,
             #     reference_speaker_wav_paths=[
@@ -392,31 +428,40 @@ def main():
             #         "blake-2.wav",
             #         "blake-3.wav",
             #     ],
-            # )
+            # ),
+            generate_speech_coqui_tts(
+                voice_name="alphabetparty",
+                text=filtered_text,
+                speed=random.uniform(1.3, 1.5),
+                temperature=random.uniform(0.05, 0.2),
+                output_path=output_path,
+                output_filename=variant_filename,
+                reference_speaker_wav_paths=[f"alphabet-party/{x}.wav" for x in string.ascii_uppercase]
+            ),
             # generate_speech_coqui_tts(
-            #     voice_name="belinda",
+            #     voice_name="ringi",
             #     text=filtered_text,
             #     speed=random.uniform(1.40, 1.51),
             #     temperature=random.uniform(0.1, 0.3),
             #     output_path=output_path,
             #     output_filename=variant_filename,
             #     reference_speaker_wav_paths=[
-            #         "belinda.wav"
+            #         "ringi.wav"
             #     ],
             # ),
-            generate_speech_coqui_tts(
-                voice_name="jackie",
-                text=filtered_text,
-                speed=random.uniform(1.50, 1.75),
-                temperature=random.uniform(0.2, 0.2),
-                output_path=output_path,
-                output_filename=variant_filename,
-                reference_speaker_wav_paths=[
-                    #"jackie-stewart-1.wav",
-                    "jackie-stewart-2.wav",
-                    #"jackie-stewart-3.wav",
-                ],
-            )
+            # generate_speech_coqui_tts(
+            #     voice_name="jackie",
+            #     text=filtered_text,
+            #     speed=random.uniform(1.25, 1.50),
+            #     temperature=random.uniform(0.1, 0.3),
+            #     output_path=output_path,
+            #     output_filename=variant_filename,
+            #     reference_speaker_wav_paths=[
+            #         "jackie-stewart-1.wav",
+            #         "jackie-stewart-2.wav",
+            #         "jackie-stewart-3.wav",
+            #     ],
+            # )
         print("")
 
     print("All done.")

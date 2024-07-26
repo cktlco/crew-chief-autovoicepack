@@ -9,7 +9,7 @@ FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
 WORKDIR /app
 
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends gcc g++ make curl python3 python3-dev python3-pip python3-venv python3-wheel espeak-ng libsndfile1-dev git git-lfs && rm -rf /var/lib/apt/lists/* && apt-get clean
+RUN apt-get install -y --no-install-recommends gcc g++ make curl python3 python3-dev python3-pip python3-venv python3-wheel espeak-ng libsndfile1-dev git git-lfs sox && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # git lfs is needed to download the full file content during git clone
 RUN git lfs install
