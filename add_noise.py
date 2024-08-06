@@ -29,7 +29,7 @@ def array_to_audio_segment(noise_array, sample_rate):
         noise_array.tobytes(),
         frame_rate=sample_rate,
         sample_width=noise_array.dtype.itemsize,
-        channels=1
+        channels=1,
     )
 
 
@@ -50,15 +50,21 @@ def apply_effects(input_file, output_file):
     pink_noise = generate_noise(duration_ms, sample_rate, noise_type="pink")
     brown_noise = generate_noise(duration_ms, sample_rate, noise_type="brown")
 
-    white_noise_segment = array_to_audio_segment(white_noise, sample_rate).apply_gain(-50)
+    white_noise_segment = array_to_audio_segment(white_noise, sample_rate).apply_gain(
+        -50
+    )
     pink_noise_segment = array_to_audio_segment(pink_noise, sample_rate).apply_gain(-50)
-    brown_noise_segment = array_to_audio_segment(brown_noise, sample_rate).apply_gain(-70)
+    brown_noise_segment = array_to_audio_segment(brown_noise, sample_rate).apply_gain(
+        -70
+    )
 
     print("White noise segment duration (ms):", len(white_noise_segment))
     print("Pink noise segment duration (ms):", len(pink_noise_segment))
     print("Brown noise segment duration (ms):", len(brown_noise_segment))
 
-    noise_segment = white_noise_segment.overlay(pink_noise_segment).overlay(brown_noise_segment)
+    noise_segment = white_noise_segment.overlay(pink_noise_segment).overlay(
+        brown_noise_segment
+    )
     combined_audio = audio.overlay(noise_segment)
 
     print("Combined audio duration (ms):", len(combined_audio))

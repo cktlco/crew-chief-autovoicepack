@@ -33,6 +33,7 @@ RUN pip install deepspeed
 
 COPY generate_voice_pack.py .
 COPY transcript.csv .
+COPY audio_file_inventory.csv .
 COPY recordings/ .
 
 # add some canned command lines to the shell history for easy access
