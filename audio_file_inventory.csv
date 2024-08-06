@@ -242,22 +242,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\acknowledge_start_recce:1.wav,"OK, we're starting our stage reh-key","OK, we're starting our stage reh-key"
 \voice\codriver\acknowledge_start_recce:2.wav,"OK, we're starting our stage reh-key","OK, we're starting our stage reh-key"
 \voice\codriver\acknowledge_start_recce:3.wav,"OK, we're starting our stage reh-key","OK, we're starting our stage reh-key"
-\voice\codriver\cmp_into_corner_1_left:5.wav,into 1 left,into 1 left
-\voice\codriver\cmp_into_corner_1_left:6.wav,into 1 left,into 1 left
-\voice\codriver\cmp_into_corner_1_left:7.wav,into 1 left,into 1 left
-\voice\codriver\cmp_into_corner_1_left:8.wav,into 1 left,into 1 left
-\voice\codriver\cmp_into_corner_1_left_descriptive:1.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_descriptive:2.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_descriptive:3.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_descriptive:4.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:5.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:6.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:7.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:8.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_1_left_rushed:10.wav,into 1 left,into 1 left
-\voice\codriver\cmp_into_corner_1_left_rushed:11.wav,into 1 left,into 1 left
-\voice\codriver\cmp_into_corner_1_left_rushed:12.wav,into 1 left,into 1 left
-\voice\codriver\cmp_into_corner_1_left_rushed:9.wav,into 1 left,into 1 left
+\voice\codriver\cmp_into_corner_1_left:5.wav,into 1 left,into 1 lefft
+\voice\codriver\cmp_into_corner_1_left:6.wav,into 1 left,into 1 lefft
+\voice\codriver\cmp_into_corner_1_left:7.wav,into 1 left,into 1 lefft
+\voice\codriver\cmp_into_corner_1_left:8.wav,into 1 left,into 1 lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive:1.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive:2.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive:3.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive:4.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:5.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:6.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:7.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_descriptive_rushed:8.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_1_left_rushed:10.wav,into 1 left,into 1 lefft
+\voice\codriver\cmp_into_corner_1_left_rushed:11.wav,into 1 left,into 1 lefft
+\voice\codriver\cmp_into_corner_1_left_rushed:12.wav,into 1 left,into 1 lefft
+\voice\codriver\cmp_into_corner_1_left_rushed:9.wav,into 1 left,into 1 lefft
 \voice\codriver\cmp_into_corner_1_right:17.wav,into 1 right,into 1 right
 \voice\codriver\cmp_into_corner_1_right:18.wav,into 1 right,into 1 right
 \voice\codriver\cmp_into_corner_1_right:19.wav,into 1 right,into 1 right
@@ -274,22 +274,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_1_right_rushed:22.wav,into 1 right,into 1 right
 \voice\codriver\cmp_into_corner_1_right_rushed:23.wav,into 1 right,into 1 right
 \voice\codriver\cmp_into_corner_1_right_rushed:24.wav,into 1 right,into 1 right
-\voice\codriver\cmp_into_corner_2_left:29.wav,into 2 left,into 2 left
-\voice\codriver\cmp_into_corner_2_left:30.wav,into 2 left,into 2 left
-\voice\codriver\cmp_into_corner_2_left:31.wav,into 2 left,into 2 left
-\voice\codriver\cmp_into_corner_2_left:32.wav,into 2 left,into 2 left
-\voice\codriver\cmp_into_corner_2_left_descriptive:17.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_descriptive:18.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_descriptive:19.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_descriptive:20.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:21.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:22.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:23.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:24.wav,into slow left,into slow left
-\voice\codriver\cmp_into_corner_2_left_rushed:33.wav,into 2 left,into 2 left
-\voice\codriver\cmp_into_corner_2_left_rushed:34.wav,into 2 left,into 2 left
-\voice\codriver\cmp_into_corner_2_left_rushed:35.wav,into 2 left,into 2 left
-\voice\codriver\cmp_into_corner_2_left_rushed:36.wav,into 2 left,into 2 left
+\voice\codriver\cmp_into_corner_2_left:29.wav,into 2 left,into 2 lefft
+\voice\codriver\cmp_into_corner_2_left:30.wav,into 2 left,into 2 lefft
+\voice\codriver\cmp_into_corner_2_left:31.wav,into 2 left,into 2 lefft
+\voice\codriver\cmp_into_corner_2_left:32.wav,into 2 left,into 2 lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive:17.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive:18.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive:19.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive:20.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:21.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:22.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:23.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_descriptive_rushed:24.wav,into slow left,into slow lefft
+\voice\codriver\cmp_into_corner_2_left_rushed:33.wav,into 2 left,into 2 lefft
+\voice\codriver\cmp_into_corner_2_left_rushed:34.wav,into 2 left,into 2 lefft
+\voice\codriver\cmp_into_corner_2_left_rushed:35.wav,into 2 left,into 2 lefft
+\voice\codriver\cmp_into_corner_2_left_rushed:36.wav,into 2 left,into 2 lefft
 \voice\codriver\cmp_into_corner_2_right:5.wav,into 2 right,into 2 right
 \voice\codriver\cmp_into_corner_2_right:6.wav,into 2 right,into 2 right
 \voice\codriver\cmp_into_corner_2_right:7.wav,into 2 right,into 2 right
@@ -306,22 +306,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_2_right_rushed:11.wav,into 2 right,into 2 right
 \voice\codriver\cmp_into_corner_2_right_rushed:12.wav,into 2 right,into 2 right
 \voice\codriver\cmp_into_corner_2_right_rushed:9.wav,into 2 right,into 2 right
-\voice\codriver\cmp_into_corner_3_left:17.wav,into 3 left,into 3 left
-\voice\codriver\cmp_into_corner_3_left:18.wav,into 3 left,into 3 left
-\voice\codriver\cmp_into_corner_3_left:19.wav,into 3 left,into 3 left
-\voice\codriver\cmp_into_corner_3_left:20.wav,into 3 left,into 3 left
-\voice\codriver\cmp_into_corner_3_left_descriptive:33.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_descriptive:34.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_descriptive:35.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_descriptive:36.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:37.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:38.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:39.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:40.wav,into kay left,into kay left
-\voice\codriver\cmp_into_corner_3_left_rushed:21.wav,into 3 left,into 3 left
-\voice\codriver\cmp_into_corner_3_left_rushed:22.wav,into 3 left,into 3 left
-\voice\codriver\cmp_into_corner_3_left_rushed:23.wav,into 3 left,into 3 left
-\voice\codriver\cmp_into_corner_3_left_rushed:24.wav,into 3 left,into 3 left
+\voice\codriver\cmp_into_corner_3_left:17.wav,into 3 left,into 3 lefft
+\voice\codriver\cmp_into_corner_3_left:18.wav,into 3 left,into 3 lefft
+\voice\codriver\cmp_into_corner_3_left:19.wav,into 3 left,into 3 lefft
+\voice\codriver\cmp_into_corner_3_left:20.wav,into 3 left,into 3 lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive:33.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive:34.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive:35.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive:36.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:37.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:38.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:39.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_descriptive_rushed:40.wav,into kay left,into kay lefft
+\voice\codriver\cmp_into_corner_3_left_rushed:21.wav,into 3 left,into 3 lefft
+\voice\codriver\cmp_into_corner_3_left_rushed:22.wav,into 3 left,into 3 lefft
+\voice\codriver\cmp_into_corner_3_left_rushed:23.wav,into 3 left,into 3 lefft
+\voice\codriver\cmp_into_corner_3_left_rushed:24.wav,into 3 left,into 3 lefft
 \voice\codriver\cmp_into_corner_3_right:41.wav,into 3 right,into 3 right
 \voice\codriver\cmp_into_corner_3_right:42.wav,into 3 right,into 3 right
 \voice\codriver\cmp_into_corner_3_right:43.wav,into 3 right,into 3 right
@@ -338,22 +338,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_3_right_rushed:46.wav,into 3 right,into 3 right
 \voice\codriver\cmp_into_corner_3_right_rushed:47.wav,into 3 right,into 3 right
 \voice\codriver\cmp_into_corner_3_right_rushed:48.wav,into 3 right,into 3 right
-\voice\codriver\cmp_into_corner_4_left:53.wav,into 4 left,into 4 left
-\voice\codriver\cmp_into_corner_4_left:54.wav,into 4 left,into 4 left
-\voice\codriver\cmp_into_corner_4_left:55.wav,into 4 left,into 4 left
-\voice\codriver\cmp_into_corner_4_left:56.wav,into 4 left,into 4 left
-\voice\codriver\cmp_into_corner_4_left_descriptive:49.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_descriptive:50.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_descriptive:51.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_descriptive:52.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:53.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:54.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:55.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:56.wav,into medium left,into medium left
-\voice\codriver\cmp_into_corner_4_left_rushed:57.wav,into 4 left,into 4 left
-\voice\codriver\cmp_into_corner_4_left_rushed:58.wav,into 4 left,into 4 left
-\voice\codriver\cmp_into_corner_4_left_rushed:59.wav,into 4 left,into 4 left
-\voice\codriver\cmp_into_corner_4_left_rushed:60.wav,into 4 left,into 4 left
+\voice\codriver\cmp_into_corner_4_left:53.wav,into 4 left,into 4 lefft
+\voice\codriver\cmp_into_corner_4_left:54.wav,into 4 left,into 4 lefft
+\voice\codriver\cmp_into_corner_4_left:55.wav,into 4 left,into 4 lefft
+\voice\codriver\cmp_into_corner_4_left:56.wav,into 4 left,into 4 lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive:49.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive:50.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive:51.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive:52.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:53.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:54.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:55.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_descriptive_rushed:56.wav,into medium left,into medium lefft
+\voice\codriver\cmp_into_corner_4_left_rushed:57.wav,into 4 left,into 4 lefft
+\voice\codriver\cmp_into_corner_4_left_rushed:58.wav,into 4 left,into 4 lefft
+\voice\codriver\cmp_into_corner_4_left_rushed:59.wav,into 4 left,into 4 lefft
+\voice\codriver\cmp_into_corner_4_left_rushed:60.wav,into 4 left,into 4 lefft
 \voice\codriver\cmp_into_corner_4_right:65.wav,into 4 right,into 4 right
 \voice\codriver\cmp_into_corner_4_right:66.wav,into 4 right,into 4 right
 \voice\codriver\cmp_into_corner_4_right:67.wav,into 4 right,into 4 right
@@ -370,22 +370,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_4_right_rushed:70.wav,into 4 right,into 4 right
 \voice\codriver\cmp_into_corner_4_right_rushed:71.wav,into 4 right,into 4 right
 \voice\codriver\cmp_into_corner_4_right_rushed:72.wav,into 4 right,into 4 right
-\voice\codriver\cmp_into_corner_5_left:77.wav,into 5 left,into 5 left
-\voice\codriver\cmp_into_corner_5_left:78.wav,into 5 left,into 5 left
-\voice\codriver\cmp_into_corner_5_left:79.wav,into 5 left,into 5 left
-\voice\codriver\cmp_into_corner_5_left:80.wav,into 5 left,into 5 left
-\voice\codriver\cmp_into_corner_5_left_descriptive:65.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_descriptive:66.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_descriptive:67.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_descriptive:68.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:69.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:70.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:71.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:72.wav,into fast left,into fast left
-\voice\codriver\cmp_into_corner_5_left_rushed:81.wav,into 5 left,into 5 left
-\voice\codriver\cmp_into_corner_5_left_rushed:82.wav,into 5 left,into 5 left
-\voice\codriver\cmp_into_corner_5_left_rushed:83.wav,into 5 left,into 5 left
-\voice\codriver\cmp_into_corner_5_left_rushed:84.wav,into 5 left,into 5 left
+\voice\codriver\cmp_into_corner_5_left:77.wav,into 5 left,into 5 lefft
+\voice\codriver\cmp_into_corner_5_left:78.wav,into 5 left,into 5 lefft
+\voice\codriver\cmp_into_corner_5_left:79.wav,into 5 left,into 5 lefft
+\voice\codriver\cmp_into_corner_5_left:80.wav,into 5 left,into 5 lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive:65.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive:66.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive:67.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive:68.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:69.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:70.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:71.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_descriptive_rushed:72.wav,into fast left,into fast lefft
+\voice\codriver\cmp_into_corner_5_left_rushed:81.wav,into 5 left,into 5 lefft
+\voice\codriver\cmp_into_corner_5_left_rushed:82.wav,into 5 left,into 5 lefft
+\voice\codriver\cmp_into_corner_5_left_rushed:83.wav,into 5 left,into 5 lefft
+\voice\codriver\cmp_into_corner_5_left_rushed:84.wav,into 5 left,into 5 lefft
 \voice\codriver\cmp_into_corner_5_right:89.wav,into 5 right,into 5 right
 \voice\codriver\cmp_into_corner_5_right:90.wav,into 5 right,into 5 right
 \voice\codriver\cmp_into_corner_5_right:91.wav,into 5 right,into 5 right
@@ -402,22 +402,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_5_right_rushed:94.wav,into 5 right,into 5 right
 \voice\codriver\cmp_into_corner_5_right_rushed:95.wav,into 5 right,into 5 right
 \voice\codriver\cmp_into_corner_5_right_rushed:96.wav,into 5 right,into 5 right
-\voice\codriver\cmp_into_corner_6_left:101.wav,into 6 left,into 6 left
-\voice\codriver\cmp_into_corner_6_left:102.wav,into 6 left,into 6 left
-\voice\codriver\cmp_into_corner_6_left:103.wav,into 6 left,into 6 left
-\voice\codriver\cmp_into_corner_6_left:104.wav,into 6 left,into 6 left
-\voice\codriver\cmp_into_corner_6_left_descriptive:81.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_descriptive:82.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_descriptive:83.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_descriptive:84.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:85.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:86.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:87.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:88.wav,into slight left,into slight left
-\voice\codriver\cmp_into_corner_6_left_rushed:105.wav,into 6 left,into 6 left
-\voice\codriver\cmp_into_corner_6_left_rushed:106.wav,into 6 left,into 6 left
-\voice\codriver\cmp_into_corner_6_left_rushed:107.wav,into 6 left,into 6 left
-\voice\codriver\cmp_into_corner_6_left_rushed:108.wav,into 6 left,into 6 left
+\voice\codriver\cmp_into_corner_6_left:101.wav,into 6 left,into 6 lefft
+\voice\codriver\cmp_into_corner_6_left:102.wav,into 6 left,into 6 lefft
+\voice\codriver\cmp_into_corner_6_left:103.wav,into 6 left,into 6 lefft
+\voice\codriver\cmp_into_corner_6_left:104.wav,into 6 left,into 6 lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive:81.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive:82.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive:83.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive:84.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:85.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:86.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:87.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_descriptive_rushed:88.wav,into slight left,into slight lefft
+\voice\codriver\cmp_into_corner_6_left_rushed:105.wav,into 6 left,into 6 lefft
+\voice\codriver\cmp_into_corner_6_left_rushed:106.wav,into 6 left,into 6 lefft
+\voice\codriver\cmp_into_corner_6_left_rushed:107.wav,into 6 left,into 6 lefft
+\voice\codriver\cmp_into_corner_6_left_rushed:108.wav,into 6 left,into 6 lefft
 \voice\codriver\cmp_into_corner_6_right:113.wav,into 6 right,into 6 right
 \voice\codriver\cmp_into_corner_6_right:114.wav,into 6 right,into 6 right
 \voice\codriver\cmp_into_corner_6_right:115.wav,into 6 right,into 6 right
@@ -434,22 +434,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_6_right_rushed:118.wav,into 6 right,into 6 right
 \voice\codriver\cmp_into_corner_6_right_rushed:119.wav,into 6 right,into 6 right
 \voice\codriver\cmp_into_corner_6_right_rushed:120.wav,into 6 right,into 6 right
-\voice\codriver\cmp_into_corner_flat_left:17.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left:18.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left:19.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left:20.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive:17.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive:18.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive:19.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive:20.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:21.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:22.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:23.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:24.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_rushed:21.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_rushed:22.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_rushed:23.wav,into flat left,into flat left
-\voice\codriver\cmp_into_corner_flat_left_rushed:24.wav,into flat left,into flat left
+\voice\codriver\cmp_into_corner_flat_left:17.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left:18.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left:19.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left:20.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive:17.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive:18.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive:19.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive:20.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:21.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:22.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:23.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_descriptive_rushed:24.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_rushed:21.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_rushed:22.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_rushed:23.wav,into flat left,into flat lefft
+\voice\codriver\cmp_into_corner_flat_left_rushed:24.wav,into flat left,into flat lefft
 \voice\codriver\cmp_into_corner_flat_right:25.wav,into flat right,into flat right
 \voice\codriver\cmp_into_corner_flat_right:26.wav,into flat right,into flat right
 \voice\codriver\cmp_into_corner_flat_right:27.wav,into flat right,into flat right
@@ -466,14 +466,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_flat_right_rushed:30.wav,into flat right,into flat right
 \voice\codriver\cmp_into_corner_flat_right_rushed:31.wav,into flat right,into flat right
 \voice\codriver\cmp_into_corner_flat_right_rushed:32.wav,into flat right,into flat right
-\voice\codriver\cmp_into_corner_hairpin_left:1.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_hairpin_left:2.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_hairpin_left:3.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_hairpin_left:4.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_hairpin_left_rushed:5.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_hairpin_left_rushed:6.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_hairpin_left_rushed:7.wav,into hairpin left,into hairpin left
-\voice\codriver\cmp_into_corner_hairpin_left_rushed:8.wav,into hairpin left,into hairpin left
+\voice\codriver\cmp_into_corner_hairpin_left:1.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_hairpin_left:2.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_hairpin_left:3.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_hairpin_left:4.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_hairpin_left_rushed:5.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_hairpin_left_rushed:6.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_hairpin_left_rushed:7.wav,into hairpin left,into hairpin lefft
+\voice\codriver\cmp_into_corner_hairpin_left_rushed:8.wav,into hairpin left,into hairpin lefft
 \voice\codriver\cmp_into_corner_hairpin_right:10.wav,into hairpin right,into hairpin right
 \voice\codriver\cmp_into_corner_hairpin_right:11.wav,into hairpin right,into hairpin right
 \voice\codriver\cmp_into_corner_hairpin_right:12.wav,into hairpin right,into hairpin right
@@ -482,22 +482,22 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_corner_hairpin_right_rushed:14.wav,into hairpin right,into hairpin right
 \voice\codriver\cmp_into_corner_hairpin_right_rushed:15.wav,into hairpin right,into hairpin right
 \voice\codriver\cmp_into_corner_hairpin_right_rushed:16.wav,into hairpin right,into hairpin right
-\voice\codriver\cmp_into_corner_square_left:33.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left:34.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left:35.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left:36.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive:33.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive:34.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive:35.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive:36.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:37.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:38.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:39.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:40.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_rushed:37.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_rushed:38.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_rushed:39.wav,into square left,into square left
-\voice\codriver\cmp_into_corner_square_left_rushed:40.wav,into square left,into square left
+\voice\codriver\cmp_into_corner_square_left:33.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left:34.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left:35.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left:36.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive:33.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive:34.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive:35.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive:36.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:37.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:38.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:39.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_descriptive_rushed:40.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_rushed:37.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_rushed:38.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_rushed:39.wav,into square left,into square lefft
+\voice\codriver\cmp_into_corner_square_left_rushed:40.wav,into square left,into square lefft
 \voice\codriver\cmp_into_corner_square_right:41.wav,into square right,into square right
 \voice\codriver\cmp_into_corner_square_right:42.wav,into square right,into square right
 \voice\codriver\cmp_into_corner_square_right:43.wav,into square right,into square right
@@ -546,18 +546,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\cmp_into_detail_ford_rushed:102.wav,into ford,into ford
 \voice\codriver\cmp_into_detail_ford_rushed:103.wav,into ford,into ford
 \voice\codriver\cmp_into_detail_ford_rushed:104.wav,into ford,into ford
-\voice\codriver\corner_1_left:25.wav,1 left,1 left
-\voice\codriver\corner_1_left:26.wav,1 left,1 left
-\voice\codriver\corner_1_left:27.wav,1 left,1 left
-\voice\codriver\corner_1_left:28.wav,1 left,1 left
-\voice\codriver\corner_1_left_descriptive:5.wav,hairpin left,hairpin left
-\voice\codriver\corner_1_left_descriptive:6.wav,hairpin left,hairpin left
-\voice\codriver\corner_1_left_descriptive:7.wav,hairpin left,hairpin left
-\voice\codriver\corner_1_left_descriptive:8.wav,hairpin left,hairpin left
-\voice\codriver\corner_1_left_descriptive_rushed:1.wav,hairpin left,hairpin left
-\voice\codriver\corner_1_left_descriptive_rushed:2.wav,hairpin left,hairpin left
-\voice\codriver\corner_1_left_descriptive_rushed:3.wav,hairpin left,hairpin left
-\voice\codriver\corner_1_left_descriptive_rushed:4.wav,hairpin left,hairpin left
+\voice\codriver\corner_1_left:25.wav,1 left,1 lefft
+\voice\codriver\corner_1_left:26.wav,1 left,1 lefft
+\voice\codriver\corner_1_left:27.wav,1 left,1 lefft
+\voice\codriver\corner_1_left:28.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_descriptive:5.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_1_left_descriptive:6.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_1_left_descriptive:7.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_1_left_descriptive:8.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_1_left_descriptive_rushed:1.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_1_left_descriptive_rushed:2.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_1_left_descriptive_rushed:3.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_1_left_descriptive_rushed:4.wav,hairpin left,hairpin lefft
 \voice\codriver\corner_1_left_reversed:33.wav,left 1,left 1
 \voice\codriver\corner_1_left_reversed:34.wav,left 1,left 1
 \voice\codriver\corner_1_left_reversed:35.wav,left 1,left 1
@@ -566,14 +566,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_1_left_reversed_rushed:34.wav,left 1,left 1
 \voice\codriver\corner_1_left_reversed_rushed:35.wav,left 1,left 1
 \voice\codriver\corner_1_left_reversed_rushed:36.wav,left 1,left 1
-\voice\codriver\corner_1_left_rushed:1.wav,1 left,1 left
-\voice\codriver\corner_1_left_rushed:2.wav,1 left,1 left
-\voice\codriver\corner_1_left_rushed:25.wav,1 left,1 left
-\voice\codriver\corner_1_left_rushed:26.wav,1 left,1 left
-\voice\codriver\corner_1_left_rushed:27.wav,1 left,1 left
-\voice\codriver\corner_1_left_rushed:28.wav,1 left,1 left
-\voice\codriver\corner_1_left_rushed:3.wav,1 left,1 left
-\voice\codriver\corner_1_left_rushed:4.wav,1 left,1 left
+\voice\codriver\corner_1_left_rushed:1.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_rushed:2.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_rushed:25.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_rushed:26.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_rushed:27.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_rushed:28.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_rushed:3.wav,1 left,1 lefft
+\voice\codriver\corner_1_left_rushed:4.wav,1 left,1 lefft
 \voice\codriver\corner_1_right:37.wav,1 right,1 right
 \voice\codriver\corner_1_right:38.wav,1 right,1 right
 \voice\codriver\corner_1_right:39.wav,1 right,1 right
@@ -606,18 +606,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_1_right_rushed:38.wav,1 right,1 right
 \voice\codriver\corner_1_right_rushed:39.wav,1 right,1 right
 \voice\codriver\corner_1_right_rushed:40.wav,1 right,1 right
-\voice\codriver\corner_2_left:169.wav,2 left,2 left
-\voice\codriver\corner_2_left:170.wav,2 left,2 left
-\voice\codriver\corner_2_left:171.wav,2 left,2 left
-\voice\codriver\corner_2_left:172.wav,2 left,2 left
-\voice\codriver\corner_2_left_descriptive:29.wav,sloe left,sloe left
-\voice\codriver\corner_2_left_descriptive:30.wav,sloe left,sloe left
-\voice\codriver\corner_2_left_descriptive:31.wav,sloe left,sloe left
-\voice\codriver\corner_2_left_descriptive:32.wav,sloe left,sloe left
-\voice\codriver\corner_2_left_descriptive_rushed:29.wav,sloe left,sloe left
-\voice\codriver\corner_2_left_descriptive_rushed:30.wav,sloe left,sloe left
-\voice\codriver\corner_2_left_descriptive_rushed:31.wav,sloe left,sloe left
-\voice\codriver\corner_2_left_descriptive_rushed:32.wav,sloe left,sloe left
+\voice\codriver\corner_2_left:169.wav,2 left,2 lefft
+\voice\codriver\corner_2_left:170.wav,2 left,2 lefft
+\voice\codriver\corner_2_left:171.wav,2 left,2 lefft
+\voice\codriver\corner_2_left:172.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_descriptive:29.wav,sloe left,sloe lefft
+\voice\codriver\corner_2_left_descriptive:30.wav,sloe left,sloe lefft
+\voice\codriver\corner_2_left_descriptive:31.wav,sloe left,sloe lefft
+\voice\codriver\corner_2_left_descriptive:32.wav,sloe left,sloe lefft
+\voice\codriver\corner_2_left_descriptive_rushed:29.wav,sloe left,sloe lefft
+\voice\codriver\corner_2_left_descriptive_rushed:30.wav,sloe left,sloe lefft
+\voice\codriver\corner_2_left_descriptive_rushed:31.wav,sloe left,sloe lefft
+\voice\codriver\corner_2_left_descriptive_rushed:32.wav,sloe left,sloe lefft
 \voice\codriver\corner_2_left_reversed:177.wav,left 2,left 2
 \voice\codriver\corner_2_left_reversed:178.wav,left 2,left 2
 \voice\codriver\corner_2_left_reversed:179.wav,left 2,left 2
@@ -626,14 +626,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_2_left_reversed_rushed:178.wav,left 2,left 2
 \voice\codriver\corner_2_left_reversed_rushed:179.wav,left 2,left 2
 \voice\codriver\corner_2_left_reversed_rushed:180.wav,left 2,left 2
-\voice\codriver\corner_2_left_rushed:169.wav,2 left,2 left
-\voice\codriver\corner_2_left_rushed:170.wav,2 left,2 left
-\voice\codriver\corner_2_left_rushed:171.wav,2 left,2 left
-\voice\codriver\corner_2_left_rushed:172.wav,2 left,2 left
-\voice\codriver\corner_2_left_rushed:25.wav,2 left,2 left
-\voice\codriver\corner_2_left_rushed:26.wav,2 left,2 left
-\voice\codriver\corner_2_left_rushed:27.wav,2 left,2 left
-\voice\codriver\corner_2_left_rushed:28.wav,2 left,2 left
+\voice\codriver\corner_2_left_rushed:169.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_rushed:170.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_rushed:171.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_rushed:172.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_rushed:25.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_rushed:26.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_rushed:27.wav,2 left,2 lefft
+\voice\codriver\corner_2_left_rushed:28.wav,2 left,2 lefft
 \voice\codriver\corner_2_right:181.wav,2 right,2 right
 \voice\codriver\corner_2_right:182.wav,2 right,2 right
 \voice\codriver\corner_2_right:183.wav,2 right,2 right
@@ -662,18 +662,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_2_right_rushed:2.wav,2 right,2 right
 \voice\codriver\corner_2_right_rushed:3.wav,2 right,2 right
 \voice\codriver\corner_2_right_rushed:4.wav,2 right,2 right
-\voice\codriver\corner_3_left:49.wav,3 left,3 left
-\voice\codriver\corner_3_left:50.wav,3 left,3 left
-\voice\codriver\corner_3_left:51.wav,3 left,3 left
-\voice\codriver\corner_3_left:52.wav,3 left,3 left
-\voice\codriver\corner_3_left_descriptive:53.wav,k left,k left
-\voice\codriver\corner_3_left_descriptive:54.wav,k left,k left
-\voice\codriver\corner_3_left_descriptive:55.wav,k left,k left
-\voice\codriver\corner_3_left_descriptive:56.wav,k left,k left
-\voice\codriver\corner_3_left_descriptive_rushed:53.wav,k left,k left
-\voice\codriver\corner_3_left_descriptive_rushed:54.wav,k left,k left
-\voice\codriver\corner_3_left_descriptive_rushed:55.wav,k left,k left
-\voice\codriver\corner_3_left_descriptive_rushed:56.wav,k left,k left
+\voice\codriver\corner_3_left:49.wav,3 left,3 lefft
+\voice\codriver\corner_3_left:50.wav,3 left,3 lefft
+\voice\codriver\corner_3_left:51.wav,3 left,3 lefft
+\voice\codriver\corner_3_left:52.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_descriptive:53.wav,k left,k lefft
+\voice\codriver\corner_3_left_descriptive:54.wav,k left,k lefft
+\voice\codriver\corner_3_left_descriptive:55.wav,k left,k lefft
+\voice\codriver\corner_3_left_descriptive:56.wav,k left,k lefft
+\voice\codriver\corner_3_left_descriptive_rushed:53.wav,k left,k lefft
+\voice\codriver\corner_3_left_descriptive_rushed:54.wav,k left,k lefft
+\voice\codriver\corner_3_left_descriptive_rushed:55.wav,k left,k lefft
+\voice\codriver\corner_3_left_descriptive_rushed:56.wav,k left,k lefft
 \voice\codriver\corner_3_left_reversed:57.wav,left 3,left 3
 \voice\codriver\corner_3_left_reversed:58.wav,left 3,left 3
 \voice\codriver\corner_3_left_reversed:59.wav,left 3,left 3
@@ -682,14 +682,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_3_left_reversed_rushed:58.wav,left 3,left 3
 \voice\codriver\corner_3_left_reversed_rushed:59.wav,left 3,left 3
 \voice\codriver\corner_3_left_reversed_rushed:60.wav,left 3,left 3
-\voice\codriver\corner_3_left_rushed:13.wav,3 left,3 left
-\voice\codriver\corner_3_left_rushed:14.wav,3 left,3 left
-\voice\codriver\corner_3_left_rushed:15.wav,3 left,3 left
-\voice\codriver\corner_3_left_rushed:16.wav,3 left,3 left
-\voice\codriver\corner_3_left_rushed:49.wav,3 left,3 left
-\voice\codriver\corner_3_left_rushed:50.wav,3 left,3 left
-\voice\codriver\corner_3_left_rushed:51.wav,3 left,3 left
-\voice\codriver\corner_3_left_rushed:52.wav,3 left,3 left
+\voice\codriver\corner_3_left_rushed:13.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_rushed:14.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_rushed:15.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_rushed:16.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_rushed:49.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_rushed:50.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_rushed:51.wav,3 left,3 lefft
+\voice\codriver\corner_3_left_rushed:52.wav,3 left,3 lefft
 \voice\codriver\corner_3_right:61.wav,3 right,3 right
 \voice\codriver\corner_3_right:62.wav,3 right,3 right
 \voice\codriver\corner_3_right:63.wav,3 right,3 right
@@ -718,18 +718,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_3_right_rushed:62.wav,3 right,3 right
 \voice\codriver\corner_3_right_rushed:63.wav,3 right,3 right
 \voice\codriver\corner_3_right_rushed:64.wav,3 right,3 right
-\voice\codriver\corner_4_left:73.wav,4 left,4 left
-\voice\codriver\corner_4_left:74.wav,4 left,4 left
-\voice\codriver\corner_4_left:75.wav,4 left,4 left
-\voice\codriver\corner_4_left:76.wav,4 left,4 left
-\voice\codriver\corner_4_left_descriptive:77.wav,medium left,medium left
-\voice\codriver\corner_4_left_descriptive:78.wav,medium left,medium left
-\voice\codriver\corner_4_left_descriptive:79.wav,medium left,medium left
-\voice\codriver\corner_4_left_descriptive:80.wav,medium left,medium left
-\voice\codriver\corner_4_left_descriptive_rushed:77.wav,medium left,medium left
-\voice\codriver\corner_4_left_descriptive_rushed:78.wav,medium left,medium left
-\voice\codriver\corner_4_left_descriptive_rushed:79.wav,medium left,medium left
-\voice\codriver\corner_4_left_descriptive_rushed:80.wav,medium left,medium left
+\voice\codriver\corner_4_left:73.wav,4 left,4 lefft
+\voice\codriver\corner_4_left:74.wav,4 left,4 lefft
+\voice\codriver\corner_4_left:75.wav,4 left,4 lefft
+\voice\codriver\corner_4_left:76.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_descriptive:77.wav,medium left,medium lefft
+\voice\codriver\corner_4_left_descriptive:78.wav,medium left,medium lefft
+\voice\codriver\corner_4_left_descriptive:79.wav,medium left,medium lefft
+\voice\codriver\corner_4_left_descriptive:80.wav,medium left,medium lefft
+\voice\codriver\corner_4_left_descriptive_rushed:77.wav,medium left,medium lefft
+\voice\codriver\corner_4_left_descriptive_rushed:78.wav,medium left,medium lefft
+\voice\codriver\corner_4_left_descriptive_rushed:79.wav,medium left,medium lefft
+\voice\codriver\corner_4_left_descriptive_rushed:80.wav,medium left,medium lefft
 \voice\codriver\corner_4_left_reversed:81.wav,left 4,left 4
 \voice\codriver\corner_4_left_reversed:82.wav,left 4,left 4
 \voice\codriver\corner_4_left_reversed:83.wav,left 4,left 4
@@ -738,14 +738,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_4_left_reversed_rushed:82.wav,left 4,left 4
 \voice\codriver\corner_4_left_reversed_rushed:83.wav,left 4,left 4
 \voice\codriver\corner_4_left_reversed_rushed:84.wav,left 4,left 4
-\voice\codriver\corner_4_left_rushed:49.wav,4 left,4 left
-\voice\codriver\corner_4_left_rushed:50.wav,4 left,4 left
-\voice\codriver\corner_4_left_rushed:51.wav,4 left,4 left
-\voice\codriver\corner_4_left_rushed:52.wav,4 left,4 left
-\voice\codriver\corner_4_left_rushed:73.wav,4 left,4 left
-\voice\codriver\corner_4_left_rushed:74.wav,4 left,4 left
-\voice\codriver\corner_4_left_rushed:75.wav,4 left,4 left
-\voice\codriver\corner_4_left_rushed:76.wav,4 left,4 left
+\voice\codriver\corner_4_left_rushed:49.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_rushed:50.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_rushed:51.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_rushed:52.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_rushed:73.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_rushed:74.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_rushed:75.wav,4 left,4 lefft
+\voice\codriver\corner_4_left_rushed:76.wav,4 left,4 lefft
 \voice\codriver\corner_4_right:85.wav,4 right,4 right
 \voice\codriver\corner_4_right:86.wav,4 right,4 right
 \voice\codriver\corner_4_right:87.wav,4 right,4 right
@@ -774,18 +774,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_4_right_rushed:86.wav,4 right,4 right
 \voice\codriver\corner_4_right_rushed:87.wav,4 right,4 right
 \voice\codriver\corner_4_right_rushed:88.wav,4 right,4 right
-\voice\codriver\corner_5_left:100.wav,5 left,5 left
-\voice\codriver\corner_5_left:97.wav,5 left,5 left
-\voice\codriver\corner_5_left:98.wav,5 left,5 left
-\voice\codriver\corner_5_left:99.wav,5 left,5 left
-\voice\codriver\corner_5_left_descriptive:101.wav,fast left,fast left
-\voice\codriver\corner_5_left_descriptive:102.wav,fast left,fast left
-\voice\codriver\corner_5_left_descriptive:103.wav,fast left,fast left
-\voice\codriver\corner_5_left_descriptive:104.wav,fast left,fast left
-\voice\codriver\corner_5_left_descriptive_rushed:101.wav,fast left,fast left
-\voice\codriver\corner_5_left_descriptive_rushed:102.wav,fast left,fast left
-\voice\codriver\corner_5_left_descriptive_rushed:103.wav,fast left,fast left
-\voice\codriver\corner_5_left_descriptive_rushed:104.wav,fast left,fast left
+\voice\codriver\corner_5_left:100.wav,5 left,5 lefft
+\voice\codriver\corner_5_left:97.wav,5 left,5 lefft
+\voice\codriver\corner_5_left:98.wav,5 left,5 lefft
+\voice\codriver\corner_5_left:99.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_descriptive:101.wav,fast left,fast lefft
+\voice\codriver\corner_5_left_descriptive:102.wav,fast left,fast lefft
+\voice\codriver\corner_5_left_descriptive:103.wav,fast left,fast lefft
+\voice\codriver\corner_5_left_descriptive:104.wav,fast left,fast lefft
+\voice\codriver\corner_5_left_descriptive_rushed:101.wav,fast left,fast lefft
+\voice\codriver\corner_5_left_descriptive_rushed:102.wav,fast left,fast lefft
+\voice\codriver\corner_5_left_descriptive_rushed:103.wav,fast left,fast lefft
+\voice\codriver\corner_5_left_descriptive_rushed:104.wav,fast left,fast lefft
 \voice\codriver\corner_5_left_reversed:105.wav,left 5,left 5
 \voice\codriver\corner_5_left_reversed:106.wav,left 5,left 5
 \voice\codriver\corner_5_left_reversed:107.wav,left 5,left 5
@@ -794,14 +794,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_5_left_reversed_rushed:106.wav,left 5,left 5
 \voice\codriver\corner_5_left_reversed_rushed:107.wav,left 5,left 5
 \voice\codriver\corner_5_left_reversed_rushed:108.wav,left 5,left 5
-\voice\codriver\corner_5_left_rushed:100.wav,5 left,5 left
-\voice\codriver\corner_5_left_rushed:73.wav,5 left,5 left
-\voice\codriver\corner_5_left_rushed:74.wav,5 left,5 left
-\voice\codriver\corner_5_left_rushed:75.wav,5 left,5 left
-\voice\codriver\corner_5_left_rushed:76.wav,5 left,5 left
-\voice\codriver\corner_5_left_rushed:97.wav,5 left,5 left
-\voice\codriver\corner_5_left_rushed:98.wav,5 left,5 left
-\voice\codriver\corner_5_left_rushed:99.wav,5 left,5 left
+\voice\codriver\corner_5_left_rushed:100.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_rushed:73.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_rushed:74.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_rushed:75.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_rushed:76.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_rushed:97.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_rushed:98.wav,5 left,5 lefft
+\voice\codriver\corner_5_left_rushed:99.wav,5 left,5 lefft
 \voice\codriver\corner_5_right:109.wav,5 right,5 right
 \voice\codriver\corner_5_right:110.wav,5 right,5 right
 \voice\codriver\corner_5_right:111.wav,5 right,5 right
@@ -830,18 +830,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_5_right_rushed:86.wav,5 right,5 right
 \voice\codriver\corner_5_right_rushed:87.wav,5 right,5 right
 \voice\codriver\corner_5_right_rushed:88.wav,5 right,5 right
-\voice\codriver\corner_6_left:121.wav,6 left,6 left
-\voice\codriver\corner_6_left:122.wav,6 left,6 left
-\voice\codriver\corner_6_left:123.wav,6 left,6 left
-\voice\codriver\corner_6_left:124.wav,6 left,6 left
-\voice\codriver\corner_6_left_descriptive:125.wav,slight left,slight left
-\voice\codriver\corner_6_left_descriptive:126.wav,slight left,slight left
-\voice\codriver\corner_6_left_descriptive:127.wav,slight left,slight left
-\voice\codriver\corner_6_left_descriptive:128.wav,slight left,slight left
-\voice\codriver\corner_6_left_descriptive_rushed:125.wav,slight left,slight left
-\voice\codriver\corner_6_left_descriptive_rushed:126.wav,slight left,slight left
-\voice\codriver\corner_6_left_descriptive_rushed:127.wav,slight left,slight left
-\voice\codriver\corner_6_left_descriptive_rushed:128.wav,slight left,slight left
+\voice\codriver\corner_6_left:121.wav,6 left,6 lefft
+\voice\codriver\corner_6_left:122.wav,6 left,6 lefft
+\voice\codriver\corner_6_left:123.wav,6 left,6 lefft
+\voice\codriver\corner_6_left:124.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_descriptive:125.wav,slight left,slight lefft
+\voice\codriver\corner_6_left_descriptive:126.wav,slight left,slight lefft
+\voice\codriver\corner_6_left_descriptive:127.wav,slight left,slight lefft
+\voice\codriver\corner_6_left_descriptive:128.wav,slight left,slight lefft
+\voice\codriver\corner_6_left_descriptive_rushed:125.wav,slight left,slight lefft
+\voice\codriver\corner_6_left_descriptive_rushed:126.wav,slight left,slight lefft
+\voice\codriver\corner_6_left_descriptive_rushed:127.wav,slight left,slight lefft
+\voice\codriver\corner_6_left_descriptive_rushed:128.wav,slight left,slight lefft
 \voice\codriver\corner_6_left_reversed:129.wav,left 6,left 6
 \voice\codriver\corner_6_left_reversed:130.wav,left 6,left 6
 \voice\codriver\corner_6_left_reversed:131.wav,left 6,left 6
@@ -850,14 +850,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_6_left_reversed_rushed:130.wav,left 6,left 6
 \voice\codriver\corner_6_left_reversed_rushed:131.wav,left 6,left 6
 \voice\codriver\corner_6_left_reversed_rushed:132.wav,left 6,left 6
-\voice\codriver\corner_6_left_rushed:100.wav,6 left,6 left
-\voice\codriver\corner_6_left_rushed:121.wav,6 left,6 left
-\voice\codriver\corner_6_left_rushed:122.wav,6 left,6 left
-\voice\codriver\corner_6_left_rushed:123.wav,6 left,6 left
-\voice\codriver\corner_6_left_rushed:124.wav,6 left,6 left
-\voice\codriver\corner_6_left_rushed:97.wav,6 left,6 left
-\voice\codriver\corner_6_left_rushed:98.wav,6 left,6 left
-\voice\codriver\corner_6_left_rushed:99.wav,6 left,6 left
+\voice\codriver\corner_6_left_rushed:100.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_rushed:121.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_rushed:122.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_rushed:123.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_rushed:124.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_rushed:97.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_rushed:98.wav,6 left,6 lefft
+\voice\codriver\corner_6_left_rushed:99.wav,6 left,6 lefft
 \voice\codriver\corner_6_right:133.wav,6 right,6 right
 \voice\codriver\corner_6_right:134.wav,6 right,6 right
 \voice\codriver\corner_6_right:135.wav,6 right,6 right
@@ -886,18 +886,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_6_right_rushed:134.wav,6 right,6 right
 \voice\codriver\corner_6_right_rushed:135.wav,6 right,6 right
 \voice\codriver\corner_6_right_rushed:136.wav,6 right,6 right
-\voice\codriver\corner_flat_left:145.wav,flat left,flat left
-\voice\codriver\corner_flat_left:146.wav,flat left,flat left
-\voice\codriver\corner_flat_left:147.wav,flat left,flat left
-\voice\codriver\corner_flat_left:148.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive:149.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive:150.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive:151.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive:152.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive_rushed:149.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive_rushed:150.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive_rushed:151.wav,flat left,flat left
-\voice\codriver\corner_flat_left_descriptive_rushed:152.wav,flat left,flat left
+\voice\codriver\corner_flat_left:145.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left:146.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left:147.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left:148.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive:149.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive:150.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive:151.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive:152.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive_rushed:149.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive_rushed:150.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive_rushed:151.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_descriptive_rushed:152.wav,flat left,flat lefft
 \voice\codriver\corner_flat_left_reversed:153.wav,left flat,left flat
 \voice\codriver\corner_flat_left_reversed:154.wav,left flat,left flat
 \voice\codriver\corner_flat_left_reversed:155.wav,left flat,left flat
@@ -906,10 +906,10 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_flat_left_reversed_rushed:154.wav,left flat,left flat
 \voice\codriver\corner_flat_left_reversed_rushed:155.wav,left flat,left flat
 \voice\codriver\corner_flat_left_reversed_rushed:156.wav,left flat,left flat
-\voice\codriver\corner_flat_left_rushed:145.wav,flat left,flat left
-\voice\codriver\corner_flat_left_rushed:146.wav,flat left,flat left
-\voice\codriver\corner_flat_left_rushed:147.wav,flat left,flat left
-\voice\codriver\corner_flat_left_rushed:148.wav,flat left,flat left
+\voice\codriver\corner_flat_left_rushed:145.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_rushed:146.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_rushed:147.wav,flat left,flat lefft
+\voice\codriver\corner_flat_left_rushed:148.wav,flat left,flat lefft
 \voice\codriver\corner_flat_right:157.wav,flat right,flat right
 \voice\codriver\corner_flat_right:158.wav,flat right,flat right
 \voice\codriver\corner_flat_right:159.wav,flat right,flat right
@@ -934,18 +934,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_flat_right_rushed:158.wav,flat right,flat right
 \voice\codriver\corner_flat_right_rushed:159.wav,flat right,flat right
 \voice\codriver\corner_flat_right_rushed:160.wav,flat right,flat right
-\voice\codriver\corner_hairpin_left:1.wav,hairpin left,hairpin left
-\voice\codriver\corner_hairpin_left:2.wav,hairpin left,hairpin left
-\voice\codriver\corner_hairpin_left:3.wav,hairpin left,hairpin left
-\voice\codriver\corner_hairpin_left:4.wav,hairpin left,hairpin left
+\voice\codriver\corner_hairpin_left:1.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_hairpin_left:2.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_hairpin_left:3.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_hairpin_left:4.wav,hairpin left,hairpin lefft
 \voice\codriver\corner_hairpin_left_reversed:10.wav,left hairpin,left hairpin
 \voice\codriver\corner_hairpin_left_reversed:11.wav,left hairpin,left hairpin
 \voice\codriver\corner_hairpin_left_reversed:12.wav,left hairpin,left hairpin
 \voice\codriver\corner_hairpin_left_reversed:9.wav,left hairpin,left hairpin
-\voice\codriver\corner_hairpin_left_rushed:1.wav,hairpin left,hairpin left
-\voice\codriver\corner_hairpin_left_rushed:2.wav,hairpin left,hairpin left
-\voice\codriver\corner_hairpin_left_rushed:3.wav,hairpin left,hairpin left
-\voice\codriver\corner_hairpin_left_rushed:4.wav,hairpin left,hairpin left
+\voice\codriver\corner_hairpin_left_rushed:1.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_hairpin_left_rushed:2.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_hairpin_left_rushed:3.wav,hairpin left,hairpin lefft
+\voice\codriver\corner_hairpin_left_rushed:4.wav,hairpin left,hairpin lefft
 \voice\codriver\corner_hairpin_right:13.wav,hairpin right,hairpin right
 \voice\codriver\corner_hairpin_right:14.wav,hairpin right,hairpin right
 \voice\codriver\corner_hairpin_right:15.wav,hairpin right,hairpin right
@@ -958,16 +958,16 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_hairpin_right_rushed:18.wav,hairpin right,hairpin right
 \voice\codriver\corner_hairpin_right_rushed:19.wav,hairpin right,hairpin right
 \voice\codriver\corner_hairpin_right_rushed:20.wav,hairpin right,hairpin right
-\voice\codriver\corner_open_hairpin_left:1.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left:2.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left:3.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left:4.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left:5.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left_rushed:1.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left_rushed:2.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left_rushed:3.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left_rushed:4.wav,open hairpin left,open hairpin left
-\voice\codriver\corner_open_hairpin_left_rushed:5.wav,open hairpin left,open hairpin left
+\voice\codriver\corner_open_hairpin_left:1.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left:2.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left:3.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left:4.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left:5.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left_rushed:1.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left_rushed:2.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left_rushed:3.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left_rushed:4.wav,open hairpin left,open hairpin lefft
+\voice\codriver\corner_open_hairpin_left_rushed:5.wav,open hairpin left,open hairpin lefft
 \voice\codriver\corner_open_hairpin_right:1.wav,open hairpin right,open hairpin right
 \voice\codriver\corner_open_hairpin_right:2.wav,open hairpin right,open hairpin right
 \voice\codriver\corner_open_hairpin_right:3.wav,open hairpin right,open hairpin right
@@ -978,18 +978,18 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_open_hairpin_right_rushed:3.wav,open hairpin right,open hairpin right
 \voice\codriver\corner_open_hairpin_right_rushed:4.wav,open hairpin right,open hairpin right
 \voice\codriver\corner_open_hairpin_right_rushed:5.wav,open hairpin right,open hairpin right
-\voice\codriver\corner_square_left:173.wav,square left,square left
-\voice\codriver\corner_square_left:174.wav,square left,square left
-\voice\codriver\corner_square_left:175.wav,square left,square left
-\voice\codriver\corner_square_left:176.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive:173.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive:174.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive:175.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive:176.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive_rushed:173.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive_rushed:174.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive_rushed:175.wav,square left,square left
-\voice\codriver\corner_square_left_descriptive_rushed:176.wav,square left,square left
+\voice\codriver\corner_square_left:173.wav,square left,square lefft
+\voice\codriver\corner_square_left:174.wav,square left,square lefft
+\voice\codriver\corner_square_left:175.wav,square left,square lefft
+\voice\codriver\corner_square_left:176.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive:173.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive:174.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive:175.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive:176.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive_rushed:173.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive_rushed:174.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive_rushed:175.wav,square left,square lefft
+\voice\codriver\corner_square_left_descriptive_rushed:176.wav,square left,square lefft
 \voice\codriver\corner_square_left_reversed:177.wav,left square,left square
 \voice\codriver\corner_square_left_reversed:178.wav,left square,left square
 \voice\codriver\corner_square_left_reversed:179.wav,left square,left square
@@ -998,10 +998,10 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\corner_square_left_reversed_rushed:178.wav,left square,left square
 \voice\codriver\corner_square_left_reversed_rushed:179.wav,left square,left square
 \voice\codriver\corner_square_left_reversed_rushed:180.wav,left square,left square
-\voice\codriver\corner_square_left_rushed:173.wav,square left,square left
-\voice\codriver\corner_square_left_rushed:174.wav,square left,square left
-\voice\codriver\corner_square_left_rushed:175.wav,square left,square left
-\voice\codriver\corner_square_left_rushed:176.wav,square left,square left
+\voice\codriver\corner_square_left_rushed:173.wav,square left,square lefft
+\voice\codriver\corner_square_left_rushed:174.wav,square left,square lefft
+\voice\codriver\corner_square_left_rushed:175.wav,square left,square lefft
+\voice\codriver\corner_square_left_rushed:176.wav,square left,square lefft
 \voice\codriver\corner_square_right:185.wav,square right,square right
 \voice\codriver\corner_square_right:186.wav,square right,square right
 \voice\codriver\corner_square_right:187.wav,square right,square right
@@ -1376,14 +1376,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\detail_keep_in_rushed:126.wav,keep in,keep in
 \voice\codriver\detail_keep_in_rushed:127.wav,keep in,keep in
 \voice\codriver\detail_keep_in_rushed:128.wav,keep in,keep in
-\voice\codriver\detail_keep_left:17.wav,keep left,keep left
-\voice\codriver\detail_keep_left:18.wav,keep left,keep left
-\voice\codriver\detail_keep_left:19.wav,keep left,keep left
-\voice\codriver\detail_keep_left:20.wav,keep left,keep left
-\voice\codriver\detail_keep_left_rushed:129.wav,keep left,keep left
-\voice\codriver\detail_keep_left_rushed:130.wav,keep left,keep left
-\voice\codriver\detail_keep_left_rushed:131.wav,keep left,keep left
-\voice\codriver\detail_keep_left_rushed:132.wav,keep left,keep left
+\voice\codriver\detail_keep_left:17.wav,keep left,keep lefft
+\voice\codriver\detail_keep_left:18.wav,keep left,keep lefft
+\voice\codriver\detail_keep_left:19.wav,keep left,keep lefft
+\voice\codriver\detail_keep_left:20.wav,keep left,keep lefft
+\voice\codriver\detail_keep_left_rushed:129.wav,keep left,keep lefft
+\voice\codriver\detail_keep_left_rushed:130.wav,keep left,keep lefft
+\voice\codriver\detail_keep_left_rushed:131.wav,keep left,keep lefft
+\voice\codriver\detail_keep_left_rushed:132.wav,keep left,keep lefft
 \voice\codriver\detail_keep_middle:21.wav,keep middle,keep middle
 \voice\codriver\detail_keep_middle:22.wav,keep middle,keep middle
 \voice\codriver\detail_keep_middle:23.wav,keep middle,keep middle

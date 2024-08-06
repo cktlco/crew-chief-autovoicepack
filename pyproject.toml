@@ -1,0 +1,7 @@
+# Note: to keep crew-chief-autovoicepack as user-friendly as possible,
+# it is intended to be run from within a Docker container
+# using specific dependencies and versions specified in the Dockerfile
+# and thus is not managed by poetry or another build tool
+[tool.black]
+line-length = 88
+blank-lines = 2

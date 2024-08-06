@@ -16,7 +16,6 @@ import torchaudio
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
 
-# ELEVEN_LABS_API_KEY = "fd1ff82b4244acc631d2257d24ef6a4c"
 ELEVEN_LABS_API_KEY = "sk_f8af6014f4721cf708d801da3c16e05000e90e938e37c898"
 COST_PER_CHAR = 0.00011
 YOUR_NAME = "Blake"
