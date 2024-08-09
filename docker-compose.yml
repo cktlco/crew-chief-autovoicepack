@@ -15,4 +15,4 @@ services:
     restart: no
     volumes:
       - /mnt/w/dev/20240706-crew-chief-autovoicepack/output:/app/output
-    command: ["python3", "generate_voice_pack.py"]
+    command: ["python3", "generate_voice_pack.py", "--your_name", "", "--voice_name", "Don", "--voice_name_tts", "Dahn"]

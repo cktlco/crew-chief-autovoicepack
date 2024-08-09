@@ -47,13 +47,13 @@ COPY record_elevenlabs_voice.py .
 COPY transcript.csv .
 COPY audio_file_inventory.csv .
 # TODO: filter the recordings better
-COPY recordings/ .
+COPY recordings/ recordings/.
 
 # Add some canned command lines to the shell history for convenience
-RUN echo "python3 record_elevenlabs_voice.py" >> ~/.bash_history
 RUN echo "tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --list_speaker_idx &> /tmp/speakers && cat /tmp/speakers | grep gpt_cond" >> ~/.bash_history
 RUN echo "tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Claribel Dervla' --language_idx en --use_cuda true --out_path /tmp/x.wav --text 'I will cause trouble.'" >> ~/.bash_history
-RUN echo "python3 generate_voice_pack.py" >> ~/.bash_history
+RUN echo "python3 record_elevenlabs_voice.py --voice_name XXX --voice_id XXX" >> ~/.bash_history
+RUN echo "python3 generate_voice_pack.py --your_name '' --voice_name 'Blake' -voice_name_tts 'Blaik'" >> ~/.bash_history
 
 # Sit at a bash prompt when the container starts
 # (use up-arrow to browse some suggested command lines)
