@@ -5528,12 +5528,12 @@ audio_filename,original_text,text_for_tts
 \voice\multiclass\lmp2_runners:22.wav,LMP2 runners,LMP2 runners
 \voice\multiclass\lmp2_runners:23.wav,LMP2 class cars,LMP2 class cars
 \voice\multiclass\lmp2_runners:24.wav,LMP2 cars,LMP2 cars
-\voice\multiclass\lmp3:7.wav,LMP3,LMP3
-\voice\multiclass\lmp3:8.wav,LMP3,LMP3
-\voice\multiclass\lmp3:9.wav,LMP3,LMP3
-\voice\multiclass\lmp3_runners:25.wav,LMP3 cars,LMP3 cars
-\voice\multiclass\lmp3_runners:26.wav,LMP3 class cars,LMP3 class cars
-\voice\multiclass\lmp3_runners:27.wav,LMP3 runners,LMP3 runners
+\voice\multiclass\lmp3:7.wav,LMP3,LMP 3
+\voice\multiclass\lmp3:8.wav,LMP3,LMP 3
+\voice\multiclass\lmp3:9.wav,LMP3,LMP 3
+\voice\multiclass\lmp3_runners:25.wav,LMP3 cars,LMP 3 cars
+\voice\multiclass\lmp3_runners:26.wav,LMP3 class cars,LMP 3 class cars
+\voice\multiclass\lmp3_runners:27.wav,LMP3 runners,LMP 3 runners
 \voice\multiclass\runners:1.wav,class cars,class cars
 \voice\multiclass\runners:10.wav,class runners,class runners
 \voice\multiclass\runners:11.wav,class drivers,class drivers

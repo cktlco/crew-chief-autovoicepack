@@ -38,7 +38,7 @@ def generate_voice_baseline(voice_name: str, voice_id: str) -> None:
         "Charging Chevrolets chase championship challenges.",
         "Daring drivers dominate double drifts.",
         "Enthusiastic engines echo exhilarating excitement.",
-        "Fearless Ferraris fly fast, feeling fierce.",
+        "Fearless Ferraris fly fast and fierce.",
         "Glorious gears glide.",
         "High-speed Hondas hit hairpin corners.",
         "Incredible IndyCars ignite intense interest.",

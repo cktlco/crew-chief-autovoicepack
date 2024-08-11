@@ -9,6 +9,7 @@
 # have to manually copy the generated wav files out of the container
 
 # Use a "devel" version of the CUDA image since deepspeed needs nvcc for runtime kernel compilation
+# This image is fully-compatible with non-GPU systems, operations will just fall back to the CPU
 FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
 
 WORKDIR /app
@@ -38,7 +39,7 @@ RUN pip install coqui-tts
 # This is the slowest step in the build process, but will be cached for future builds
 RUN git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2
 
-# Deepspeed is optional, but greatly speeds up text-to-speech generation
+# Deepspeed is optional and requires a CUDA GPU, but greatly speeds up text-to-speech generation
 RUN pip install deepspeed
 
 # Copy the python scripts and data files into the Docker image
@@ -53,7 +54,7 @@ COPY recordings/ recordings/.
 RUN echo "tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --list_speaker_idx &> /tmp/speakers && cat /tmp/speakers | grep gpt_cond" >> ~/.bash_history
 RUN echo "tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Claribel Dervla' --language_idx en --use_cuda true --out_path /tmp/x.wav --text 'I will cause trouble.'" >> ~/.bash_history
 RUN echo "python3 record_elevenlabs_voice.py --voice_name XXX --voice_id XXX" >> ~/.bash_history
-RUN echo "python3 generate_voice_pack.py --your_name '' --voice_name 'Blake' -voice_name_tts 'Blaik'" >> ~/.bash_history
+RUN echo "python3 generate_voice_pack.py --your_name '' --voice_name ''" >> ~/.bash_history
 
 # Sit at a bash prompt when the container starts
 # (use up-arrow to browse some suggested command lines)

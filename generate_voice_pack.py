@@ -28,13 +28,14 @@ def parse_arguments():
         # transform the value to strip out spaces
         type=lambda x: x.replace(" ", ""),
         required=True,
-        help="Your custom name for this voice. Will be used as output directory name and appear in the CrewChief UI. Spaces will be removed, and probably avoid using UTF-8 or complex characters, but who knows?",
+        help="Your custom name for this voice. Will be used as output directory name and appear in the CrewChief UI. Spaces will be removed, and probably avoid using UTF-8 and other characters.",
     )
     parser.add_argument(
         "--voice_name_tts",
         type=str,
         default=None,
-        help="The name of the voice as it should be pronounced by the TTS engine. For example, you may have a voice_name of 'Luis' but a voice_name_tts of 'Luees'.  If not provided, the voice_name will be used. This may be used in the radio check messages.")
+        help="The name of the voice as it should be pronounced by the TTS engine. For example, you may have a voice_name of 'Luis' but a voice_name_tts of 'Luees'.  If not provided, the voice_name will be used. This may be used in the radio check messages.",
+    )
     parser.add_argument(
         "--your_name",
         type=str,
@@ -106,6 +107,11 @@ def parse_arguments():
         default=datetime.datetime.now().strftime("%Y%m%d"),
         help="Version of the voice pack. This is used in the attribution file and elsewhere to identify newer or alternate versions. The default value is the current date.",
     )
+    parser.add_argument(
+        "--cpu_only",
+        action="store_true",
+        help="Run the process on the CPU instead of the GPU. This is much slower but is necessary if your PC does not have an CUDA-capable NVIDIA GPU. Implies --disable_deepspeed.",
+    )
 
     return parser.parse_args()
 
@@ -137,11 +143,16 @@ def parse_audio_inventory_file(inventory_file_path: str) -> List[CrewChiefAudioF
         # skip header row
         next(csvreader)
 
+        # read each row of the csv file in one at a time
         for row in csvreader:
             file_mapping, original_text, text_for_tts = row
+
+            # split the file mapping into the path and the filename
             filepath, wav_filename = file_mapping.split(":")
             audio_filename = wav_filename.replace(".wav", "")
             filepath_fixed = filepath.replace("\\", "/")
+
+            # put the csv file data into a more friendly data structure
             entries.append(
                 CrewChiefAudioFile(
                     filepath_fixed, audio_filename, original_text, text_for_tts
@@ -162,7 +173,7 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
     Note that noise is not added since the CrewChief overlays background noise separately.
 
     You are encouraged to modify these effects to suit your own preferences. It's unfortunately
-    painful to find authoritative documentation for sox, but hopefully a Google search will help.
+    painful to find authoritative documentation for sox.
     """
 
     sox_command: List[str] = [
@@ -171,8 +182,6 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         "-q",
         input_file,
         output_file,
-        "pitch",
-        "-90",
         "gain",
         "-3",
         "equalizer",
@@ -200,8 +209,8 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         "0.5q",
         "3",
         "overdrive",
-        "20",
-        "30",
+        "7",
+        "12",
         "silence",
         "1",
         "0.1",
@@ -213,13 +222,14 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         "0.3%",
         "reverse",
         "norm",
-        "-1"
+        "-1",
     ]
 
     try:
         subprocess.run(sox_command, check=True)
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
+        # TODO: raise the error for the caller
 
 
 def is_invalid_wav_file(filename: str) -> bool:
@@ -237,7 +247,7 @@ def is_invalid_wav_file(filename: str) -> bool:
 
 
 @lru_cache(maxsize=None)
-def init_xtts_model(use_deepspeed: bool = True) -> Any:
+def init_xtts_model(cpu_only: bool = False, use_deepspeed: bool = True) -> Any:
     """
     Initialize the Xtts model. This function is cached, so it will only run
     once, and the model will be reused for all subsequent calls.
@@ -255,7 +265,11 @@ def init_xtts_model(use_deepspeed: bool = True) -> Any:
         checkpoint_dir=model_path,
         use_deepspeed=use_deepspeed,
     )
-    model.cuda()
+    if not cpu_only:
+        model.cuda()
+    else:
+        model.cpu()
+
     return model
 
 
@@ -283,8 +297,9 @@ def generate_speech_coqui_tts(
     output_filename: str,
     reference_speaker_wav_paths: List[str],
     temperature: float = 0.3,
-    speed: float = 1.4,
+    speed: float = 1.2,
     overwrite: bool = False,
+    cpu_only: bool = False,
     use_deepspeed: bool = True,
     enable_audio_effects: bool = True,
 ) -> requests.Response:
@@ -308,12 +323,12 @@ def generate_speech_coqui_tts(
 
     # get a reference to the model and the speaker embeddings
     # these two calls are cached and only run the first time
-    model = init_xtts_model(use_deepspeed=use_deepspeed)
+    model = init_xtts_model(cpu_only=cpu_only, use_deepspeed=use_deepspeed)
     gpt_cond_latent, speaker_embedding = init_xtts_latents(
         model, tuple(reference_speaker_wav_paths)
     )
 
-    # Temperature and speed are xtts model-specific parameters, and while you are encouraged
+    # Most of these are xtts model-specific parameters, and while you are encouraged
     # to experiment with these values, the values chosen below are known to work well for
     # many input voices -- and changing them much may greatly increase the chances of garbled
     # or corrupt output speech. Speed in particular is a tricky parameter to adjust.
@@ -342,7 +357,6 @@ def generate_speech_coqui_tts(
     else:
         # just keep the raw file
         os.rename(full_raw_filename, full_output_filename)
-
 
     print(f"File created at: {full_output_filename}")
 
@@ -445,7 +459,7 @@ def activate_rules_by_category(
 ) -> None:
     """
     ReplacementRules will default to disabled, this is a shortcut to turn on a certain
-    category of changes or fixes while still maintaining a larger list of ReplacementRules
+    category of changes or fixes while still maintaining a larger list of ReplacementRules,
     some of which you want to keep disabled (ie, while experimenting).
     """
     for rule in rules:
@@ -455,7 +469,7 @@ def activate_rules_by_category(
 
 def main():
     """
-    The main entry point for the script.
+    The main entry point for the script
     """
     args = parse_arguments()
 
@@ -463,14 +477,15 @@ def main():
 
     # setup some base parameters which can be reused across calls to the TTS generator
     coqui_tts_args = {
-        "speed": 1.0,
+        "speed": 1.2,
         "temperature": random.uniform(0.2, 0.3),
         "reference_speaker_wav_paths": glob.glob(
             f"output/baseline/{args.voice_name}/*.wav"
         ),
         "overwrite": args.overwrite,
         "enable_audio_effects": not args.disable_audio_effects,
-        "use_deepspeed": not args.disable_deepspeed,
+        "cpu_only": args.cpu_only,
+        "use_deepspeed": (not args.disable_deepspeed) and (not args.cpu_only),
     }
 
     if not args.skip_inventory:
@@ -482,40 +497,45 @@ def main():
             full_output_dir = os.path.abspath(relative_output_dir)
             os.makedirs(full_output_dir, exist_ok=True)
 
-            # TODO: write an attribution file which says something like
-            # "Created for use with CrewChief (https://gitlab.com/mr_belowski/CrewChiefV4)
-            # using crew-chief-autovoicepack: http://github.com/xxx"
-            # and include it in the output directory
+            # create an attribution text file with some basic provenance, include in the output directory
             attribution_filename = f"{relative_output_dir}/CREATED_BY.txt"
             with open(attribution_filename, "w") as f:
                 f.write(
-                    f"This voice pack was created using crew-chief-autovoicepack (https://github.com/cktlco/crew-chief-autovoicepack) for use with the venerable virtual race engineer application CrewChief (https://gitlab.com/mr_belowski/CrewChiefV4).\n\nVoice name: {args.voice_name}.\nVersion {args.voicepack_version}."
+                    f"""This voice pack was created using crew-chief-autovoicepack
+(https://github.com/cktlco/crew-chief-autovoicepack)
+
+...for use with the venerable virtual race engineer application CrewChief
+(https://thecrewchief.org/)
+(https://gitlab.com/mr_belowski/CrewChiefV4)
+
+Voice name: {args.voice_name}
+Version {args.voicepack_version}
+"""
                 )
                 print(
                     f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}."
                 )
 
         # Enable a quick way of globally replacing words in the original CrewChief text
-        # before sending it to the text-to-speech step. This section just turns on the
-        # rules you want to use. See the ReplacementRule examples for more details.
+        # before sending it to the text-to-speech step. This section just establishes
+        # the list of potential replacements. See the ReplacementRule examples for more details.
         replacement_rules = (
             []
             if args.disable_text_replacements
             else generate_replacement_rules(args.your_name)
         )
-
         # User adjustable! Feel free to enable or disable rules like these.
         activate_rules_by_category(replacement_rules, "remove_mate")
         activate_rules_by_category(replacement_rules, "improve_bloody")
         activate_rules_by_category(replacement_rules, "fixes")
 
-        # Shuffle the entries so that the order of the audio file generation is randomized.
-        # This helps multiple instances of the script to run in parallel without racing to
+        # Shuffle the CrewChief phrases so that the order of the audio file generation is randomized.
+        # This helps multiple instances of the script run in parallel without racing to
         # generate the same files
         if not args.original_inventory_order:
             random.shuffle(entries)
 
-        # now for each entry in the audio inventory file, generate a speech .wav file
+        # for each entry in the audio inventory file, generate a speech .wav file
         for entry_idx, entry in enumerate(entries, 1):
             print(
                 f"Generating audio for {entry_idx} - '{entry.original_text}' -> '{entry.text_for_tts}'"
@@ -538,10 +558,10 @@ def main():
                 # `audio_file_inventory.csv` file, copying from the original entries where you want
                 # to add variety. See README for more details.
                 #
-                # Remember the entire storage required grows by this size, and the generated voices
-                # here are already larger since they are saved as 32-bit 24KHz versus the original
-                # 16-bit 22KHz CrewChief files, so a voice pack with 3 variants is ~2GB, while the
-                # original CrewChief voice pack is ~0.5GB.
+                # Remember the entire storage required grows by the variant count, and the generated
+                # voices here are already larger since they are saved as 32-bit 24KHz versus the
+                # original 16-bit 22KHz CrewChief files, so a voice pack with 3 variants is ~2GB,
+                # while the original CrewChief voice pack is ~0.5GB.
 
                 if args.variation_count == 0:
                     # no changes, use the original filename
@@ -558,6 +578,7 @@ def main():
                 #       automatically regenerate any malformed output files (too long, weird
                 #       frequencies, etc)
 
+                # finally, generate and save a .wav file based on the phrase's text
                 generate_speech_coqui_tts(
                     **coqui_tts_args,
                     text=filtered_text,
@@ -576,7 +597,7 @@ def main():
         voice_name_tts = args.voice_name_tts or args.voice_name
         # feel free to edit any or all of these to make your own custom phrases
         radio_check_phrases = [
-            f"{voice_name_tts} here",
+            f"Engineer {voice_name_tts} confirming radio",
             "Radio's loud and clear",
             "Copy that, radio check",
             "Loud and clear",
@@ -596,19 +617,39 @@ def main():
             "Copy, loud and clear",
             "Check",
             "Signal's clear, radio check",
-            "You're loud and clear"
+            "You're loud and clear",
         ]
         for radio_check_idx, radio_check_phrase in enumerate(radio_check_phrases, 1):
-            print(f"Generating radio check audio clip {radio_check_idx} - {radio_check_phrase}...")
+            print(
+                f"Generating radio check audio clip {radio_check_idx} - {radio_check_phrase}..."
+            )
             generate_speech_coqui_tts(
                 **coqui_tts_args,
                 text=radio_check_phrase,
-                # the official requirement is to use this directory name per https://thecrewchief.org/showthread.php?825-Authoring-alternative-Crew-Chief-voice-packs
-                # but since it's outside the voicepack root diretory the user will need to move it there manually
+                # since the CrewChief-required location for radio_check messages is outside the voicepack
+                # root diretory, the user will need to move it there manually
                 output_path=f"{output_file_prefix}/radio_check_{args.voice_name}/test",
                 output_filename=f"{radio_check_idx}",
             )
         print("All radio check audio clips have been generated.")
+
+    # TODO: generate audio for the personalisations folder, which is just a single name based on args.your_name
+
+    # TODO: generate audio for the driver_names folder, probably by adding to the audio file inventory
+
+    # TODO: adopt this folder structure
+    # +---alt
+    # ¦ +---Mike
+    # ¦ ¦ sound_pack_language.txt
+    # ¦ ¦
+    # ¦ +---driver_names
+    # ¦ +---personalisations
+    # ¦ +---voice
+    # +---voice
+    # +---radio_check_Mike
+    # ¦ +---test
+    # ¦ +---test_chief
+    # +---spotter_Mike
 
     print("All done.")
 
