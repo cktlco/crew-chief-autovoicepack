@@ -586,7 +586,7 @@ Version {args.voicepack_version}
                     output_filename=variant_filename,
                 )
 
-        print("All sounds from audio_file_inventory.csv have been generated.")
+        print("All entries in audio_file_inventory.csv have been generated.")
 
     # In addition to the normal audio files covered in the audio inventory file,
     # CrewChief also supports custom radio check messages aligned to the new

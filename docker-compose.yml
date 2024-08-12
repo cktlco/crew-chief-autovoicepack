@@ -40,7 +40,7 @@ services:
     # necessary so each can keep track of which files have already been generated.
     #
     volumes:
-      - /mnt/w/dev/20240706-crew-chief-autovoicepack/output:/app/output
+      - ./output:/app/output
 
     # Note that this command will run once for each replica, which enables massive speedup since each
     # replica can generate a portion of voice pack in parallel.
