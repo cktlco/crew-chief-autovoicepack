@@ -6,12 +6,12 @@ from pathlib import Path
 import argparse
 
 
-ELEVEN_LABS_API_KEY = "sk_f8af6014f4721cf708d801da3c16e05000e90e938e37c898"
-
-
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Generate a voice baseline using elevenlabs.io API."
+    )
+    parser.add_argument(
+        "--eleven_labs_api_key", type=str, required=True, help="Eleven Labs API key"
     )
     parser.add_argument(
         "--voice_name", type=str, required=True, help="Your custom name for this voice"
@@ -25,7 +25,9 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def generate_voice_baseline(voice_name: str, voice_id: str) -> None:
+def generate_voice_baseline(
+    eleven_labs_api_key: str, voice_name: str, voice_id: str
+) -> None:
     # A high-quality alternative to finding, recording, and editing your own voices.
     #
     # Uses elevenlabs.io API to generate sample audio files in .wav format which can serve
@@ -52,6 +54,7 @@ def generate_voice_baseline(voice_name: str, voice_id: str) -> None:
     for text_sample_idx, text_sample in enumerate(text_samples, 1):
         # create and download the audio file (.mp3) via Eleven Labs API
         generate_speech_elevenlabs(
+            eleven_labs_api_key=eleven_labs_api_key,
             text=text_sample,
             voice_name=voice_name,
             voice_id=voice_id,
@@ -78,10 +81,15 @@ def generate_voice_baseline(voice_name: str, voice_id: str) -> None:
 
 
 def generate_speech_elevenlabs(
-    text: str, voice_name: str, voice_id: str, output_dir: str, output_filename: str
+    eleven_labs_api_key: str,
+    text: str,
+    voice_name: str,
+    voice_id: str,
+    output_dir: str,
+    output_filename: str,
 ) -> None:
     """
-    Eleven labs API returns mp3 format data
+    ElevenLabs API returns mp3 format data
     """
 
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
@@ -99,7 +107,7 @@ def generate_speech_elevenlabs(
     }
     headers = {
         "Content-Type": "application/json",
-        "xi-api-key": ELEVEN_LABS_API_KEY,
+        "xi-api-key": eleven_labs_api_key,
     }
 
     response = requests.request("POST", url, json=payload, headers=headers)
@@ -169,4 +177,4 @@ def remove_file(file_path: str) -> None:
 if __name__ == "__main__":
     args = parse_arguments()
     print("Generating voice baseline using Eleven Labs API...")
-    generate_voice_baseline(args.voice_name, args.voice_id)
+    generate_voice_baseline(args.eleven_labs_api_key, args.voice_name, args.voice_id)

@@ -51,4 +51,4 @@ services:
     # The command below will generate a voice pack for "Luis" in CPU-only mode with the default settings.
     # REMOVE the --cpu_only flag to run in GPU mode.
     #
-    command: [ "python3", "generate_voice_pack.py", "--your_name", "", "--voice_name", "Hiroshi" ]
+    command: [ "python3", "generate_voice_pack.py", "--your_name", "", "--voice_name", "Paul" ]
