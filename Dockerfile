@@ -47,9 +47,8 @@ COPY generate_voice_pack.py .
 COPY record_elevenlabs_voice.py .
 COPY zip_voice_pack.sh .
 COPY transcript.csv .
-COPY audio_file_inventory.csv .
-# TODO: filter the recordings better
-COPY recordings/ recordings/.
+COPY phrase_inventory.csv .
+COPY output/baseline/Luis output/baseline/Luis
 
 # Make the shell prompt more friendly
 RUN echo 'export PS1="crew-chief-autovoicepack > "' >> /root/.bashrc

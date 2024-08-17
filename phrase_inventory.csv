@@ -16,22 +16,22 @@ audio_filename,original_text,text_for_tts
 \voice\acknowledge\cut_warnings_enabled:1.wav,"okay, we'll give cut-track warnings","okay, we'll give cut-track warnings"
 \voice\acknowledge\cut_warnings_enabled:2.wav,"understood, we'll warn about track limits","understood, we'll warn about track limits"
 \voice\acknowledge\cut_warnings_enabled:3.wav,"okay, I'll give cut warnings","okay, I'll give cut warnings"
-\voice\acknowledge\deltasDisabled:1.wav,"copy that, no more time deltas","copy that, no more time deltuhs"
-\voice\acknowledge\deltasDisabled:2.wav,"acknowledged, no more deltas","acknowledged, no more deltuhs"
-\voice\acknowledge\deltasDisabled:3.wav,"okay, no more deltas","okay, no more deltuhs"
+\voice\acknowledge\deltasDisabled:1.wav,"copy that, no more time deltas","copy that, no more time delta"
+\voice\acknowledge\deltasDisabled:2.wav,"acknowledged, no more deltas","acknowledged, no more delta"
+\voice\acknowledge\deltasDisabled:3.wav,"okay, no more deltas","okay, no more delta"
 \voice\acknowledge\deltasEnabled:1.wav,"okay, I'll tell you the gaps","okay, I'll tell you the gaps"
 \voice\acknowledge\deltasEnabled:2.wav,"okay, I'll tell you the gaps","okay, I'll tell you the gaps"
 \voice\acknowledge\deltasEnabled:3.wav,"okay, I'll read out those gaps","okay, I'll read out those gaps"
-\voice\acknowledge\deltasEnabled:4.wav,"acknowledged, time deltas every lap","acknowledged, time deltuhs every lapp"
+\voice\acknowledge\deltasEnabled:4.wav,"acknowledged, time deltas every lap","acknowledged, time delta every lapp"
 \voice\acknowledge\didnt_understand:1.wav,I didn't catch that,I didn't catch that
 \voice\acknowledge\didnt_understand:10.wav,"speak more clearly, I can't hear you","speak more clearly, I can't hear you"
 \voice\acknowledge\didnt_understand:11.wav,I didn't catch that,I didn't catch that
 \voice\acknowledge\didnt_understand:12.wav,pardon,pardon
-\voice\acknowledge\didnt_understand:13.wav,"sorry, mate, I didn't catch that","sorry, mate, I didn't catch that"
+\voice\acknowledge\didnt_understand:13.wav,"sorry, mate, I didn't catch that","uh sawry, mate, I didn't catch that"
 \voice\acknowledge\didnt_understand:14.wav,"ah, no, I just can't hear you","ah, no, I just can't hear you"
 \voice\acknowledge\didnt_understand:2.wav,"repeat, please","repeat, please"
 \voice\acknowledge\didnt_understand:3.wav,didn't understand that,didn't understand that
-\voice\acknowledge\didnt_understand:4.wav,say again,say again
+\voice\acknowledge\didnt_understand:4.wav,say again,uh say again
 \voice\acknowledge\didnt_understand:5.wav,"repeat, please","repeat, please"
 \voice\acknowledge\didnt_understand:6.wav,I didn't catch that,I didn't catch that
 \voice\acknowledge\didnt_understand:7.wav,now you're breaking up,now you're breaking up
@@ -1535,14 +1535,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\detail_onto_snow_rushed:190.wav,onto snow,onto snow
 \voice\codriver\detail_onto_snow_rushed:191.wav,onto snow,onto snow
 \voice\codriver\detail_onto_snow_rushed:192.wav,onto snow,onto snow
-\voice\codriver\detail_onto_tarmac:81.wav,onto tarmac,onto tarmac
-\voice\codriver\detail_onto_tarmac:82.wav,onto tarmac,onto tarmac
-\voice\codriver\detail_onto_tarmac:83.wav,onto tarmac,onto tarmac
-\voice\codriver\detail_onto_tarmac:84.wav,onto tarmac,onto tarmac
-\voice\codriver\detail_onto_tarmac_rushed:193.wav,onto tarmac,onto tarmac
-\voice\codriver\detail_onto_tarmac_rushed:194.wav,onto tarmac,onto tarmac
-\voice\codriver\detail_onto_tarmac_rushed:195.wav,onto tarmac,onto tarmac
-\voice\codriver\detail_onto_tarmac_rushed:196.wav,onto tarmac,onto tarmac
+\voice\codriver\detail_onto_tarmac:81.wav,onto tarmac,onto tarmack
+\voice\codriver\detail_onto_tarmac:82.wav,onto tarmac,onto tarmack
+\voice\codriver\detail_onto_tarmac:83.wav,onto tarmac,onto tarmack
+\voice\codriver\detail_onto_tarmac:84.wav,onto tarmac,onto tarmack
+\voice\codriver\detail_onto_tarmac_rushed:193.wav,onto tarmac,onto tarmack
+\voice\codriver\detail_onto_tarmac_rushed:194.wav,onto tarmac,onto tarmack
+\voice\codriver\detail_onto_tarmac_rushed:195.wav,onto tarmac,onto tarmack
+\voice\codriver\detail_onto_tarmac_rushed:196.wav,onto tarmac,onto tarmack
 \voice\codriver\detail_opens:85.wav,opens,opens
 \voice\codriver\detail_opens:86.wav,opens,opens
 \voice\codriver\detail_opens:87.wav,opens,opens
@@ -1723,14 +1723,14 @@ audio_filename,original_text,text_for_tts
 \voice\codriver\detail_stay_out_rushed:234.wav,stay out,stay out
 \voice\codriver\detail_stay_out_rushed:235.wav,stay out,stay out
 \voice\codriver\detail_stay_out_rushed:236.wav,stay out,stay out
-\voice\codriver\detail_tarmac:169.wav,tarmac,tarmac
-\voice\codriver\detail_tarmac:170.wav,tarmac,tarmac
-\voice\codriver\detail_tarmac:171.wav,tarmac,tarmac
-\voice\codriver\detail_tarmac:172.wav,tarmac,tarmac
-\voice\codriver\detail_tarmac_rushed:269.wav,tarmac,tarmac
-\voice\codriver\detail_tarmac_rushed:270.wav,tarmac,tarmac
-\voice\codriver\detail_tarmac_rushed:271.wav,tarmac,tarmac
-\voice\codriver\detail_tarmac_rushed:272.wav,tarmac,tarmac
+\voice\codriver\detail_tarmac:169.wav,tarmac,tarmack
+\voice\codriver\detail_tarmac:170.wav,tarmac,tarmack
+\voice\codriver\detail_tarmac:171.wav,tarmac,tarmack
+\voice\codriver\detail_tarmac:172.wav,tarmac,tarmack
+\voice\codriver\detail_tarmac_rushed:269.wav,tarmac,tarmack
+\voice\codriver\detail_tarmac_rushed:270.wav,tarmac,tarmack
+\voice\codriver\detail_tarmac_rushed:271.wav,tarmac,tarmack
+\voice\codriver\detail_tarmac_rushed:272.wav,tarmac,tarmack
 \voice\codriver\detail_then:1.wav,then,then
 \voice\codriver\detail_then:2.wav,then,then
 \voice\codriver\detail_then:3.wav,then,then
@@ -5062,11 +5062,11 @@ audio_filename,original_text,text_for_tts
 \voice\mandatory_pit_stops\confirm_refuelling:3.wav,"understood, we're gonna add fuel","understood, we're gonna add fuel"
 \voice\mandatory_pit_stops\confirm_refuelling:4.wav,"okay, we'll add the fuel","okay, we'll add the fuel"
 \voice\mandatory_pit_stops\confirm_refuelling:5.wav,"acknowledged, we're gonna refuel you","acknowledged, we're gonna refuel you"
-\voice\mandatory_pit_stops\confirm_requested_tyre_not_available:1.wav,"sorry, they're not available","sorry, they're not available"
+\voice\mandatory_pit_stops\confirm_requested_tyre_not_available:1.wav,"sorry, they're not available","uh sawry, they're not available"
 \voice\mandatory_pit_stops\confirm_requested_tyre_not_available:2.wav,those tyres aren't available,those tyres aren't available
 \voice\mandatory_pit_stops\confirm_requested_tyre_not_available:3.wav,"we can't do that, they're not available","we can't do that, they're not available"
 \voice\mandatory_pit_stops\confirm_requested_tyre_not_available:4.wav,those tyres aren't available,those tyres aren't available
-\voice\mandatory_pit_stops\confirm_requested_tyre_not_available:5.wav,"sorry, are not available","sorry, are not available"
+\voice\mandatory_pit_stops\confirm_requested_tyre_not_available:5.wav,"sorry, are not available","uh sawry, are not available"
 \voice\mandatory_pit_stops\confirm_requested_tyre_not_available:6.wav,those tyres aren't available,those tyres aren't available
 \voice\mandatory_pit_stops\confirm_soft_tyres:1.wav,"acknowledged, we're going for soft tyres","acknowledged, we're going for soft tyres"
 \voice\mandatory_pit_stops\confirm_soft_tyres:2.wav,"understood, we'll put soft tyres on","understood, we'll put soft tyres on"
@@ -5100,11 +5100,11 @@ audio_filename,original_text,text_for_tts
 \voice\mandatory_pit_stops\fifty_metres:4.wav,50 metres,50 metres
 \voice\mandatory_pit_stops\fifty_metres:5.wav,50 metres,50 metres
 \voice\mandatory_pit_stops\fifty_metres:6.wav,50 metres,50 metres
-\voice\mandatory_pit_stops\laps_so_far:1.wav,laps in total,laps in total
-\voice\mandatory_pit_stops\laps_so_far:2.wav,laps in total,laps in total
-\voice\mandatory_pit_stops\laps_so_far:3.wav,laps in total,laps in total
-\voice\mandatory_pit_stops\laps_so_far:4.wav,laps in total,laps in total
-\voice\mandatory_pit_stops\laps_so_far:5.wav,laps in total,laps in total
+\voice\mandatory_pit_stops\laps_so_far:1.wav,laps in total,laps in totel
+\voice\mandatory_pit_stops\laps_so_far:2.wav,laps in total,laps in totel
+\voice\mandatory_pit_stops\laps_so_far:3.wav,laps in total,laps in totel
+\voice\mandatory_pit_stops\laps_so_far:4.wav,laps in total,laps in totel
+\voice\mandatory_pit_stops\laps_so_far:5.wav,laps in total,laps in totel
 \voice\mandatory_pit_stops\left_pit_too_soon:1.wav,"this stop won't count, you've left the pit too soon","this stop won't count, you've left the pitt too soon"
 \voice\mandatory_pit_stops\left_pit_too_soon:2.wav,"you needed to wait, this won't count as your mandatory stop","you needed to wait, this won't count as your mandatory stop"
 \voice\mandatory_pit_stops\left_pit_too_soon:3.wav,"you needed to wait longer, this won't count as your stop","you needed to wait longer, this won't count as your stop"
@@ -7905,8 +7905,8 @@ audio_filename,original_text,text_for_tts
 \voice\watched_opponents\acknowledge_stop_watching_team_mate:4.wav,"understood, we'll stop watching our teammate","understood, we'll stop watching our teammate"
 \voice\watched_opponents\acknowledge_stop_watching_team_mate:5.wav,"OK, no more monitoring of our teammate","OK, no more monitoring of our teammate"
 \voice\watched_opponents\acknowledge_unknown_driver:1.wav,we don't know who that guy is,we don't know who that guy is
-\voice\watched_opponents\acknowledge_unknown_driver:2.wav,"sorry, we don't know who he is","sorry, we don't know who he is"
-\voice\watched_opponents\acknowledge_unknown_driver:3.wav,"sorry, we don't know who that driver is","sorry, we don't know who that driver is"
+\voice\watched_opponents\acknowledge_unknown_driver:2.wav,"sorry, we don't know who he is","uh sawry, we don't know who he is"
+\voice\watched_opponents\acknowledge_unknown_driver:3.wav,"sorry, we don't know who that driver is","uh sawry, we don't know who that driver is"
 \voice\watched_opponents\acknowledge_unknown_driver:4.wav,we don't know who that driver is,we don't know who that driver is
 \voice\watched_opponents\acknowledge_unknown_driver:5.wav,don't know who that guy is,don't know who that guy is
 \voice\watched_opponents\acknowledge_watch_rival:1.wav,"understood, we'll watch this guy, he's our rival","understood, we'll watch this guy, he's our rival"

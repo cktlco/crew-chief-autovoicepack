@@ -40,7 +40,24 @@ services:
     # necessary so each can keep track of which files have already been generated.
     #
     volumes:
-      - ./output:/app/output
+
+      # output directory for the generated .wav files
+      - /dev_local/crew-chief-autovoicepack:/app/output
+
+      # directory holding the input voice recordings
+      - ./output/baseline:/app/output/baseline
+
+      # optionally override the default audio file inventory to use your local edits
+      - ./phrase_inventory.csv:/app/phrase_inventory.csv
+
+      # or optionally override the generate_voice_pack.py script to use your local edits
+      # - my_local_dir/generate_voice_pack.py:/app/generate_voice_pack.py
+
+      # optional: mount the pytorch caches from local to reuse across container restarts
+      # enables several *minutes* faster startup time for the script when deepspeed caches are present
+      - ~/.cache/torch:/root/.cache/torch
+      - ~/.cache/torch_extensions:/root/.cache/torch_extensions
+      - ~/.cache/huggingface:/root/.cache/huggingface
 
     # Note that this command will run once for each replica, which enables massive speedup since each
     # replica can generate a portion of voice pack in parallel.
@@ -51,4 +68,4 @@ services:
     # The command below will generate a voice pack for "Luis" in CPU-only mode with the default settings.
     # REMOVE the --cpu_only flag to run in GPU mode.
     #
-    command: [ "python3", "generate_voice_pack.py", "--your_name", "", "--voice_name", "Paul" ]
+    command: [ "python3", "generate_voice_pack.py", "--your_name", "", "--voice_name", "David" ]

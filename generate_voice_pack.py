@@ -65,15 +65,15 @@ def parse_arguments():
         help="Prevent applying text replacement rules to the generated audio files. Add or modify rules directly in generate_voice_pack.py.",
     )
     parser.add_argument(
-        "--audio_inventory_file",
+        "--phrase_inventory",
         type=str,
-        default="./audio_file_inventory.csv",
-        help="Path to the CSV file containing the audio inventory",
+        default="./phrase_inventory.csv",
+        help="Path to the CSV file containing a list of all the audio files to create alongside the text to be used to generate them. The documentation refers to this as the 'phrase inventory', and populated with all the 'Jim' voicepack phrases from CrewChiefV4.",
     )
     parser.add_argument(
         "--original_inventory_order",
         action="store_true",
-        help="Do not randomize the order of the audio files in the inventory. Recommended to keep shuffling enabled when running multiple instances of the script in parallel.",
+        help="Do not randomize the order of the audio files in the inventory. It's recommended to keep shuffling enabled (omit this option) when running multiple instances of the script in parallel.",
     )
     parser.add_argument(
         "--baseline_audio_dir",
@@ -84,7 +84,7 @@ def parse_arguments():
     parser.add_argument(
         "--skip_inventory",
         action="store_true",
-        help="Skip generating audio files based on entries from the audio inventory file. Probably not what you want, but maybe useful during testing (for example, to skip directly to the radio check generation).",
+        help="Skip generating audio files based on entries from the audio file inventory. Probably not what you want, but maybe useful during testing (for example, to skip directly to the radio check generation).",
     )
     parser.add_argument(
         "--skip_radio_check",
@@ -112,12 +112,21 @@ def parse_arguments():
         action="store_true",
         help="Run the process on the CPU instead of the GPU. This is much slower but is necessary if your PC does not have an CUDA-capable NVIDIA GPU. Implies --disable_deepspeed.",
     )
+    parser.add_argument(
+        "--keep_invalid_files",
+        action="store_true",
+        help="Keep invalid .wav files around with a modified name instead of deleting them. This is useful for debugging and understanding why a file was considered invalid, but you'd want to remove these from a final shareable voice pack.",
+    )
 
     return parser.parse_args()
 
 
 @dataclass
 class CrewChiefAudioFile:
+    """
+    A simple data structure aligned to the contents of the audio file inventory.
+    """
+
     def __init__(
         self,
         original_path: str,
@@ -131,9 +140,9 @@ class CrewChiefAudioFile:
         self.text_for_tts = text_for_tts
 
 
-def parse_audio_inventory_file(inventory_file_path: str) -> List[CrewChiefAudioFile]:
+def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]:
     """
-    Read the audio inventory file into a list of CrewChiefAudioFile objects.
+    Read the audio file inventory into a list of CrewChiefAudioFile objects.
     """
     entries: List[CrewChiefAudioFile] = []
 
@@ -232,18 +241,108 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         # TODO: raise the error for the caller
 
 
-def is_invalid_wav_file(filename: str) -> bool:
+def is_invalid_wav_file(file_path: str, tts_text: str) -> bool:
     """
-    TODO: implement this function, it should check if the file is a valid
+    # TODO: keep adding to these checks
     Acceptance criteria for a valid file:
-    - no weird frequencies
-    - not materially longer than other variants
+    - no periods of silence longer than x seconds
     - not longer than expected based on the input text
     - file size is not over x MB
     - audio duration not over x seconds
+    - not materially longer than its other variants
+    - no weird frequencies (?)
+
     Return False if the caller should regenerate this file (ie, try again to make a clean file)
     """
-    return True
+    is_invalid = (
+        detect_excess_silence(
+            file_path=file_path, silence_threshold=0.36 if len(tts_text) < 30 else 0.6
+        )
+        or detect_invalid_filesize(file_path)
+        or detect_invalid_audio_duration(file_path=file_path, tts_text=tts_text)
+    )
+
+    if is_invalid:
+        print(f"Invalid .wav file detected: {file_path}")
+
+    return is_invalid
+
+
+def detect_invalid_audio_duration(file_path: str, tts_text: str) -> bool:
+    """
+    Returns true if the audio duration is too long for the given text, based on
+    the number of characters in the text and a rough estimate of speaking rate.
+    """
+
+    # generous estimate of speaking rate in characters per second
+    speaking_rate = 3
+    minimum_expected_duration = 1.5
+
+    # calculate the expected duration based on the text
+    expected_duration = len(tts_text) / speaking_rate + minimum_expected_duration
+
+    # get the actual duration of the audio file
+    audio_info = torchaudio.info(file_path)
+    actual_duration = audio_info.num_frames / audio_info.sample_rate
+
+    if actual_duration > expected_duration:
+        print(
+            f"Invalid audio duration detected for text '{tts_text}'. Expected: {expected_duration:.2f}s, Actual: {actual_duration:.2f}s"
+        )
+        return True
+
+    return False
+
+
+def detect_invalid_filesize(file_path: str, max_valid_size: int = 1000000) -> bool:
+    """
+    Returns True if the input audio file is (arbitrarily) too large.
+    Used as a crude filter for "bad" results from the TTS engine.
+    Default is 1MB (1000000 bytes).
+    """
+    if os.path.getsize(file_path) > max_valid_size:
+        print(f"Invalid file size detected. File too large: {file_path}")
+        return True
+    return False
+
+
+def detect_excess_silence(file_path: str, silence_threshold: float) -> bool:
+    """
+    Returns True if the input audio file has any silence longer than the given threshold.
+    """
+    try:
+        result = subprocess.run(
+            [
+                "ffmpeg",
+                "-i",
+                file_path,
+                "-af",
+                f"silencedetect=n=-50dB:d={silence_threshold}",
+                "-f",
+                "null",
+                "-",
+            ],
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+
+        # Search for silence_duration in the output
+        for line in result.stderr.splitlines():
+            if "silence_duration" in line:
+                duration_str = line.split("silence_duration: ")[-1].split(" ")[0]
+                silence_duration = float(duration_str)
+                if silence_duration > silence_threshold:
+                    print(
+                        f"Excess silence detected in file {file_path}: {silence_duration:.2f} seconds"
+                    )
+                    return True
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error processing file {file_path}: {e}")
+        return False
+
+    return False
 
 
 @lru_cache(maxsize=None)
@@ -291,6 +390,66 @@ def init_xtts_latents(
     return gpt_cond_latent, speaker_embedding
 
 
+def generate_speech(
+    text: str,
+    output_path: str,
+    output_filename: str,
+    reference_speaker_wav_paths: List[str],
+    temperature: float = 0.3,
+    speed: float = 1.2,
+    overwrite: bool = False,
+    cpu_only: bool = False,
+    use_deepspeed: bool = True,
+    enable_audio_effects: bool = True,
+    keep_invalid_files: bool = True,
+):
+    """
+    Create a .wav file based on the input text and the reference speaker's voice.
+    """
+
+    # until the output passes the is_invalid_wav_file check, keep trying up to this many times
+    max_attempts = 30
+
+    for attempt_idx in range(max_attempts):
+        # current implementation: coqui_tts
+        generate_speech_coqui_tts(
+            text=text,
+            output_path=output_path,
+            output_filename=output_filename,
+            reference_speaker_wav_paths=reference_speaker_wav_paths,
+            temperature=temperature,
+            speed=speed,
+            overwrite=overwrite,
+            cpu_only=cpu_only,
+            use_deepspeed=use_deepspeed,
+            enable_audio_effects=enable_audio_effects,
+        )
+
+        file_path = f"{output_path}/{output_filename}.wav"
+
+        if is_invalid_wav_file(file_path=file_path, tts_text=text):
+            print(f"Regenerating invalid .wav file: {output_filename}")
+
+            if keep_invalid_files:
+                # keep it around with a modified name
+                os.rename(
+                    file_path,
+                    f"{output_path}/{output_filename}.invalid-{attempt_idx}.wav",
+                )
+            else:
+                os.remove(f"{output_path}/{output_filename}.wav")
+
+            overwrite = True
+
+        else:
+            break
+
+    else:
+        print(
+            f"Failed to generate a clean .wav file after {max_attempts} attempts: {output_filename}"
+        )
+
+
 def generate_speech_coqui_tts(
     text: str,
     output_path: str,
@@ -302,7 +461,7 @@ def generate_speech_coqui_tts(
     cpu_only: bool = False,
     use_deepspeed: bool = True,
     enable_audio_effects: bool = True,
-) -> requests.Response:
+) -> None:
     """
     Generate speech using the Coqui TTS framework and the multilingual xtts model.
     See README.md for more details on Coqui.
@@ -363,11 +522,8 @@ def generate_speech_coqui_tts(
 
 @dataclass
 class ReplacementRule:
-    category: str
     regex: str
     replacement: str
-    description: str = ""
-    active: bool = False
     probability: float = (
         1.0  # Probability to apply the replacement, 1.0 means always apply
     )
@@ -375,67 +531,40 @@ class ReplacementRule:
 
 def generate_replacement_rules(your_name: str) -> List[ReplacementRule]:
     """
-    Consider these ReplacementRules as very optional, you probably want to do most editing in the `audio_file_inventory.csv` file, since it's easier to simply edit the `text_for_tts` column to change the text that is used to generate the audio .wav file.
+    Consider these ReplacementRules as very optional, you probably want to do most editing in the `phrase_inventory.csv` file, since it's easier to simply edit the `text_for_tts` column to change the text that is used to generate the audio .wav file.
     """
 
     replacement_rules: List[ReplacementRule] = [
-        # example: randomly replace most occurrences of `mate` with `bro`, `buddy`, `guy`, or `my man`
-        ReplacementRule(
-            category="improve_mate",
-            regex=r"\bmate\b",
-            replacement="bro",
-            probability=0.2,
-        ),
-        ReplacementRule(
-            category="improve_mate",
-            regex=r"\bmate\b",
-            replacement="buddy",
-            probability=0.2,
-        ),
-        ReplacementRule(
-            category="improve_mate",
-            regex=r"\bmate\b",
-            replacement="guy",
-            probability=0.3,
-        ),
-        ReplacementRule(
-            category="improve_mate",
-            regex=r"\bmate\b",
-            replacement="my man",
-            probability=0.3,
-        ),
-        #
         # example: your name instead of `mate` (80% of the time, others stay `mate`)
         ReplacementRule(
-            category="improve_mate",
             regex=r"\bmate\b",
             replacement=your_name,
             probability=0.8,
         ),
+        # example: randomly replace some remaining `mate` with `buddy`
+        ReplacementRule(
+            regex=r"\bmate\b",
+            replacement="buddy",
+            probability=0.2,
+        ),
         #
         # example: replace all remaining occurrence of `mate` with nothing
-        ReplacementRule(category="improve_mate", regex=r"\bmate\b", replacement=""),
-        #
-        # example: remove `mate` entirely. Use category name with apply_replacements() to toggle
-        ReplacementRule(category="remove_mate", regex=r"\bmate\b", replacement=""),
+        ReplacementRule(regex=r"\bmate\b", replacement=""),
         #
         # example: translate explicit words to suit regional preferences
         ReplacementRule(
-            category="improve_bloody",
             regex=r"\bloody\b",
             replacement="damn",
             probability=1.0,
         ),
         # example: phonetically spelling out a hard-to-pronounce corner name.
-        # alternately, consider editing the `text_for_tts` column in `audio_file_inventory.csv`
-        ReplacementRule(category="fixes", regex=r"130R", replacement="one-thirty R"),
+        # alternately, consider editing the `text_for_tts` column in `phrase_inventory.csv`
+        ReplacementRule(regex=r"130R", replacement="one-thirty R"),
     ]
     return replacement_rules
 
 
-def apply_replacements(
-    text: str, rules: List[ReplacementRule], category: Optional[str] = None
-) -> str:
+def apply_replacements(text: str, rules: List[ReplacementRule]) -> str:
     """
     Apply the replacement pattern specified by the list of ReplacementRule objects
     to the input text, producing modified output text. This is used for things like
@@ -443,28 +572,15 @@ def apply_replacements(
     inventory file.
 
     For example, if you want to replace all occurrences of "mate" with "buddy", it
-    may be more convenient to do so with a ReplacementRule.
+    may be more convenient to do so with a ReplacementRule rather than search/replace
+    directly in the audio file inventory.
     """
     for rule in rules:
-        if rule.active and (category is None or rule.category == category):
-            if re.search(rule.regex, text) and random.random() <= rule.probability:
-                print(f"Replacing '{rule.regex}' with '{rule.replacement}' in '{text}'")
-                text = re.sub(rule.regex, rule.replacement, text)
-                print(f"New value is: {text}")
+        if re.search(rule.regex, text) and random.random() <= rule.probability:
+            print(f"Replacing '{rule.regex}' with '{rule.replacement}' in '{text}'")
+            text = re.sub(rule.regex, rule.replacement, text)
+            print(f"New value is: {text}")
     return text
-
-
-def activate_rules_by_category(
-    rules: List[ReplacementRule], category: str, activate: bool = True
-) -> None:
-    """
-    ReplacementRules will default to disabled, this is a shortcut to turn on a certain
-    category of changes or fixes while still maintaining a larger list of ReplacementRules,
-    some of which you want to keep disabled (ie, while experimenting).
-    """
-    for rule in rules:
-        if rule.category == category:
-            rule.active = activate
 
 
 def main():
@@ -476,7 +592,7 @@ def main():
     output_file_prefix = f"{args.output_audio_dir}/{args.voice_name}"
 
     # setup some base parameters which can be reused across calls to the TTS generator
-    coqui_tts_args = {
+    tts_args = {
         "speed": 1.2,
         "temperature": random.uniform(0.2, 0.3),
         "reference_speaker_wav_paths": glob.glob(
@@ -486,10 +602,11 @@ def main():
         "enable_audio_effects": not args.disable_audio_effects,
         "cpu_only": args.cpu_only,
         "use_deepspeed": (not args.disable_deepspeed) and (not args.cpu_only),
+        "keep_invalid_files": args.keep_invalid_files,
     }
 
     if not args.skip_inventory:
-        entries = parse_audio_inventory_file(args.audio_inventory_file)
+        entries = parse_phrase_inventory(args.phrase_inventory)
 
         if len(entries) > 0:
             # create the output directory
@@ -517,17 +634,13 @@ Version {args.voicepack_version}
                 )
 
         # Enable a quick way of globally replacing words in the original CrewChief text
-        # before sending it to the text-to-speech step. This section just establishes
-        # the list of potential replacements. See the ReplacementRule examples for more details.
+        # before sending it to the text-to-speech step. This section establishes the potential
+        # replacements. See the ReplacementRule examples for more details.
         replacement_rules = (
             []
             if args.disable_text_replacements
             else generate_replacement_rules(args.your_name)
         )
-        # User adjustable! Feel free to enable or disable rules like these.
-        activate_rules_by_category(replacement_rules, "remove_mate")
-        activate_rules_by_category(replacement_rules, "improve_bloody")
-        activate_rules_by_category(replacement_rules, "fixes")
 
         # Shuffle the CrewChief phrases so that the order of the audio file generation is randomized.
         # This helps multiple instances of the script run in parallel without racing to
@@ -535,7 +648,7 @@ Version {args.voicepack_version}
         if not args.original_inventory_order:
             random.shuffle(entries)
 
-        # for each entry in the audio inventory file, generate a speech .wav file
+        # for each entry in the audio file inventory, generate a speech .wav file
         for entry_idx, entry in enumerate(entries, 1):
             print(
                 f"Generating audio for {entry_idx} - '{entry.original_text}' -> '{entry.text_for_tts}'"
@@ -549,13 +662,16 @@ Version {args.voicepack_version}
             )
 
             for variant_id in range(0, args.variation_count + 1):
-                # "Variations" allow you to create additional audio files beyond those included
-                # in the original CrewChief audio pack. This is intended to be useful primarily for
-                # those phrases you hear very frequently (cut track warnings *achem*), and provides
-                # another randomized call to the text-to-speech generator, so will provide slightly
-                # different pronounciation/enunciation for each result, though the spoken text
-                # will be identical. To add true textual variety, freely add additional rows to the
-                # `audio_file_inventory.csv` file, copying from the original entries where you want
+                # "Variations" here means creating 1 or more additional audio files
+                # based on the same text. The original CrewChief voice pack has only
+                # one audio file per phrase, but the `variation_count` parameter here
+                # can be set to 1 or more to create additional files with slightly
+                # different pronounciation/enunciation and to give variety. It helps
+                # by giving CrewChief more options to choose from when playing any
+                # particular phrase, which can help reduce the feeling of repetition.
+                #
+                # To add true textual variety, freely add additional rows to the
+                # `phrase_inventory.csv` file, copying from the original entries where you want
                 # to add variety. See README for more details.
                 #
                 # Remember the entire storage required grows by the variant count, and the generated
@@ -574,24 +690,20 @@ Version {args.voicepack_version}
                     variant_tag = chr(variant_id + ord("a"))  # a-z
                     variant_filename = f"{entry.audio_filename}-{variant_tag}"
 
-                # TODO: implement is_invalid_wav_file() and retry this up to x times, to
-                #       automatically regenerate any malformed output files (too long, weird
-                #       frequencies, etc)
-
                 # finally, generate and save a .wav file based on the phrase's text
-                generate_speech_coqui_tts(
-                    **coqui_tts_args,
+                generate_speech(
+                    **tts_args,
                     text=filtered_text,
                     output_path=f"{output_file_prefix}{entry.original_path}",
                     output_filename=variant_filename,
                 )
 
-        print("All entries in audio_file_inventory.csv have been generated.")
+        print(f"All entries in {args.phrase_inventory} have been generated.")
 
-    # In addition to the normal audio files covered in the audio inventory file,
+    # In addition to the normal audio files covered in the audio file inventory,
     # CrewChief also supports custom radio check messages aligned to the new
     # voice pack. This generates a few responses so that you don't have to hear
-    # the same comment every time the app starts.
+    # the same comment every time the app starts. Feel free to prune or supplement.
     if not args.skip_radio_check:
         print("Generating radio check audio clips...")
         voice_name_tts = args.voice_name_tts or args.voice_name
@@ -623,19 +735,24 @@ Version {args.voicepack_version}
             print(
                 f"Generating radio check audio clip {radio_check_idx} - {radio_check_phrase}..."
             )
-            generate_speech_coqui_tts(
-                **coqui_tts_args,
+            generate_speech(
+                **tts_args,
                 text=radio_check_phrase,
                 # since the CrewChief-required location for radio_check messages is outside the voicepack
-                # root diretory, the user will need to move it there manually
+                # root directory, the user will need to move it there manually
+                # "test" is the official CrewChief folder name for radio check messages
                 output_path=f"{output_file_prefix}/radio_check_{args.voice_name}/test",
                 output_filename=f"{radio_check_idx}",
             )
         print("All radio check audio clips have been generated.")
 
-    # TODO: generate audio for the personalisations folder, which is just a single name based on args.your_name
+    # TODO: generate audio for the personalisations folder, which can be just a single name based on args.your_name
+    #       unless the pack is meant for wider distribution, in which case maybe all the names are needed
 
-    # TODO: generate audio for the driver_names folder, probably by adding to the audio file inventory
+    # TODO: generate audio for the driver_names folder, optionally either including all the CrewChief names
+    #       (hardcoded in this script) or just a single name based on args.your_name with a dozen variants
+
+    # TODO: generate optional spotter audio pack
 
     # TODO: adopt this folder structure
     # +---alt
