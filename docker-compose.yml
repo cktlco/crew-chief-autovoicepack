@@ -15,7 +15,7 @@ services:
       # via `docker run` directly, for example:
       # docker run --rm -it --name crew-chief-autovoicepack -v /tmp/crew-chief-autovoicepack/output:/app/output crew-chief-autovoicepack:v0.1
       #
-      replicas: 8
+      replicas: 1
 
       # the lines below enable exposing the host machine's nvidia GPU to the container
       #
@@ -47,7 +47,7 @@ services:
       # directory holding the input voice recordings
       - ./output/baseline:/app/output/baseline
 
-      # optionally override the default audio file inventory to use your local edits
+      # optionally override the default phrase inventory file to use your local edits
       - ./phrase_inventory.csv:/app/phrase_inventory.csv
 
       # or optionally override the generate_voice_pack.py script to use your local edits
@@ -68,4 +68,4 @@ services:
     # The command below will generate a voice pack for "Luis" in CPU-only mode with the default settings.
     # REMOVE the --cpu_only flag to run in GPU mode.
     #
-    command: [ "python3", "generate_voice_pack.py", "--your_name", "", "--voice_name", "David" ]
+    command: [ "python3", "generate_voice_pack.py", "--your_name", "", "--voice_name", "Blake" ]

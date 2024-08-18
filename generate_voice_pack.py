@@ -7,8 +7,7 @@ import subprocess
 from dataclasses import dataclass
 import csv
 from functools import lru_cache
-from typing import List, Optional, Any
-import requests
+from typing import List, Any
 import re
 import torch
 import torchaudio
@@ -129,15 +128,18 @@ class CrewChiefAudioFile:
 
     def __init__(
         self,
-        original_path: str,
+        audio_path: str,
         audio_filename: str,
-        original_text: str,
+        subtitle: str,
         text_for_tts: str,
     ):
-        self.original_path = original_path
+        self.audio_path = audio_path
         self.audio_filename = audio_filename
-        self.original_text = original_text
+        self.subtitle = subtitle
         self.text_for_tts = text_for_tts
+        self.audio_path_filtered = ""
+        self.subtitle_filtered = ""
+        self.text_for_tts_filtered = ""
 
 
 def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]:
@@ -154,17 +156,16 @@ def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]
 
         # read each row of the csv file in one at a time
         for row in csvreader:
-            file_mapping, original_text, text_for_tts = row
+            audio_path_windows, audio_filename_with_ext, subtitle, text_for_tts = row
 
-            # split the file mapping into the path and the filename
-            filepath, wav_filename = file_mapping.split(":")
-            audio_filename = wav_filename.replace(".wav", "")
-            filepath_fixed = filepath.replace("\\", "/")
+            audio_filename = audio_filename_with_ext.replace(".wav", "")
+            # swap from backslashes (Windows) to forward slashes (Linux)
+            audio_path = audio_path_windows.replace("\\", "/")
 
             # put the csv file data into a more friendly data structure
             entries.append(
                 CrewChiefAudioFile(
-                    filepath_fixed, audio_filename, original_text, text_for_tts
+                    audio_path, audio_filename, subtitle, text_for_tts
                 )
             )
 
@@ -474,7 +475,7 @@ def generate_speech_coqui_tts(
         full_raw_filename
     )
     if file_exists and not overwrite:
-        print(f"File already exists, skipping: {full_output_filename}")
+        print(f"File exists, skipping: {full_output_filename}")
         return
 
     # ensure the output directory exists
@@ -517,7 +518,7 @@ def generate_speech_coqui_tts(
         # just keep the raw file
         os.rename(full_raw_filename, full_output_filename)
 
-    print(f"File created at: {full_output_filename}")
+    print(f"Audio file created: {full_output_filename}")
 
 
 @dataclass
@@ -589,7 +590,7 @@ def main():
     """
     args = parse_arguments()
 
-    output_file_prefix = f"{args.output_audio_dir}/{args.voice_name}"
+    voicepack_base_dir = f"{args.output_audio_dir}/{args.voice_name}"
 
     # setup some base parameters which can be reused across calls to the TTS generator
     tts_args = {
@@ -651,15 +652,19 @@ Version {args.voicepack_version}
         # for each entry in the audio file inventory, generate a speech .wav file
         for entry_idx, entry in enumerate(entries, 1):
             print(
-                f"Generating audio for {entry_idx} - '{entry.original_text}' -> '{entry.text_for_tts}'"
+                f"Considering phrase {entry_idx} - '{entry.subtitle}' -> '{entry.text_for_tts}'"
             )
 
             # perform the actual text substitution based on the replacement rules enabled above
-            filtered_text = (
+            # also replace any instances of `YOUR_NAME` with user's name (or blank if not provided)
+            entry.text_for_tts_filtered = (
                 entry.text_for_tts
                 if args.disable_text_replacements
                 else apply_replacements(entry.text_for_tts, replacement_rules)
-            )
+            ).replace("YOUR_NAME", args.your_name)
+
+            entry.audio_path_filtered = entry.audio_path.replace("YOUR_NAME", args.your_name)
+            entry.subtitle_filtered = entry.subtitle.replace("YOUR_NAME", args.your_name)
 
             for variant_id in range(0, args.variation_count + 1):
                 # "Variations" here means creating 1 or more additional audio files
@@ -693,12 +698,34 @@ Version {args.voicepack_version}
                 # finally, generate and save a .wav file based on the phrase's text
                 generate_speech(
                     **tts_args,
-                    text=filtered_text,
-                    output_path=f"{output_file_prefix}{entry.original_path}",
+                    text=entry.text_for_tts_filtered,
+                    output_path=f"{voicepack_base_dir}{entry.audio_path_filtered}",
                     output_filename=variant_filename,
                 )
 
         print(f"All entries in {args.phrase_inventory} have been generated.")
+
+
+        # write subtitles.csv files for each subfolder, following the convention of CrewChiefV4
+        subtitle_entries = {}
+        for entry in entries:
+            if entry.audio_path_filtered not in subtitle_entries:
+                subtitle_entries[entry.audio_path_filtered] = []
+            subtitle_entries[entry.audio_path_filtered].append((entry.audio_filename, entry.subtitle))
+
+        for subtitle_path, entry_details in subtitle_entries.items():
+            subtitle_filename = f"{voicepack_base_dir}{subtitle_path}/subtitles.csv"
+            if os.path.isfile(subtitle_filename):
+                print(f"Skipping subtitles.csv since it exists at {subtitle_path}")
+            else:
+                print(f"Creating subtitles.csv for {subtitle_path}")
+                with open(subtitle_filename, "w") as f:
+                    for audio_filename, subtitle in entry_details:
+                        for variant_id in range(0, args.variation_count + 1):
+                            variant_tag = chr(variant_id + ord("a"))
+                            f.write(f"{variant_tag}.wav,\"{subtitle}\"\n")
+
+        print("All subtitles.csv files have been created.")
 
     # In addition to the normal audio files covered in the audio file inventory,
     # CrewChief also supports custom radio check messages aligned to the new
@@ -741,32 +768,16 @@ Version {args.voicepack_version}
                 # since the CrewChief-required location for radio_check messages is outside the voicepack
                 # root directory, the user will need to move it there manually
                 # "test" is the official CrewChief folder name for radio check messages
-                output_path=f"{output_file_prefix}/radio_check_{args.voice_name}/test",
+                output_path=f"{voicepack_base_dir}/radio_check_{args.voice_name}/test",
                 output_filename=f"{radio_check_idx}",
             )
         print("All radio check audio clips have been generated.")
 
-    # TODO: generate audio for the personalisations folder, which can be just a single name based on args.your_name
-    #       unless the pack is meant for wider distribution, in which case maybe all the names are needed
 
     # TODO: generate audio for the driver_names folder, optionally either including all the CrewChief names
-    #       (hardcoded in this script) or just a single name based on args.your_name with a dozen variants
+    #       (from a static JSON file in this repo) or just a single name based on args.your_name with a dozen variants
 
     # TODO: generate optional spotter audio pack
-
-    # TODO: adopt this folder structure
-    # +---alt
-    # ¦ +---Mike
-    # ¦ ¦ sound_pack_language.txt
-    # ¦ ¦
-    # ¦ +---driver_names
-    # ¦ +---personalisations
-    # ¦ +---voice
-    # +---voice
-    # +---radio_check_Mike
-    # ¦ +---test
-    # ¦ +---test_chief
-    # +---spotter_Mike
 
     print("All done.")
 

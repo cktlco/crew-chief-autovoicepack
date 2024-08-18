@@ -1,15 +1,15 @@
 ## Capabilities
 - automatically generate a full CrewChief voicepack from 30 seconds of any voice
+- natural sounding AI generated speech
 - supports all CrewChief phrases and sims (Assetto Corsa, ACC, iRacing, etc.)
-- surprisingly natural speech
 - no-cost, unlimited usage, run locally on your PC
 - easily replace original CrewChief commentary with fully custom phrases
 - use ANY voice you want: your own, a friend, or celebrity
-- optionally import high-quality professional voices from ElevenLabs.io (for free)
-- auto-create multiple spoken variations of each CrewChief phrase for tons  
+- easily import high-quality professional voices from ElevenLabs.io (for free)
+- auto-create multiple varied speech recordings for each phrase
 - generate voice packs in any language (requires machine/human text translation)
-- fast -- 1-2 hours for tens of thousands of audio files (RTX 3090)
-- runs on any hardware, Windows/Mac/Linux, CPU-only or CUDA GPU
+- fast -- 1-2 hours for ~27,000 audio files (RTX 3090)
+- runs on any hardware, Windows/Mac/Linux, CPU-only or Nvidia GPU
 - elegantly packaged as a ready-to-use Docker image
 - friendly Python code you are encouraged to tweak
 - remove (or introduce!) swear words and regional language quirks
@@ -20,7 +20,7 @@ TBD
 
 
 ## Download new voicepacks created by crew-chief-autovoicepack
-Try it yourself, or download one of these ready-to-go, full replacement voices for CrewChief. Unzip and copy files as mentioned below.
+Make your own, or download one of these ready-to-go, full replacement voices for CrewChief. Unzip and copy files as mentioned below. Over 27,000 .wav files in each.
 - Sally
 - Don
 - Blake
@@ -46,17 +46,15 @@ Try it yourself, or download one of these ready-to-go, full replacement voices f
 - minor: emotional inflection is worse than a human voice actor
 - minor: rarely, may fail applying audio effects and leave the interim x.raw.wav file and no x.wav file
 - minor: voicepack name must use ASCII characters (e.g. UTF-8 chars like é, ñ, are not supported)
-- minor: "sweary" phrases are not denoted with `_sweary` prefix in the filename (bashful users beware)
 
 
 ## Possible Future Improvements
 - Incorporate RVC (Real Voice Cloning) to better match the original speaker's voice -- this would take the TTS generated audio and post-process it to sound even more like the original. Could also be applied to the original CrewChief "Jim" voice pack audio to retain the emotional inflection and pacing (though unavoidably inheriting the regional jargon and matey-ness).
-- Support other text-to-speech services and models beyond coqui-tts and xtts
+- Support other text-to-speech services and models
 - Automate multilingual machine translation
 
 
-
-## Common Task: Generate a new voice pack
+## Quickstart: Generate a new voice pack
 The only required software on your machine is a working installation of Docker (and optionally Nvidia CUDA GPU drivers for Docker).
 
 The core concept is to launch a "Docker container" which is a lightweight, isolated Linux environment that runs the crew-chief-autovoicepack code. You'll enable the container to access your GPU (optional), phrase inventory, and your baseline audio recordings. The container will generate the audio files for your new voice pack, which will be saved to the output folder on your local machine.
@@ -138,7 +136,7 @@ As an example, consider a voicepack with the root folder `Luis`.
 - If your voicepack is already inside a .zip file, unzip it to a temporary location.
 - Open two file explorer windows and navigate to both the CrewChief `...\sounds` folder and the folder containing the voicepack.
 2) Within the `...\sounds` folder, create a new folder named `alt`.
-3) Copy the `Luis` folder into the CrewChief `...\sounds\alt\` folder.
+3) Copy the entire `Luis` folder into the CrewChief `...\sounds\alt\` folder.
 4) Radio check voices: Enter the `...sounds\alt\Luis` folder and you will see a subfolder named `radio_check_Luis`. Copy the `radio_check_Luis` folder into the CrewChief main `...\sounds\voice` folder. This folder has the official Jim voice as well as `radio_check_XXX` for each crew chief or spotter voice.
 5) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
 

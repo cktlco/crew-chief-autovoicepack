@@ -45,9 +45,9 @@ RUN pip install deepspeed
 # Copy the python scripts and data files into the Docker image
 COPY generate_voice_pack.py .
 COPY record_elevenlabs_voice.py .
-COPY zip_voice_pack.sh .
-COPY transcript.csv .
+COPY zip_voice_pack.py .
 COPY phrase_inventory.csv .
+# Copy an example baseline recording
 COPY output/baseline/Luis output/baseline/Luis
 
 # Make the shell prompt more friendly
