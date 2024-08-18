@@ -5445,9 +5445,9 @@ audio_path,audio_filename,subtitle,text_for_tts
 \voice\multiclass\groupa_runners,1.wav,Group A class cars,Group A class cars
 \voice\multiclass\groupa_runners,2.wav,Group A runners,Group A runners
 \voice\multiclass\groupa_runners,3.wav,Group A runners,Group A runners
-\voice\multiclass\groupb,46.wav,Group-Bee,Group-Bee
-\voice\multiclass\groupb,47.wav,Group-Bee,Group-Bee
-\voice\multiclass\groupb,48.wav,Group-Bee,Group-Bee
+\voice\multiclass\groupb,46.wav,Group B,Group-Bee
+\voice\multiclass\groupb,47.wav,Group B,Group-Bee
+\voice\multiclass\groupb,48.wav,Group B,Group-Bee
 \voice\multiclass\groupc,49.wav,Group C,Group-See
 \voice\multiclass\groupc,50.wav,Group C,Group-See
 \voice\multiclass\groupc,51.wav,Group C,Group-See
@@ -5478,21 +5478,21 @@ audio_path,audio_filename,subtitle,text_for_tts
 \voice\multiclass\gt4_runners,10.wav,GT4 cars,Ji-Tee Four cars
 \voice\multiclass\gt4_runners,11.wav,GT4 class cars,Ji-Tee Four class cars
 \voice\multiclass\gt4_runners,12.wav,GT4 runners,Ji-Tee Four runners
-\voice\multiclass\gt500,34.wav,GT Five Hundred,Ji-Tee Five Hundred
-\voice\multiclass\gt500,35.wav,GT Five Hundred,Ji-Tee Five Hundred
-\voice\multiclass\gt500,36.wav,GT Five Hundred,Ji-Tee Five Hundred
-\voice\multiclass\gt5,31.wav,GT Five,Ji-Tee Five
-\voice\multiclass\gt5,32.wav,GT Five,Ji-Tee Five
-\voice\multiclass\gt5,33.wav,GT Five,Ji-Tee Five
-\voice\multiclass\gt5_runners,4.wav,GT Five cars,Ji-Tee Five cars
-\voice\multiclass\gt5_runners,5.wav,GT Five runners,Ji-Tee Five runners
-\voice\multiclass\gt5_runners,6.wav,GT Five class cars,Ji-Tee Five class cars
-\voice\multiclass\gtc,19.wav,GT-See,Ji-Tee-See
-\voice\multiclass\gtc,20.wav,GT-See,Ji-Tee-See
-\voice\multiclass\gtc,21.wav,GT-See,Ji-Tee-See
-\voice\multiclass\gtc_runners,13.wav,GT-See runners,Ji-Tee-See runners
-\voice\multiclass\gtc_runners,14.wav,GT-See class cars,Ji-Tee-See class cars
-\voice\multiclass\gtc_runners,15.wav,GT-See cars,Ji-Tee-See cars
+\voice\multiclass\gt500,34.wav,GT500,Ji-Tee Five Hundred
+\voice\multiclass\gt500,35.wav,GT500,Ji-Tee Five Hundred
+\voice\multiclass\gt500,36.wav,GT500,Ji-Tee Five Hundred
+\voice\multiclass\gt5,31.wav,GT5,Ji-Tee Five
+\voice\multiclass\gt5,32.wav,GT5,Ji-Tee Five
+\voice\multiclass\gt5,33.wav,GT5,Ji-Tee Five
+\voice\multiclass\gt5_runners,4.wav,GT5 cars,Ji-Tee Five cars
+\voice\multiclass\gt5_runners,5.wav,GT5 runners,Ji-Tee Five runners
+\voice\multiclass\gt5_runners,6.wav,GT5 class cars,Ji-Tee Five class cars
+\voice\multiclass\gtc,19.wav,GTC,Ji-Tee-See
+\voice\multiclass\gtc,20.wav,GTC,Ji-Tee-See
+\voice\multiclass\gtc,21.wav,GTC,Ji-Tee-See
+\voice\multiclass\gtc_runners,13.wav,GTC runners,Ji-Tee-See runners
+\voice\multiclass\gtc_runners,14.wav,GTC class cars,Ji-Tee-See class cars
+\voice\multiclass\gtc_runners,15.wav,GTC cars,Ji-Tee-See cars
 \voice\multiclass\gte,16.wav,GT-E,Ji-Tee-Eee
 \voice\multiclass\gte,17.wav,GT-E,Ji-Tee-Eee
 \voice\multiclass\gte,18.wav,GT-E,Ji-Tee-Eee

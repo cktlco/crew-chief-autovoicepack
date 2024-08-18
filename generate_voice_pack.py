@@ -38,8 +38,8 @@ def parse_arguments():
     parser.add_argument(
         "--your_name",
         type=str,
-        default="",
-        help="Your name, used by the Crew Chief to refer to you personally, baked into the generated audio. Defaults to empty text.",
+        default="Champ",
+        help="Your name, used by the Crew Chief to refer to you personally, baked into the generated audio. Defaults to 'Champ', probably ok to be empty text also.",
     )
     parser.add_argument(
         "--variation_count",
@@ -164,9 +164,7 @@ def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]
 
             # put the csv file data into a more friendly data structure
             entries.append(
-                CrewChiefAudioFile(
-                    audio_path, audio_filename, subtitle, text_for_tts
-                )
+                CrewChiefAudioFile(audio_path, audio_filename, subtitle, text_for_tts)
             )
 
     return entries
@@ -277,7 +275,7 @@ def detect_invalid_audio_duration(file_path: str, tts_text: str) -> bool:
 
     # generous estimate of speaking rate in characters per second
     speaking_rate = 3
-    minimum_expected_duration = 1.5
+    minimum_expected_duration = 1.0
 
     # calculate the expected duration based on the text
     expected_duration = len(tts_text) / speaking_rate + minimum_expected_duration
@@ -413,7 +411,7 @@ def generate_speech(
 
     for attempt_idx in range(max_attempts):
         # current implementation: coqui_tts
-        generate_speech_coqui_tts(
+        was_generated = generate_speech_coqui_tts(
             text=text,
             output_path=output_path,
             output_filename=output_filename,
@@ -428,7 +426,8 @@ def generate_speech(
 
         file_path = f"{output_path}/{output_filename}.wav"
 
-        if is_invalid_wav_file(file_path=file_path, tts_text=text):
+        if was_generated and is_invalid_wav_file(file_path=file_path, tts_text=text):
+            # skip the invalid file check if the file already existed from a previous run
             print(f"Regenerating invalid .wav file: {output_filename}")
 
             if keep_invalid_files:
@@ -443,11 +442,12 @@ def generate_speech(
             overwrite = True
 
         else:
+            # the audio file appears valid, so exit the regeneration loop
             break
 
     else:
         print(
-            f"Failed to generate a clean .wav file after {max_attempts} attempts: {output_filename}"
+            f"Failed to generate a valid .wav file from the text '{text}' after {max_attempts} attempts: {output_filename}"
         )
 
 
@@ -462,10 +462,12 @@ def generate_speech_coqui_tts(
     cpu_only: bool = False,
     use_deepspeed: bool = True,
     enable_audio_effects: bool = True,
-) -> None:
+) -> bool:
     """
     Generate speech using the Coqui TTS framework and the multilingual xtts model.
     See README.md for more details on Coqui.
+    Returns True if the file was generated, False if it already existed and was skipped.
+    # TODO: refactor, the file existence check should not be in this function
     """
     full_raw_filename = f"{output_path}/{output_filename}.raw.wav"
     full_output_filename = f"{output_path}/{output_filename}.wav"
@@ -476,7 +478,7 @@ def generate_speech_coqui_tts(
     )
     if file_exists and not overwrite:
         print(f"File exists, skipping: {full_output_filename}")
-        return
+        return False
 
     # ensure the output directory exists
     os.makedirs(output_path, exist_ok=True)
@@ -519,6 +521,7 @@ def generate_speech_coqui_tts(
         os.rename(full_raw_filename, full_output_filename)
 
     print(f"Audio file created: {full_output_filename}")
+    return True
 
 
 @dataclass
@@ -606,6 +609,8 @@ def main():
         "keep_invalid_files": args.keep_invalid_files,
     }
 
+    # PHRASES
+    # parse the phrase_inventory.csv file and generate audio files for each entry
     if not args.skip_inventory:
         entries = parse_phrase_inventory(args.phrase_inventory)
 
@@ -656,15 +661,19 @@ Version {args.voicepack_version}
             )
 
             # perform the actual text substitution based on the replacement rules enabled above
-            # also replace any instances of `YOUR_NAME` with user's name (or blank if not provided)
+            # also replace any instances of `YOUR_NAME` with user's name)
             entry.text_for_tts_filtered = (
                 entry.text_for_tts
                 if args.disable_text_replacements
                 else apply_replacements(entry.text_for_tts, replacement_rules)
             ).replace("YOUR_NAME", args.your_name)
 
-            entry.audio_path_filtered = entry.audio_path.replace("YOUR_NAME", args.your_name)
-            entry.subtitle_filtered = entry.subtitle.replace("YOUR_NAME", args.your_name)
+            entry.audio_path_filtered = entry.audio_path.replace(
+                "YOUR_NAME", args.your_name
+            )
+            entry.subtitle_filtered = entry.subtitle.replace(
+                "YOUR_NAME", args.your_name
+            )
 
             for variant_id in range(0, args.variation_count + 1):
                 # "Variations" here means creating 1 or more additional audio files
@@ -705,28 +714,35 @@ Version {args.voicepack_version}
 
         print(f"All entries in {args.phrase_inventory} have been generated.")
 
-
+        # SUBTITLES
         # write subtitles.csv files for each subfolder, following the convention of CrewChiefV4
         subtitle_entries = {}
         for entry in entries:
             if entry.audio_path_filtered not in subtitle_entries:
                 subtitle_entries[entry.audio_path_filtered] = []
-            subtitle_entries[entry.audio_path_filtered].append((entry.audio_filename, entry.subtitle))
+            subtitle_entries[entry.audio_path_filtered].append(
+                (entry.audio_filename, entry.subtitle_filtered)
+            )
 
         for subtitle_path, entry_details in subtitle_entries.items():
             subtitle_filename = f"{voicepack_base_dir}{subtitle_path}/subtitles.csv"
-            if os.path.isfile(subtitle_filename):
+
+            if not args.overwrite and os.path.isfile(subtitle_filename):
                 print(f"Skipping subtitles.csv since it exists at {subtitle_path}")
+
             else:
                 print(f"Creating subtitles.csv for {subtitle_path}")
                 with open(subtitle_filename, "w") as f:
                     for audio_filename, subtitle in entry_details:
                         for variant_id in range(0, args.variation_count + 1):
                             variant_tag = chr(variant_id + ord("a"))
-                            f.write(f"{variant_tag}.wav,\"{subtitle}\"\n")
+                            f.write(
+                                f'{audio_filename}-{variant_tag}.wav,"{subtitle}"\n'
+                            )
 
         print("All subtitles.csv files have been created.")
 
+    # RADIO CHECK MESSAGES
     # In addition to the normal audio files covered in the audio file inventory,
     # CrewChief also supports custom radio check messages aligned to the new
     # voice pack. This generates a few responses so that you don't have to hear
@@ -760,7 +776,7 @@ Version {args.voicepack_version}
         ]
         for radio_check_idx, radio_check_phrase in enumerate(radio_check_phrases, 1):
             print(
-                f"Generating radio check audio clip {radio_check_idx} - {radio_check_phrase}..."
+                f"Considering radio check audio clip {radio_check_idx} - {radio_check_phrase}..."
             )
             generate_speech(
                 **tts_args,
@@ -772,7 +788,6 @@ Version {args.voicepack_version}
                 output_filename=f"{radio_check_idx}",
             )
         print("All radio check audio clips have been generated.")
-
 
     # TODO: generate audio for the driver_names folder, optionally either including all the CrewChief names
     #       (from a static JSON file in this repo) or just a single name based on args.your_name with a dozen variants
