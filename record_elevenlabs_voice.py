@@ -49,7 +49,7 @@ def generate_voice_baseline(
         "Lightning Lamborghinis leap large loops.",
     ]
 
-    output_dir = f"output/baseline/{voice_name}"
+    output_dir = f"baseline/{voice_name}"
 
     for text_sample_idx, text_sample in enumerate(text_samples, 1):
         # create and download the audio file (.mp3) via Eleven Labs API

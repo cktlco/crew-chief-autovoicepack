@@ -6,13 +6,13 @@
 - easily replace original CrewChief commentary with fully custom phrases
 - use ANY voice you want: your own, a friend, or celebrity
 - easily import high-quality professional voices from ElevenLabs.io (for free)
-- auto-create multiple varied speech recordings for each phrase
+- multiply the original phrase library with new variations
 - generate voice packs in any language (requires machine/human text translation)
 - fast -- 1-2 hours for ~27,000 audio files (RTX 3090)
 - runs on any hardware, Windows/Mac/Linux, CPU-only or Nvidia GPU
 - elegantly packaged as a ready-to-use Docker image
 - friendly Python code you are encouraged to tweak
-- remove (or introduce!) swear words and regional language quirks
+- remove (or introduce!) swear words, gender assumptions, and regional language quirks
 
 
 ## Video demonstration
@@ -39,16 +39,16 @@ Make your own, or download one of these ready-to-go, full replacement voices for
 
 ## Known Issues
 - poor or incorrect TTS pronounciations (driver names, corner names, etc.)
-- garbled or corrupt audio (a few percent of the total)
+- very garbled or corrupt audio (a few percent of the total)
 - generated voices do not exactly match the original speaker's voice
 - speed/pace is not easily adjustable (i.e. "rushed" CrewChief phrases are not rushed)
-- minor: may adopt incorrect accent or diminish original accent on certain TTS phrases
+- minor: may adopt incorrect accent or diminish original accent on certain phrases
 - minor: emotional inflection is worse than a human voice actor
-- minor: rarely, may fail applying audio effects and leave the interim x.raw.wav file and no x.wav file
 - minor: voicepack name must use ASCII characters (e.g. UTF-8 chars like é, ñ, are not supported)
 
 
 ## Possible Future Improvements
+- Support creating new spotter voices
 - Incorporate RVC (Real Voice Cloning) to better match the original speaker's voice -- this would take the TTS generated audio and post-process it to sound even more like the original. Could also be applied to the original CrewChief "Jim" voice pack audio to retain the emotional inflection and pacing (though unavoidably inheriting the regional jargon and matey-ness).
 - Support other text-to-speech services and models
 - Automate multilingual machine translation
@@ -128,7 +128,8 @@ CrewChief voice audio files are stored in the CrewChiefV4 `sounds` folder, which
 ```
 C:\Users\[user_name]\AppData\Local\CrewChiefV4\sounds\
 ```
-It's possible you may have to allow viewing "hidden" files to see it. Also note that location can be overridden by the "Override default Sound Pack location" preference.
+
+You can easily open this folder directly from the CrewChief UI via `File -> Open voice files folder`.
 
 As an example, consider a voicepack with the root folder `Luis`.
 
@@ -320,7 +321,7 @@ The source of your issues is very likely from imperfections in the input audio r
 
 Other tips:
 - Use a modern audio file editor (ocenaudio, Audacity, etc.) to view the waveform for each audio clip.
-- Look at the provided voice recordings in the repo's `output/baseline` folder for examples of what recorded voice clips should look like.
+- Look at the provided voice recordings in the repo's `baseline` folder for examples of what recorded voice clips should look like.
 - The `record_elevenlabs_voice.py` script automatically captures an appropriate number of suitable-length high-quality voice samples, applying suitable audio effects such as normalization, and saving them in the correct format.
 - Audio from YouTube videos (for example, captured from an interview with a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)) is generally usable after applying ALL the considerations above, but the speaker's voice needs to be 100% isolated with no background noise, music, chatter, etc.
 - Recording your own voice also works well, when following the guidelines above.
@@ -379,7 +380,7 @@ Elevenlabs.io provides a professional-quality text-to-speech service that can be
 # from the running container
 > python3 record_elevenlabs_voice.py --eleven_labs_api_key XXXXXXX --voice_id XXXXXXX --voice_name Luis
 ```
-5. The script will generate a folder of ~20 baseline speech audio files based on this voice in the `output/baseline` folder. This folder matches the default location of the `--baseline_audio_dir` parameter used by `generate_voice_pack.py`, so you are now ready to generate a new voice pack based on this `voice_name` (see instructions elsewhere on this page).
+5. The script will generate a folder of ~20 baseline speech audio files based on this voice in the `baseline` folder. This folder matches the default location of the `--baseline_audio_dir` parameter used by `generate_voice_pack.py`, so you are now ready to generate a new voice pack based on this `voice_name` (see instructions elsewhere on this page).
 ```
 > python3 generate_voice_pack.py --voice_name 'Luis' ...
 ```
@@ -408,7 +409,7 @@ Most important files:
 - `generate_voice_pack.py`: generates the audio files for a new voice pack
 - `phrase_inventory.csv`: A comma-separated values (CSV) file that specifies the phrases to be generated for the voice pack. Edit/view with a spreadsheet program like Excel or LibreOffice.
 - `output/`: folder where the generated audio files are saved
-- `output/baseline/`: folder where the baseline audio recordings are saved. Pre-populated with several examples.
+- `baseline/`: folder where the baseline audio recordings are saved. Pre-populated with several examples.
 
 Other supporting files:
 - `record_elevenlabs_voice.py`: generates high-quality baseline recordings using the Elevenlabs.io API

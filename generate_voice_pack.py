@@ -77,7 +77,7 @@ def parse_arguments():
     parser.add_argument(
         "--baseline_audio_dir",
         type=str,
-        default="./output/baseline",
+        default="./baseline",
         help="Path to the directory containing the baseline audio recordings which will be used to clone that speaker's voice.",
     )
     parser.add_argument(
@@ -93,7 +93,7 @@ def parse_arguments():
     parser.add_argument(
         "--overwrite",
         action="store_true",
-        help="Overwrite existing audio files",
+        help="Overwrite existing audio files. Note that if running multiple instances of the script in parallel, this means all replicas will perform all the work each (not what you want).",
     )
     parser.add_argument(
         "--disable_deepspeed",
@@ -600,7 +600,7 @@ def main():
         "speed": 1.2,
         "temperature": random.uniform(0.2, 0.3),
         "reference_speaker_wav_paths": glob.glob(
-            f"output/baseline/{args.voice_name}/*.wav"
+            f"{args.baseline_audio_dir}/{args.voice_name}/*.wav"
         ),
         "overwrite": args.overwrite,
         "enable_audio_effects": not args.disable_audio_effects,
@@ -614,30 +614,52 @@ def main():
     if not args.skip_inventory:
         entries = parse_phrase_inventory(args.phrase_inventory)
 
-        if len(entries) > 0:
-            # create the output directory
-            relative_output_dir = f"{args.output_audio_dir}/{args.voice_name}"
-            full_output_dir = os.path.abspath(relative_output_dir)
-            os.makedirs(full_output_dir, exist_ok=True)
+        # create the output directory
+        relative_output_dir = f"{args.output_audio_dir}/{args.voice_name}"
+        full_output_dir = os.path.abspath(relative_output_dir)
+        os.makedirs(full_output_dir, exist_ok=True)
 
-            # create an attribution text file with some basic provenance, include in the output directory
-            attribution_filename = f"{relative_output_dir}/CREATED_BY.txt"
-            with open(attribution_filename, "w") as f:
-                f.write(
-                    f"""This voice pack was created using crew-chief-autovoicepack
-(https://github.com/cktlco/crew-chief-autovoicepack)
-
-...for use with the venerable virtual race engineer application CrewChief
-(https://thecrewchief.org/)
-(https://gitlab.com/mr_belowski/CrewChiefV4)
-
-Voice name: {args.voice_name}
-Version {args.voicepack_version}
-"""
+        # create an attribution text file with some basic provenance, include in the output directory
+        attribution_filename = f"{relative_output_dir}/CREATED_BY.txt"
+        with open(attribution_filename, "w") as f:
+            attribution_text = (
+                "This voice pack was created using crew-chief-autovoicepack\n"
+                "(https://github.com/cktlco/crew-chief-autovoicepack)\n\n"
+                "...for use with the venerable virtual race engineer application CrewChief\n"
+                "(https://thecrewchief.org/)\n"
+                "(https://gitlab.com/mr_belowski/CrewChiefV4)\n\n"
+                "Voice name: {voice_name}\n"
+                "Version {voicepack_version}\n"
+            )
+            f.write(
+                attribution_text.format(
+                    voice_name=args.voice_name, voicepack_version=args.voicepack_version
                 )
-                print(
-                    f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}."
-                )
+            )
+            print(
+                f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}."
+            )
+
+        # create an instructions text file with basic instructions about how to install the voice pack
+        instructions_filename = f"{relative_output_dir}/INSTALLATION_INSTRUCTIONS.txt"
+        with open(instructions_filename, "w") as f:
+            # Define the instructions text with placeholders
+            instructions_text = (
+                "To add this voice pack to CrewChief 4.18.4.0 or similar:\n\n"
+                "1. From the CrewChief menu bar, select `File -> Open voice files folder`\n\n"
+                "2. This will open a File Explorer window to a location such as:\n"
+                "`C:\\Users\\YOUR_NAME\\AppData\\Local\\CrewChiefV4\\Sounds`\n\n"
+                "3. In this folder, you will see a folder called `alt`\n\n"
+                "4. Copy the main `{voice_name}` folder from the voice pack into the `alt` folder\n\n"
+                "5. Confirm that you now have a folder called `...\\CrewChiefV4\\Sounds\\alt\\{voice_name}`\n\n"
+                "6. Make sure to manually move the entire radio check folder at `...\\alt\\{voice_name}\\radio_check_{voice_name}` to `...\\CrewChiefV4\\Sounds\\voice\\radio_check_{voice_name}`\n\n"
+                "7. Restart CrewChief and you will see `{voice_name}` in the dropdown list on the far right\n\n"
+                "8. CrewChief will prompt you to restart again, and you should hear {voice_name} answer the radio check alongside your spotter.\n\n"
+                "9. All done! Give Jim a well-deserved rest and enjoy frustrating a new engineer with your driving.\n\n"
+                "To remove, 1) swap back to Jim in the CrewChief UI.  2) delete the `{voice_name}` folder from `...\\CrewChiefV4\\Sounds\\alt`. 3) delete the `radio_check_{voice_name}` folder from `...\\CrewChiefV4\\Sounds\\voice`.\n"
+            )
+            with open(instructions_filename, "w") as f:
+                f.write(instructions_text.format(voice_name=args.voice_name))
 
         # Enable a quick way of globally replacing words in the original CrewChief text
         # before sending it to the text-to-speech step. This section establishes the potential

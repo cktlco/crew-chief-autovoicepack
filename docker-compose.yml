@@ -45,7 +45,7 @@ services:
       - /dev_local/crew-chief-autovoicepack:/app/output
 
       # directory holding the input voice recordings
-      - ./output/baseline:/app/output/baseline
+      - ./baseline:/app/baseline
 
       # optionally override the default phrase inventory file to use your local edits
       - ./phrase_inventory.csv:/app/phrase_inventory.csv
@@ -68,5 +68,6 @@ services:
     # The command below will generate a voice pack for "Luis" in CPU-only mode with the default settings.
     # REMOVE the --cpu_only flag to run in GPU mode.
     #
-    command: [ "sh", "-c", "for voice in Ana Bart Blake David Don Hiroshi Jamal Luis ; do python3 generate_voice_pack.py --your_name Champ --overwrite --voice_name $${voice}; python3 zip_voice_pack.py output/$${voice}; done" ]
+    command: [ "sh", "-c", "for voice in Ana Bart Blake David Don Hiroshi Jamal Luis Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
+    #command: [ "sh", "-c", "for voice in Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
     #command: [ "python3", "generate_voice_pack.py", "--your_name", "Champ", "--voice_name", "Luis" ]

@@ -48,7 +48,7 @@ COPY record_elevenlabs_voice.py .
 COPY zip_voice_pack.py .
 COPY phrase_inventory.csv .
 # Copy an example baseline recording
-COPY output/baseline/Luis output/baseline/Luis
+COPY baseline/Luis baseline/Luis
 
 # Make the shell prompt more friendly
 RUN echo 'export PS1="crew-chief-autovoicepack > "' >> /root/.bashrc
