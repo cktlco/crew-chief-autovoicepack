@@ -1,3 +1,4 @@
+import logging
 import argparse
 import datetime
 import glob
@@ -13,6 +14,13 @@ import torch
 import torchaudio
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
 
 def parse_arguments():
@@ -45,13 +53,40 @@ def parse_arguments():
         "--variation_count",
         type=int,
         default=2,
-        help="Number of additional variations to generate for each audio file. Set to 0 to disable variations.",
+        help="Number of additional variations to generate for each audio file. Default is 2. Set to 0 to disable variations.",
+    )
+    parser.add_argument(
+        "--cpu_only",
+        action="store_true",
+        help="Run the process using the computer's Central Processing Unit (CPU) only, ignoring any available Graphics Processing Units (GPU). This is much slower but is necessary if your PC does not have an CUDA-capable NVIDIA GPU. Implies --disable_deepspeed.",
     )
     parser.add_argument(
         "--output_audio_dir",
         type=str,
         default="./output",
         help="Path to the directory where the generated audio files will be saved",
+    )
+    parser.add_argument(
+        "--original_inventory_order",
+        action="store_true",
+        help="Do not randomize the order of the audio files in the inventory. It's recommended to keep shuffling enabled (omit this option) when running multiple instances of the script in parallel.",
+    )
+    parser.add_argument(
+        "--phrase_inventory",
+        type=str,
+        default="./phrase_inventory.csv",
+        help="Path to the CSV file containing a list of all the audio files to create alongside the text to be used to generate them. The documentation refers to this as the 'phrase inventory', and populated with all the 'Jim' voicepack phrases from CrewChiefV4.",
+    )
+    parser.add_argument(
+        "--baseline_audio_dir",
+        type=str,
+        default="./baseline",
+        help="Path to the directory containing the baseline audio recordings which will be used to clone that speaker's voice.",
+    )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite existing audio files. Note that if running multiple instances of the script in parallel, this means all replicas will perform all the work each (not what you want).",
     )
     parser.add_argument(
         "--disable_audio_effects",
@@ -62,38 +97,6 @@ def parse_arguments():
         "--disable_text_replacements",
         action="store_true",
         help="Prevent applying text replacement rules to the generated audio files. Add or modify rules directly in generate_voice_pack.py.",
-    )
-    parser.add_argument(
-        "--phrase_inventory",
-        type=str,
-        default="./phrase_inventory.csv",
-        help="Path to the CSV file containing a list of all the audio files to create alongside the text to be used to generate them. The documentation refers to this as the 'phrase inventory', and populated with all the 'Jim' voicepack phrases from CrewChiefV4.",
-    )
-    parser.add_argument(
-        "--original_inventory_order",
-        action="store_true",
-        help="Do not randomize the order of the audio files in the inventory. It's recommended to keep shuffling enabled (omit this option) when running multiple instances of the script in parallel.",
-    )
-    parser.add_argument(
-        "--baseline_audio_dir",
-        type=str,
-        default="./baseline",
-        help="Path to the directory containing the baseline audio recordings which will be used to clone that speaker's voice.",
-    )
-    parser.add_argument(
-        "--skip_inventory",
-        action="store_true",
-        help="Skip generating audio files based on entries from the audio file inventory. Probably not what you want, but maybe useful during testing (for example, to skip directly to the radio check generation).",
-    )
-    parser.add_argument(
-        "--skip_radio_check",
-        action="store_true",
-        help="Skip generating radio check audio clips.",
-    )
-    parser.add_argument(
-        "--overwrite",
-        action="store_true",
-        help="Overwrite existing audio files. Note that if running multiple instances of the script in parallel, this means all replicas will perform all the work each (not what you want).",
     )
     parser.add_argument(
         "--disable_deepspeed",
@@ -107,14 +110,25 @@ def parse_arguments():
         help="Version of the voice pack. This is used in the attribution file and elsewhere to identify newer or alternate versions. The default value is the current date.",
     )
     parser.add_argument(
-        "--cpu_only",
+        "--skip_inventory",
         action="store_true",
-        help="Run the process on the CPU instead of the GPU. This is much slower but is necessary if your PC does not have an CUDA-capable NVIDIA GPU. Implies --disable_deepspeed.",
+        help="Skip generating audio files based on entries from the audio file inventory. Probably not what you want, but maybe useful during testing (for example, to skip directly to the radio check generation).",
+    )
+    parser.add_argument(
+        "--skip_radio_check",
+        action="store_true",
+        help="Skip generating radio check audio clips.",
     )
     parser.add_argument(
         "--keep_invalid_files",
         action="store_true",
         help="Keep invalid .wav files around with a modified name instead of deleting them. This is useful for debugging and understanding why a file was considered invalid, but you'd want to remove these from a final shareable voice pack.",
+    )
+    parser.add_argument(
+        "--max_invalid_attempts",
+        type=int,
+        default=30,
+        help="Maximum number of attempts to generate a valid .wav file before giving up. This is used to prevent the script from getting stuck on a single problematic phrase, but keeping it high naturally encourages higher-quality audio output.",
     )
 
     return parser.parse_args()
@@ -180,8 +194,8 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
     - normalize
     Note that noise is not added since the CrewChief overlays background noise separately.
 
-    You are encouraged to modify these effects to suit your own preferences. It's unfortunately
-    painful to find authoritative documentation for sox.
+    You are encouraged to modify these effects to suit your own preferences. Use `man sox`
+    in a terminal to see full documentation.
     """
 
     sox_command: List[str] = [
@@ -236,7 +250,7 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
     try:
         subprocess.run(sox_command, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")
         # TODO: raise the error for the caller
 
 
@@ -262,7 +276,7 @@ def is_invalid_wav_file(file_path: str, tts_text: str) -> bool:
     )
 
     if is_invalid:
-        print(f"Invalid .wav file detected: {file_path}")
+        logging.error(f"Invalid .wav file detected: {file_path}")
 
     return is_invalid
 
@@ -285,7 +299,7 @@ def detect_invalid_audio_duration(file_path: str, tts_text: str) -> bool:
     actual_duration = audio_info.num_frames / audio_info.sample_rate
 
     if actual_duration > expected_duration:
-        print(
+        logging.warning(
             f"Invalid audio duration detected for text '{tts_text}'. Expected: {expected_duration:.2f}s, Actual: {actual_duration:.2f}s"
         )
         return True
@@ -300,7 +314,7 @@ def detect_invalid_filesize(file_path: str, max_valid_size: int = 1000000) -> bo
     Default is 1MB (1000000 bytes).
     """
     if os.path.getsize(file_path) > max_valid_size:
-        print(f"Invalid file size detected. File too large: {file_path}")
+        logging.warning(f"Invalid file size detected. File too large: {file_path}")
         return True
     return False
 
@@ -332,13 +346,13 @@ def detect_excess_silence(file_path: str, silence_threshold: float) -> bool:
                 duration_str = line.split("silence_duration: ")[-1].split(" ")[0]
                 silence_duration = float(duration_str)
                 if silence_duration > silence_threshold:
-                    print(
+                    logging.warning(
                         f"Excess silence detected in file {file_path}: {silence_duration:.2f} seconds"
                     )
                     return True
 
     except subprocess.CalledProcessError as e:
-        print(f"Error processing file {file_path}: {e}")
+        logging.error(f"Error processing file {file_path}: {e}")
         return False
 
     return False
@@ -350,8 +364,10 @@ def init_xtts_model(cpu_only: bool = False, use_deepspeed: bool = True) -> Any:
     Initialize the Xtts model. This function is cached, so it will only run
     once, and the model will be reused for all subsequent calls.
     """
-    print("xtts - Loading model...")
+    logging.info("xtts - Loading model...")
 
+    # this model path is based on the Docker container's filesystem, so there should
+    # be no need to change this unless the corresponding Dockerfile section changes
     model_path = (
         "/root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2"
     )
@@ -382,7 +398,7 @@ def init_xtts_latents(
 
     Note that this function is cached, so it will only run once.
     """
-    print("xtts - Computing speaker latents...")
+    logging.info("xtts - Computing speaker latents...")
     gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(
         audio_path=list(reference_speaker_wav_paths)
     )
@@ -401,15 +417,14 @@ def generate_speech(
     use_deepspeed: bool = True,
     enable_audio_effects: bool = True,
     keep_invalid_files: bool = True,
+    max_invalid_attempts: int = 30,
 ):
     """
     Create a .wav file based on the input text and the reference speaker's voice.
     """
 
     # until the output passes the is_invalid_wav_file check, keep trying up to this many times
-    max_attempts = 30
-
-    for attempt_idx in range(max_attempts):
+    for attempt_idx in range(max_invalid_attempts):
         # current implementation: coqui_tts
         was_generated = generate_speech_coqui_tts(
             text=text,
@@ -428,7 +443,7 @@ def generate_speech(
 
         if was_generated and is_invalid_wav_file(file_path=file_path, tts_text=text):
             # skip the invalid file check if the file already existed from a previous run
-            print(f"Regenerating invalid .wav file: {output_filename}")
+            logging.info(f"Regenerating invalid .wav file: {output_filename}")
 
             if keep_invalid_files:
                 # keep it around with a modified name
@@ -446,8 +461,8 @@ def generate_speech(
             break
 
     else:
-        print(
-            f"Failed to generate a valid .wav file from the text '{text}' after {max_attempts} attempts: {output_filename}"
+        logging.error(
+            f"Failed to generate a valid .wav file from the text '{text}' after {max_invalid_attempts} attempts: {output_filename}"
         )
 
 
@@ -477,7 +492,7 @@ def generate_speech_coqui_tts(
         full_raw_filename
     )
     if file_exists and not overwrite:
-        print(f"File exists, skipping: {full_output_filename}")
+        logging.info(f"File exists, skipping: {full_output_filename}")
         return False
 
     # ensure the output directory exists
@@ -520,7 +535,7 @@ def generate_speech_coqui_tts(
         # just keep the raw file
         os.rename(full_raw_filename, full_output_filename)
 
-    print(f"Audio file created: {full_output_filename}")
+    logging.info(f"Audio file created: {full_output_filename}")
     return True
 
 
@@ -581,22 +596,19 @@ def apply_replacements(text: str, rules: List[ReplacementRule]) -> str:
     """
     for rule in rules:
         if re.search(rule.regex, text) and random.random() <= rule.probability:
-            print(f"Replacing '{rule.regex}' with '{rule.replacement}' in '{text}'")
+            logging.info(
+                f"Replacing '{rule.regex}' with '{rule.replacement}' in '{text}'"
+            )
             text = re.sub(rule.regex, rule.replacement, text)
-            print(f"New value is: {text}")
+            logging.info(f"New value is: {text}")
     return text
 
 
-def main():
-    """
-    The main entry point for the script
-    """
+def prepare_arguments() -> argparse.Namespace:
+    """Parse command-line arguments and prepare any derived values."""
     args = parse_arguments()
-
-    voicepack_base_dir = f"{args.output_audio_dir}/{args.voice_name}"
-
-    # setup some base parameters which can be reused across calls to the TTS generator
-    tts_args = {
+    args.voicepack_base_dir = f"{args.output_audio_dir}/{args.voice_name}"
+    args.tts_args = {
         "speed": 1.2,
         "temperature": random.uniform(0.2, 0.3),
         "reference_speaker_wav_paths": glob.glob(
@@ -607,218 +619,239 @@ def main():
         "cpu_only": args.cpu_only,
         "use_deepspeed": (not args.disable_deepspeed) and (not args.cpu_only),
         "keep_invalid_files": args.keep_invalid_files,
+        "max_invalid_attempts": args.max_invalid_attempts,
     }
+    return args
 
-    # PHRASES
-    # parse the phrase_inventory.csv file and generate audio files for each entry
-    if not args.skip_inventory:
-        entries = parse_phrase_inventory(args.phrase_inventory)
 
-        # create the output directory
-        relative_output_dir = f"{args.output_audio_dir}/{args.voice_name}"
-        full_output_dir = os.path.abspath(relative_output_dir)
-        os.makedirs(full_output_dir, exist_ok=True)
+def setup_directories_and_files(args: argparse.Namespace) -> None:
+    """Create necessary directories and write attribution and instruction files."""
+    os.makedirs(args.voicepack_base_dir, exist_ok=True)
 
-        # create an attribution text file with some basic provenance, include in the output directory
-        attribution_filename = f"{relative_output_dir}/CREATED_BY.txt"
-        with open(attribution_filename, "w") as f:
-            attribution_text = (
-                "This voice pack was created using crew-chief-autovoicepack\n"
-                "(https://github.com/cktlco/crew-chief-autovoicepack)\n\n"
-                "...for use with the venerable virtual race engineer application CrewChief\n"
-                "(https://thecrewchief.org/)\n"
-                "(https://gitlab.com/mr_belowski/CrewChiefV4)\n\n"
-                "Voice name: {voice_name}\n"
-                "Version {voicepack_version}\n"
+    write_attribution_file(args)
+    write_installation_instructions(args)
+
+
+def write_attribution_file(args: argparse.Namespace) -> None:
+    """Write the attribution file."""
+    attribution_filename = f"{args.voicepack_base_dir}/CREATED_BY.txt"
+    attribution_text = (
+        "This voice pack was created using crew-chief-autovoicepack\n"
+        "(https://github.com/cktlco/crew-chief-autovoicepack)\n\n"
+        "...for use with the venerable virtual race engineer application CrewChief\n"
+        "(https://thecrewchief.org/)\n"
+        "(https://gitlab.com/mr_belowski/CrewChiefV4)\n\n"
+        "Voice name: {voice_name}\n"
+        "Version {voicepack_version}\n"
+    )
+    with open(attribution_filename, "w") as f:
+        f.write(
+            attribution_text.format(
+                voice_name=args.voice_name, voicepack_version=args.voicepack_version
             )
-            f.write(
-                attribution_text.format(
-                    voice_name=args.voice_name, voicepack_version=args.voicepack_version
-                )
-            )
-            print(
-                f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}."
-            )
+        )
+    logging.info(
+        f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}."
+    )
 
-        # create an instructions text file with basic instructions about how to install the voice pack
-        instructions_filename = f"{relative_output_dir}/INSTALLATION_INSTRUCTIONS.txt"
-        with open(instructions_filename, "w") as f:
-            # Define the instructions text with placeholders
-            instructions_text = (
-                "To add this voice pack to CrewChief 4.18.4.0 or similar:\n\n"
-                "1. From the CrewChief menu bar, select `File -> Open voice files folder`\n\n"
-                "2. This will open a File Explorer window to a location such as:\n"
-                "`C:\\Users\\YOUR_NAME\\AppData\\Local\\CrewChiefV4\\Sounds`\n\n"
-                "3. In this folder, you will see a folder called `alt`\n\n"
-                "4. Copy the main `{voice_name}` folder from the voice pack into the `alt` folder\n\n"
-                "5. Confirm that you now have a folder called `...\\CrewChiefV4\\Sounds\\alt\\{voice_name}`\n\n"
-                "6. Make sure to manually move the entire radio check folder at `...\\alt\\{voice_name}\\radio_check_{voice_name}` to `...\\CrewChiefV4\\Sounds\\voice\\radio_check_{voice_name}`\n\n"
-                "7. Restart CrewChief and you will see `{voice_name}` in the dropdown list on the far right\n\n"
-                "8. CrewChief will prompt you to restart again, and you should hear {voice_name} answer the radio check alongside your spotter.\n\n"
-                "9. All done! Give Jim a well-deserved rest and enjoy frustrating a new engineer with your driving.\n\n"
-                "To remove, 1) swap back to Jim in the CrewChief UI.  2) delete the `{voice_name}` folder from `...\\CrewChiefV4\\Sounds\\alt`. 3) delete the `radio_check_{voice_name}` folder from `...\\CrewChiefV4\\Sounds\\voice`.\n"
-            )
-            with open(instructions_filename, "w") as f:
-                f.write(instructions_text.format(voice_name=args.voice_name))
 
-        # Enable a quick way of globally replacing words in the original CrewChief text
-        # before sending it to the text-to-speech step. This section establishes the potential
-        # replacements. See the ReplacementRule examples for more details.
-        replacement_rules = (
-            []
-            if args.disable_text_replacements
-            else generate_replacement_rules(args.your_name)
+def write_installation_instructions(args: argparse.Namespace) -> None:
+    """Write the installation instructions file"""
+    instructions_filename = f"{args.voicepack_base_dir}/INSTALLATION_INSTRUCTIONS.txt"
+    instructions_text = (
+        "To add this voice pack to CrewChief 4.18.4.0 or similar:\n\n"
+        "1. From the CrewChief menu bar, select `File -> Open voice files folder`\n\n"
+        "2. This will open a File Explorer window to a location such as:\n"
+        "`C:\\Users\\YOUR_NAME\\AppData\\Local\\CrewChiefV4\\Sounds`\n\n"
+        "3. In this folder, you will see a folder called `alt`\n\n"
+        "4. Copy the main `{voice_name}` folder from the voice pack into the `alt` folder\n\n"
+        "5. Confirm that you now have a folder called `...\\CrewChiefV4\\Sounds\\alt\\{voice_name}`\n\n"
+        "6. Make sure to manually move the entire radio check folder at `...\\alt\\{voice_name}\\radio_check_{voice_name}` to `...\\CrewChiefV4\\Sounds\\voice\\radio_check_{voice_name}`\n\n"
+        "7. Restart CrewChief and you will see `{voice_name}` in the dropdown list on the far right\n\n"
+        "8. CrewChief will prompt you to restart again, and you should hear {voice_name} answer the radio check alongside your spotter.\n\n"
+        "9. All done! Give Jim a well-deserved rest and enjoy frustrating a new engineer with your driving.\n\n"
+        "To remove, 1) swap back to Jim in the CrewChief UI.  2) delete the `{voice_name}` folder from `...\\CrewChiefV4\\Sounds\\alt`. 3) delete the `radio_check_{voice_name}` folder from `...\\CrewChiefV4\\Sounds\\voice`.\n"
+    )
+    with open(instructions_filename, "w") as f:
+        f.write(instructions_text.format(voice_name=args.voice_name))
+    logging.info(f"Installation instructions written to {instructions_filename}.")
+
+
+def process_phrase_inventory(args: argparse.Namespace) -> None:
+    """Load and process the phrase inventory, generating audio files"""
+    entries = parse_phrase_inventory(args.phrase_inventory)
+
+    if not entries:
+        logging.error("No entries found in the phrase inventory. Exiting.")
+        return
+
+    prepare_replacement_rules(args)
+
+    if not args.original_inventory_order:
+        random.shuffle(entries)
+
+    for entry_idx, entry in enumerate(entries, 1):
+        logging.info(
+            f"Considering phrase {entry_idx} - '{entry.subtitle}' -> '{entry.text_for_tts}'"
         )
 
-        # Shuffle the CrewChief phrases so that the order of the audio file generation is randomized.
-        # This helps multiple instances of the script run in parallel without racing to
-        # generate the same files
-        if not args.original_inventory_order:
-            random.shuffle(entries)
+        process_phrase_entry(entry, args)
 
-        # for each entry in the audio file inventory, generate a speech .wav file
-        for entry_idx, entry in enumerate(entries, 1):
-            print(
-                f"Considering phrase {entry_idx} - '{entry.subtitle}' -> '{entry.text_for_tts}'"
-            )
+    logging.info(f"All entries in {args.phrase_inventory} have been generated.")
+    generate_subtitle_files(entries, args)
 
-            # perform the actual text substitution based on the replacement rules enabled above
-            # also replace any instances of `YOUR_NAME` with user's name)
-            entry.text_for_tts_filtered = (
-                entry.text_for_tts
-                if args.disable_text_replacements
-                else apply_replacements(entry.text_for_tts, replacement_rules)
-            ).replace("YOUR_NAME", args.your_name)
 
-            entry.audio_path_filtered = entry.audio_path.replace(
-                "YOUR_NAME", args.your_name
-            )
-            entry.subtitle_filtered = entry.subtitle.replace(
-                "YOUR_NAME", args.your_name
-            )
+def prepare_replacement_rules(args: argparse.Namespace) -> None:
+    """Prepare text replacement rules"""
+    args.replacement_rules = (
+        []
+        if args.disable_text_replacements
+        else generate_replacement_rules(args.your_name)
+    )
 
-            for variant_id in range(0, args.variation_count + 1):
-                # "Variations" here means creating 1 or more additional audio files
-                # based on the same text. The original CrewChief voice pack has only
-                # one audio file per phrase, but the `variation_count` parameter here
-                # can be set to 1 or more to create additional files with slightly
-                # different pronounciation/enunciation and to give variety. It helps
-                # by giving CrewChief more options to choose from when playing any
-                # particular phrase, which can help reduce the feeling of repetition.
-                #
-                # To add true textual variety, freely add additional rows to the
-                # `phrase_inventory.csv` file, copying from the original entries where you want
-                # to add variety. See README for more details.
-                #
-                # Remember the entire storage required grows by the variant count, and the generated
-                # voices here are already larger since they are saved as 32-bit 24KHz versus the
-                # original 16-bit 22KHz CrewChief files, so a voice pack with 3 variants is ~2GB,
-                # while the original CrewChief voice pack is ~0.5GB.
 
-                if args.variation_count == 0:
-                    # no changes, use the original filename
-                    variant_filename = entry.audio_filename
-                else:
-                    # otherwise, adjust the filename so that it's unique
-                    # CrewChief will happily read any filenames in the directory,
-                    # though there are certain prefix/suffixes it uses to differentiate
-                    # a subset of the generated files (for example, "rushed", "op_prefix", "sweary")
-                    variant_tag = chr(variant_id + ord("a"))  # a-z
-                    variant_filename = f"{entry.audio_filename}-{variant_tag}"
+def process_phrase_entry(entry: CrewChiefAudioFile, args: argparse.Namespace) -> None:
+    """Process a single phrase inventory entry"""
+    entry.text_for_tts_filtered = (
+        entry.text_for_tts
+        if args.disable_text_replacements
+        else apply_replacements(entry.text_for_tts, args.replacement_rules)
+    ).replace("YOUR_NAME", args.your_name)
 
-                # finally, generate and save a .wav file based on the phrase's text
-                generate_speech(
-                    **tts_args,
-                    text=entry.text_for_tts_filtered,
-                    output_path=f"{voicepack_base_dir}{entry.audio_path_filtered}",
-                    output_filename=variant_filename,
-                )
+    entry.audio_path_filtered = entry.audio_path.replace("YOUR_NAME", args.your_name)
+    entry.subtitle_filtered = entry.subtitle.replace("YOUR_NAME", args.your_name)
 
-        print(f"All entries in {args.phrase_inventory} have been generated.")
+    for variant_id in range(0, args.variation_count + 1):
+        variant_filename = generate_variant_filename(
+            entry, variant_id, args.variation_count
+        )
+        generate_speech(
+            **args.tts_args,
+            text=entry.text_for_tts_filtered,
+            output_path=f"{args.voicepack_base_dir}{entry.audio_path_filtered}",
+            output_filename=variant_filename,
+        )
 
-        # SUBTITLES
-        # write subtitles.csv files for each subfolder, following the convention of CrewChiefV4
-        subtitle_entries = {}
-        for entry in entries:
-            if entry.audio_path_filtered not in subtitle_entries:
-                subtitle_entries[entry.audio_path_filtered] = []
-            subtitle_entries[entry.audio_path_filtered].append(
-                (entry.audio_filename, entry.subtitle_filtered)
-            )
 
-        for subtitle_path, entry_details in subtitle_entries.items():
-            subtitle_filename = f"{voicepack_base_dir}{subtitle_path}/subtitles.csv"
+def generate_variant_filename(
+    entry: CrewChiefAudioFile, variant_id: int, variation_count: int
+) -> str:
+    """Generate a filename for a variant of a phrase."""
+    if variation_count == 0:
+        return entry.audio_filename
+    else:
+        variant_tag = chr(variant_id + ord("a"))  # a-z
+        return f"{entry.audio_filename}-{variant_tag}"
 
-            if not args.overwrite and os.path.isfile(subtitle_filename):
-                print(f"Skipping subtitles.csv since it exists at {subtitle_path}")
 
-            else:
-                print(f"Creating subtitles.csv for {subtitle_path}")
-                with open(subtitle_filename, "w") as f:
-                    for audio_filename, subtitle in entry_details:
-                        for variant_id in range(0, args.variation_count + 1):
-                            variant_tag = chr(variant_id + ord("a"))
-                            f.write(
-                                f'{audio_filename}-{variant_tag}.wav,"{subtitle}"\n'
-                            )
+def generate_subtitle_files(
+    entries: List[CrewChiefAudioFile], args: argparse.Namespace
+) -> None:
+    """Generate subtitles.csv files for each subfolder."""
+    subtitle_entries = group_entries_by_path(entries)
 
-        print("All subtitles.csv files have been created.")
+    for subtitle_path, entry_details in subtitle_entries.items():
+        subtitle_filename = f"{args.voicepack_base_dir}{subtitle_path}/subtitles.csv"
 
-    # RADIO CHECK MESSAGES
-    # In addition to the normal audio files covered in the audio file inventory,
-    # CrewChief also supports custom radio check messages aligned to the new
-    # voice pack. This generates a few responses so that you don't have to hear
-    # the same comment every time the app starts. Feel free to prune or supplement.
+        if not args.overwrite and os.path.isfile(subtitle_filename):
+            logging.info(f"Skipping subtitles.csv since it exists at {subtitle_path}")
+        else:
+            logging.info(f"Creating subtitles.csv for {subtitle_path}")
+            write_subtitle_file(subtitle_filename, entry_details, args.variation_count)
+
+
+def group_entries_by_path(entries: List[CrewChiefAudioFile]) -> dict:
+    """Group together phrase_inventory.csv rows from the same folder."""
+    subtitle_entries = {}
+    for entry in entries:
+        if entry.audio_path_filtered not in subtitle_entries:
+            subtitle_entries[entry.audio_path_filtered] = []
+        subtitle_entries[entry.audio_path_filtered].append(
+            (entry.audio_filename, entry.subtitle_filtered)
+        )
+    return subtitle_entries
+
+
+def write_subtitle_file(
+    filename: str, entry_details: List[tuple], variation_count: int
+) -> None:
+    """Create a subtitles.csv file at the given path, using the existing CrewChief convention."""
+    with open(filename, "w") as f:
+        for audio_filename, subtitle in entry_details:
+            for variant_id in range(0, variation_count + 1):
+                variant_tag = chr(variant_id + ord("a"))
+                f.write(f'{audio_filename}-{variant_tag}.wav,"{subtitle}"\n')
+
+
+def generate_radio_checks(args: argparse.Namespace) -> None:
+    """Generate the radio check audio clips"""
+    logging.info("Generating radio check audio clips...")
+    voice_name_tts = args.voice_name_tts or args.voice_name
+    radio_check_phrases = get_radio_check_phrases(voice_name_tts)
+
+    for radio_check_idx, radio_check_phrase in enumerate(radio_check_phrases, 1):
+        logging.info(
+            f"Considering radio check audio clip {radio_check_idx} - {radio_check_phrase}..."
+        )
+        generate_speech(
+            **args.tts_args,
+            text=radio_check_phrase,
+            output_path=f"{args.voicepack_base_dir}/radio_check_{args.voice_name}/test",
+            output_filename=f"{radio_check_idx}",
+        )
+    logging.info("All radio check audio clips have been generated.")
+
+
+def get_radio_check_phrases(voice_name_tts: str) -> List[str]:
+    """Return a list of radio check phrases"""
+    return [
+        f"Engineer {voice_name_tts} confirming radio",
+        "Radio's loud and clear",
+        "Copy that, radio check",
+        "Loud and clear",
+        "Radio check",
+        "You're coming in clear",
+        f"{voice_name_tts} here, ready to help",
+        f"{voice_name_tts} reading you, radio check",
+        "Radio's good",
+        "Clear signal, all good",
+        "Check, check, radio's fine",
+        "Radio's up, you're clear",
+        "Loud and clear, over",
+        "Radio check, all systems go",
+        "You're clear on my end",
+        "Radio's strong",
+        "All good, radio's clear",
+        "Copy, loud and clear",
+        "Check",
+        "Signal's clear, radio check",
+        "You're loud and clear",
+    ]
+
+
+def main():
+    """The main entry point for the script."""
+    args = prepare_arguments()
+    setup_directories_and_files(args)
+
+    if not args.skip_inventory:
+        process_phrase_inventory(args)
+
     if not args.skip_radio_check:
-        print("Generating radio check audio clips...")
-        voice_name_tts = args.voice_name_tts or args.voice_name
-        # feel free to edit any or all of these to make your own custom phrases
-        radio_check_phrases = [
-            f"Engineer {voice_name_tts} confirming radio",
-            "Radio's loud and clear",
-            "Copy that, radio check",
-            "Loud and clear",
-            "Radio check",
-            "You're coming in clear",
-            f"{voice_name_tts} here, ready to help",
-            f"{voice_name_tts} reading you, radio check",
-            "Radio's good",
-            "Clear signal, all good",
-            "Check, check, radio's fine",
-            "Radio's up, you're clear",
-            "Loud and clear, over",
-            "Radio check, all systems go",
-            "You're clear on my end",
-            "Radio's strong",
-            "All good, radio's clear",
-            "Copy, loud and clear",
-            "Check",
-            "Signal's clear, radio check",
-            "You're loud and clear",
-        ]
-        for radio_check_idx, radio_check_phrase in enumerate(radio_check_phrases, 1):
-            print(
-                f"Considering radio check audio clip {radio_check_idx} - {radio_check_phrase}..."
-            )
-            generate_speech(
-                **tts_args,
-                text=radio_check_phrase,
-                # since the CrewChief-required location for radio_check messages is outside the voicepack
-                # root directory, the user will need to move it there manually
-                # "test" is the official CrewChief folder name for radio check messages
-                output_path=f"{voicepack_base_dir}/radio_check_{args.voice_name}/test",
-                output_filename=f"{radio_check_idx}",
-            )
-        print("All radio check audio clips have been generated.")
+        generate_radio_checks(args)
 
     # TODO: generate audio for the driver_names folder, optionally either including all the CrewChief names
     #       (from a static JSON file in this repo) or just a single name based on args.your_name with a dozen variants
+    # if not args.skip_driver_names:
+    #     generate_driver_names(args)
 
     # TODO: generate optional spotter audio pack
+    # if not args.skip_spotter:
+    #     generate_spotter(args)
 
-    print("All done.")
+    logging.info("Voice pack generation complete.")
 
 
 if __name__ == "__main__":
-    print("Starting...")
+    logging.info("Starting...")
     main()

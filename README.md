@@ -19,8 +19,9 @@
 TBD
 
 
-## Download new voicepacks created by crew-chief-autovoicepack
-Make your own, or download one of these ready-to-go, full replacement voices for CrewChief. Unzip and copy files as mentioned below. Over 27,000 .wav files in each.
+## In a hurry? Download an existing voicepack
+Make your own, or download one of these ready-to-go, full replacement voices for CrewChief.
+Unzip and copy files as [mentioned](#common-task-add-your-new-voice-pack-to-crewchief). Over 27,000 .wav files in each.
 - Sally
 - Don
 - Blake
@@ -37,9 +38,15 @@ Make your own, or download one of these ready-to-go, full replacement voices for
 - Madeline
 
 
+## Quickstart
+1. Prepare 30 seconds of audio -- record your own voice or use ElevenLabs
+2. Run `generate_voice_pack.py` from a Docker container ([full instructions](#common-task-generate-a-full-crewchief-voice-pack)).
+3. Add the new voice pack to CrewChief ([full instructions](#common-task-add-your-new-voice-pack-to-crewchief)).
+
+
 ## Known Issues
-- poor or incorrect TTS pronounciations (driver names, corner names, etc.)
-- very garbled or corrupt audio (a few percent of the total)
+- occasional poor or incorrect TTS pronunciations (driver names, corner names, etc.)
+- occasional garbled or corrupt audio (a few percent of the total)
 - generated voices do not exactly match the original speaker's voice
 - speed/pace is not easily adjustable (i.e. "rushed" CrewChief phrases are not rushed)
 - minor: may adopt incorrect accent or diminish original accent on certain phrases
@@ -47,37 +54,61 @@ Make your own, or download one of these ready-to-go, full replacement voices for
 - minor: voicepack name must use ASCII characters (e.g. UTF-8 chars like é, ñ, are not supported)
 
 
-## Possible Future Improvements
-- Support creating new spotter voices
-- Incorporate RVC (Real Voice Cloning) to better match the original speaker's voice -- this would take the TTS generated audio and post-process it to sound even more like the original. Could also be applied to the original CrewChief "Jim" voice pack audio to retain the emotional inflection and pacing (though unavoidably inheriting the regional jargon and matey-ness).
-- Support other text-to-speech services and models
-- Automate multilingual machine translation
+## Common Task: Bootstrap your voice pack with an Elevenlabs.io voice 
+[Elevenlabs.io](https://elevenlabs.io/) provides a professional-quality text-to-speech service that can be used to generate high-quality baseline recordings for use with `crew-chief-autovoicepack`. This is a great way to create a voice pack that sounds similar to a professional voice actor you choose.
+
+1. Sign up for a free account at [Elevenlabs.io](https://elevenlabs.io/). Note your API key.
+2. Browse the library and select the voice you want to use as the baseline for your voice pack
+3. Find the "voice id" from the URL of the voice (from the Elevenlabs.io "voices" page)
+4. Use the provided `record_elevenlabs_voice.py` script to create the baseline audio files:
+```
+# from the running container
+> python3 record_elevenlabs_voice.py --eleven_labs_api_key XXXXXXX --voice_id XXXXXXX --voice_name Luis
+```
+5. The script will generate a folder of ~20 "baseline" speech audio files based on this voice in the `baseline` folder, including automatically normalizing and trimming silence.
+```
+> python3 generate_voice_pack.py --voice_name 'Luis' ...
+```
+6. You are now ready to generate a full voice pack using this voice as the baseline.
 
 
-## Quickstart: Generate a new voice pack
-The only required software on your machine is a working installation of Docker (and optionally Nvidia CUDA GPU drivers for Docker).
+## Common Task: Prepare recordings of your favorite voice
+As an alternative to using an Elevenlabs.io voice, record yourself or use an existing source like a YouTube video (via a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)).
 
-The core concept is to launch a "Docker container" which is a lightweight, isolated Linux environment that runs the crew-chief-autovoicepack code. You'll enable the container to access your GPU (optional), phrase inventory, and your baseline audio recordings. The container will generate the audio files for your new voice pack, which will be saved to the output folder on your local machine.
+1. Record at least 3x 10-second clips of the voice for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
+2. Trim the recordings to remove all silence at the beginning or end of every file, and remove silence longer than ~0.4 seconds from the middle of any file.
+3. Save the recordings as 32-bit float PCM WAV files with a 22.5 kHz sample rate and mono channel.
+4. See the ["Common Task: My generated voice pack sounds a lot worse..."](#common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) section on this page for more recommendations on capturing audio.
 
-Windows or Mac users can install this via [Docker Desktop](https://docs.docker.com/desktop/), while Linux users can install Docker via their OS package manager or the official installation instructions.
 
-Docker Desktop users: note that all instructions here will be performed via the command line, so ensure the basic Docker hello-world tests work before proceeding.
+## Common Task: Generate a full CrewChief voice pack
+_Pre-requisite: At least 3x 10-second audio clips of your chosen voice._
+
+This is an automated process. The only required software on your machine is a working installation of Docker.
+
+The core concept is to launch a temporary "Docker container" which is a lightweight, isolated Linux environment that runs the crew-chief-autovoicepack code. You'll enable the container to access your GPU (optional), phrase inventory, and your baseline audio recordings. The container will generate the audio files for your new voice pack, which will be saved to the output folder on your local machine. Using the Docker container enables you to run a very sophisticated software environment on your own machine without having to manually manage the dozens of required Python packages, OS packages, and other dependencies yourself.
+
+Windows or Mac users can install Docker via [Docker Desktop](https://docs.docker.com/desktop/), while Linux users can install via OS package manager or the official installation instructions.
+
+Note that all instructions here will be performed via the command line (not via the Docker Desktop GUI), so ensure the basic Docker hello-world tests work from a fresh terminal window before proceeding.
 
 
 ### STEP 1. Install Docker
 **Windows/Mac**: https://docs.docker.com/desktop/install/
 
-On Windows, Docker Desktop also requires WSL2 (Windows Subsystem for Linux) to be installed and enabled, which is covered in the Docker instructions. WSL2 and Docker Desktop will also enable GPU access to your Docker containers.
+On Windows, Docker Desktop also requires WSL2 (Windows Subsystem for Linux) to be installed and enabled, which is covered in the Docker instructions. WSL2 and Docker Desktop also enable GPU access to your Docker containers.
 
 
 **Linux**: https://docs.docker.com/engine/install/
  ... and enable Linux support for GPU containers: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
+
 ### STEP 2. Download the crew-chief-autovoicepack Docker image with:
 ```
-docker pull crew-chief-autovoicepack:v0.1
+docker pull TBD-REPONAME/crew-chief-autovoicepack:v0.1
 ```
 You can confirm this step worked with `docker image list crew-chief-autovoicepack`.
+
 
 ### STEP 3. Start a container to run the downloaded image
 
@@ -93,9 +124,9 @@ docker run -it --rm --gpus all --name crew-chief-autovoicepack -v ~/crew-chief-a
 
 Important:
 - Change the first part of the mounted folder path above (`-v ...`) to a location on your local machine where you want the generated audio files to be saved. Don't change the part after the colon (`:/app/output`).
-- Remember to include the `--gpus all` parameter if you have a CUDA-capable NVIDIA GPU and want to use it for the voice pack generation. If you don't have a GPU, you can run in CPU-only mode, which is slower but works the same way.
+- Remember to include the `--gpus all` parameter if you have a CUDA-capable NVIDIA GPU and want to use it for the voice pack generation.
 
-`docker run -it ...` will create a new container and drop you into a bash prompt:
+Running `docker run -it ...` will create a new container and drop you into a bash prompt:
 ```
 crew-chief-autovoicepack > 
 ```
@@ -105,20 +136,22 @@ crew-chief-autovoicepack >
 From there, run the `generate_voice_pack.py` script to start generating audio files for your new voice pack.
 
 ```
-> python3 generate_voice_pack.py --your_name '' --voice_name 'Luis'
+> python3 generate_voice_pack.py --your_name 'Champ' --voice_name 'Luis'
 ```
 
-You will need to provide at least the `--voice_name` parameter, but feel to investigate the other parameters with `python3 generate_voice_pack.py --help` or see an explanation elsewhere on this page.
+You will need to provide at least the `--voice_name` parameter, but feel to investigate the other options with `python3 generate_voice_pack.py --help` or see an explanation elsewhere on this page.
+
+The `voice_name` you provide will be used to load the baseline audio recordings from the voice you are cloning (from the `baseline\<voice_name>` folder), and will save the generated audio files in the `output` folder you mounted into the container. You populated the `baseline` folder in a previous step.
 
 Note the requirement to include `--cpu_only` on the command line **when not running with an nvidia GPU**.
 
-Logs will start to flow, showing the progress of the audio file generation. You can monitor the progress and any errors that occur, and stop the container at any time by pressing Ctrl+C in the terminal or with `docker stop crew-chief-autovoicepack` from another terminal window.
+Within a few minutes, logs will start to flow showing the progress of the audio file generation. You can monitor the progress and any errors that occur, and stop the container at any time by pressing Ctrl+C in the terminal or with `docker stop crew-chief-autovoicepack` from another terminal window.
 
 Optional: To run multiple of containers at once to greatly speed up the process, see the instructions elsewhere on this page.
 
-Eventually, the script will create all ~10K audio files with the messages `All entries in phrase_inventory.csv have been generated.` and `All radio check audio clips have been generated.`.
+Eventually, the script will complete generation of all ~30K+ audio files with the messages `All entries in phrase_inventory.csv have been generated.` and `All radio check audio clips have been generated.`.
 
-Once complete, you will now have a full voice pack in the `output` folder you mounted to your local machine. You can now add this voice pack to your CrewChief installation and enjoy a break from Jim!
+You will now have a full voice pack in the `output` folder you mounted from your local machine. Add this voice pack to your CrewChief installation and enjoy a break from Jim!
 
 
 ## Common Task: Add your new voice pack to CrewChief
@@ -142,25 +175,28 @@ As an example, consider a voicepack with the root folder `Luis`.
 5) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
 
 
-## Common Question: What other parameters can I use with the `generate_voice_pack.py` script?
-| Parameter                     | Description                                                                                                                                                                                                                                 |
-|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--voice_name`                | Your custom name for this voice. Will be used as output folder name and appear in the CrewChief UI. Spaces will be removed, and probably avoid using UTF-8 and other characters.                                                            |
-| `--voice_name_tts`            | The name of the voice as it should be pronounced by the Text-to-Speech engine. For example, you may have a voice_name of 'Luis' but a voice_name_tts of 'Luees'. If not provided, the voice_name will be used.                              |
-| `--your_name`                 | Your name, used by the Crew Chief to refer to you personally, baked into the generated audio. Defaults to empty text.                                                                                                                       |
-| `--variation_count`           | Number of additional variations to generate for each audio file. Set to 0 to disable variations.                                                                                                                                            |
-| `--output_audio_dir`          | Path to the folder where the generated audio files will be saved.                                                                                                                                                                           |
-| `--disable_audio_effects`     | Prevent applying audio effects to the generated audio files.                                                                                                                                                                                |
-| `--disable_text_replacements` | Prevent applying text replacement rules to the generated audio files. Add or modify rules directly in generate_voice_pack.py.                                                                                                               |
-| `--phrase_inventory`      | Path to the CSV file containing the phrase inventory.                                                                                                                                                                                   |
-| `--original_inventory_order`  | Do not randomize the order of the audio files in the inventory. Recommended to keep shuffling enabled when running multiple instances of the script in parallel.                                                                            |
-| `--baseline_audio_dir`        | Path to the folder containing the baseline audio recordings which will be used to clone that speaker's voice.                                                                                                                               |
-| `--skip_inventory`            | Skip generating audio files based on entries from the phrase inventory. Probably not what you want, but maybe useful during testing (for example, to skip directly to the radio check generation).                                      |
-| `--skip_radio_check`          | Skip generating radio check audio clips.                                                                                                                                                                                                    |
-| `--overwrite`                 | Overwrite existing audio files.                                                                                                                                                                                                             |
-| `--disable_deepspeed`         | Skip DeepSpeed during inference. Recommended to keep it enabled if possible as inference (TTS generation) is much faster, but it causes a longer startup time and noisy logs so may be helpful to disable during certain development steps. |
-| `--voicepack_version`         | Version of the voice pack. This is used in the attribution file and elsewhere to identify newer or alternate versions. The default value is the current date.                                                                               |
-| `--cpu_only`                  | Run the process on the CPU instead of the GPU. This is much slower but is necessary if your PC does not have an CUDA-capable NVIDIA GPU. Implies --disable_deepspeed.                                                                       |
+## Common Question: Which options can I use with the `generate_voice_pack.py` script?
+| Option Name                   | Description                                                                                                                                                                    |
+|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--voice_name`                | Your custom name for this voice. Will be used as output directory name and appear in the CrewChief UI. Spaces will be removed. Avoid using UTF-8 and other special characters. |
+| `--voice_name_tts`            | The name of the voice as it should be pronounced by the TTS engine. If not provided, the `voice_name` will be used.                                                            |
+| `--your_name`                 | Your name, used by the Crew Chief to refer to you personally, baked into the generated audio.                                                                                  |
+| `--variation_count`           | Number of additional variations to generate for each audio file. Set to 0 to disable variations.                                                                               |
+| `--cpu_only`                  | Run the process using the CPU only, ignoring any available GPUs. Implies `--disable_deepspeed`.                                                                                |
+| `--output_audio_dir`          | Path to the directory where the generated audio files will be saved.                                                                                                           |
+| `--original_inventory_order`  | Do not randomize the order of the audio files in the inventory. Recommended to keep shuffling enabled when running multiple instances in parallel.                             |
+| `--phrase_inventory`          | Path to the CSV file containing the list of audio files to create alongside the text used to generate them.                                                                    |
+| `--baseline_audio_dir`        | Path to the directory containing the baseline audio recordings to clone the speaker's voice.                                                                                   |
+| `--overwrite`                 | Overwrite existing audio files. If running multiple instances in parallel, all replicas will perform the work.                                                                 |
+| `--disable_audio_effects`     | Prevent applying audio effects to the generated audio files.                                                                                                                   |
+| `--disable_text_replacements` | Prevent applying text replacement rules to the generated audio files.                                                                                                          |
+| `--disable_deepspeed`         | Skip DeepSpeed during inference. Useful to disable during certain development steps.                                                                                           |
+| `--voicepack_version`         | Version of the voice pack, used in the attribution file and elsewhere to identify newer or alternate versions.                                                                 |
+| `--skip_inventory`            | Skip generating audio files based on entries from the audio file inventory. Useful during testing.                                                                             |
+| `--skip_radio_check`          | Skip generating radio check audio clips.                                                                                                                                       |
+| `--keep_invalid_files`        | Keep invalid `.wav` files around with a modified name instead of deleting them. Useful for debugging and understanding why a file was considered invalid.                      |
+| `--max_invalid_attempts`      | Maximum number of attempts to generate a valid audio file before giving up. Defaults to 30.                                                                                    |
+
 
 
 ## Common Task: Restart a running crew-chief-autovoicepack container
@@ -176,9 +212,17 @@ crew-chief-autovoicepack has mostly [idempotent](https://en.wikipedia.org/wiki/I
 
 The overall duration depends on the number of phrases in the CrewChief phrase inventory (~10,000 by default), the container host machine's CPU/GPU/RAM, whether crew-chief-autovoicepack is running with a GPU or in CPU-only mode, the number of variants (the `--variant_count` parameter), and the number of containers running in parallel.
 
-In general, a single `docker run` container in CPU-only mode will take several minutes to initialize, then should start generating audio files, with each generation taking a few seconds or less. The number of these steps can be estimated as the number of phrases in the phrase inventory multiplied by the number of variants.
+In general, a single `docker run` container in CPU-only mode will take several minutes to initialize. It should then start generating audio files, with each generation taking a few seconds or less. The number of these steps can be estimated as the number of phrases in the phrase inventory multiplied by the number of variants.
 
 A 24GB GPU (RTX 4090/3090) will enable running 8 replicas in parallel (see instructions on this page), each many times faster than the CPU version. 16GB GPUs (RTX 4080/4070/4060Ti) or lower will support proportionally fewer replicas before being constrained by GPU VRAM. Even with a 8GB GPU and a single container running the audio generation script, using a GPU will be much faster than the CPU-only mode.
+
+
+## Common Question: How much storage space is used by each voicepack?
+A typical `crew-chief-autovoicepack` voicepack is 2GB or more.
+
+The official CrewChief "Jim" audio files are ~0.5GB.
+
+The .wav files generated by `crew-chief-autovoicepack` are (perhaps unnecessarily) larger since they are stored with 32-bit resolution at 24KHz. There are also many more .wav files in your new voicepack due to the `--variation_count` parameter, which defaults to 2, but can be set to 0 to disable variations and save storage space (or higher to potentially generate more varied audio at the cost of storage).
 
 
 ## Common Question: Can I remove individual audio files from the output folder?
@@ -193,36 +237,41 @@ Note that CrewChief itself doesn't care how many files are in each folder, so th
 Additionally, this means you can reduce variety by deleting any files you want as long as there is at least one file left in the folder. If you want to remove a file (and its variants ending in '-1.wav', '-2.wav', etc.) permanently across multiple runs, edit the phrase inventory to remove the corresponding rows entirely.
 
 
-## Common Question: Everyone hates Docker... why is this packaged exclusively as a Docker image??
-Docker has a long history of being painful to install, configure, update, bullky and slow, etc ... but the benefits here are undeniable:
+## Common Question: The logs show a lot of "invalid" files being generated, what's going on?
+This is a side effect of using a generative ML model to perform the text-to-speech process. Under normal circumstances, the model output is frequently garbled and unusable (maybe 10% or more of the time), but by employing a few simple checks on the audio file duration, size, and amount of silence, the crew-chief-autovoicepack can automatically detect the invalid output and regenerate the file up to `--max_invalid_attempts` times which greatly improves the chances of producing valid, natural-sounding speech.
 
-1) Enables CrewChief voice pack creation for the widest audience possible
-2) A Docker image built today will continue to function the same even if run many years from now
-3) It can be nightmarish even for technical users to identify and solve all the Python dependencies and OS packages needed to install and run advanced machine learning models reliably from their own machine.
-4) No conda envs or virtualenvs to manage, No dependency hell or conflicting versions of tools and APIs
-5) Easily supports all relevant hardware configurations (CPU-only, CUDA GPU, etc.) and operating systems
-6) Packages multiple gigabytes of complex dependencies into a single file, easily downloadable with friendly tools like `docker pull` or the Docker Desktop GUI
-7) Trivial to run multiple replicas in parallel to speed up computation (via Docker Compose)
-8) Can be run on a cloud server just as easily as a local machine
+
+## Common Question: Everyone hates Docker... why is this packaged exclusively as a Docker image??
+
+Docker has a long history of being painful to install, configure, and manage, but the benefits here are undeniable:
+
+1. **Cross-Platform Consistency**: Enables CrewChief voice pack creation for the widest audience possible, across all operating systems.
+2. **Isolation and Reproducibility**: A Docker image built today will continue to function the same even years from now. This isolation ensures that the environment inside the container doesn't conflict with other software on your machine.
+3. **Dependency Management**: It can be nightmarish even for technical users to identify and solve all the Python dependencies and OS packages needed to run advanced machine learning models reliably on their own machines. Docker encapsulates these dependencies, so you don't have to worry about version conflicts or package management.
+4. **Ease of Use**: Docker allows you to bypass complex setup procedures (Python virtual environments, installing CUDA for GPU support, etc.), making it easy to run sophisticated software without deep technical knowledge.
+5. **Portability**: Docker images are portable and can be shared or deployed across different environments (local machines, cloud servers) with minimal effort.
+6. **Parallelization**: Docker makes it trivial to run multiple instances in parallel to speed up computation, especially beneficial when generating large voice packs.
+7. **Resource Efficiency**: While Docker does introduce some overhead, it generally runs efficiently, utilizing your system's resources without compromising isolation. Docker only uses system resources to run the containers you explicitly request, and does not add extra background processes.
+
 
 
 ## Common Task: Running multiple containers in parallel to speed up voice pack generation
 To speed up the process of generating a voice pack, you can run multiple containers in parallel on the same machine. This is useful in both CPU-only and GPU modes.
 
-Instead of starting a single instance of the Docker container with `docker run ...` you can use Docker Compose and the crew-chief-autovoicepack `docker-compose.yml` file to start, stop, and restart multiple containers at once.
+Instead of starting a single instance of the Docker container with `docker run ...` you can use Docker Compose and the provided `docker-compose.yml` file to start, stop, and restart multiple containers at once.
 
-1. Edit the `docker-compose.yml` file to specify the number of containers you want to run in parallel.
+1. Edit the `docker-compose.yml` file to specify the number of containers you want to run in parallel ("replicas").
 2. Ensure you have downloaded the crew-chief-autovoicepack Docker image with `docker pull crew-chief-autovoicepack:v0.1`. You can confirm this with `docker image list crew-chief-autovoicepack`.
 3. Start the containers with `docker compose up -d crew-chief-autovoicepack`
 4. Monitor the progress of the audio generation with `docker compose logs -f`
 5. Stop the containers with `docker compose down`
 6. Repeat as needed to generate all the audio files for your voice pack.
 
-NOTE: Annoyingly, there is a difference between `docker-compose` (dash) and `docker compose` (space), based on legacy choices around installing Docker Compose as a plugin versus standalone. `docker compose` is the correct version, and hopefully works for you from the command line ("Command Prompt", "Terminal", etc. depending on your operating system). If you installed Docker Desktop for Windows or macOS, you should have `docker compose` available by default, and should not need to install anything additional.
+NOTE: Annoyingly, there is a difference between `docker-compose` (dash) and `docker compose` (space), based on legacy choices around installing Docker Compose as a plugin versus standalone. `docker compose` is the correct version, and hopefully works for you from the command line ("Command Prompt", "Terminal", etc. depending on your operating system). If you installed Docker Desktop for Windows or macOS, you should have `docker compose` available by default, and will not need to install anything additional.
 
 
 ## Common Question: How do I know it's working/running/progressing?
-After starting the container via `docker run ...` and from the shell prompt starting the `generate_voice_pack.py` script, you will see initialization messages for several minutes (especially if DeepSpeed is enabled), but eventually you should see a stream of messages indicating the progress of the audio file generation:
+After starting the container via `docker run ...` and from the shell prompt starting the `generate_voice_pack.py` script, you will see initialization and warning log messages for several minutes (especially if DeepSpeed is enabled), but eventually you should see a stream of logs indicating the progress of the audio file generation:
 
 ```
 Generating audio for 80 - 'right 5' -> 'right 5'
@@ -231,7 +280,7 @@ File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-b.wav
 File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-c.wav
 ```
 
-These messages will continue until the script has processed all the phrases in the phrase inventory. If you see no messages for a long time, it is safe to investigate, including stopping or restarting the container again later (see relevant question elsewhere on this page). In the example above, it's generating audio files for the 80th phrase in the phrase inventory, out of a total of almost 10,000 phrases.
+These messages will continue until the script has processed all the phrases in the phrase inventory. If you see no messages for a long time, it is safe to investigate, including stopping or restarting the container again later (see relevant question elsewhere on this page). In the example above, it's generating audio files for the 80th phrase in the phrase inventory, out of a total of almost 10,000 phrases. Keep in mind that the order of phrase generation is purposefully randomized compared to the original csv file, so "audio file 80" in the example above is not the 80th row in the csv file (search instead for `corner_5_right_reversed` to find the correct row).
 
 When running multiple containers in parallel via `docker compose`, you can view the logs of all replica containers at once with `docker compose logs -f` (Ctrl+C to exit).
 
@@ -248,15 +297,7 @@ No, since you mounted a local folder into the container, all the generated audio
 
 
 ## Common Question: I made a change while the process was running, will it be picked up? What about the previously created audio files?
-If you make a change to the `generate_voice_pack.py` script or the `phrase_inventory.csv` file while the process is running, the changes will not be picked up until you stop and restart the container (and even in that case, you'll see changes if those individual files are directly mounted into the container as shown elsewhere here).
-
-
-## Common Question: How much storage space is used by each voicepack?
-A typical `crew-chief-autovoicepack` voicepack is 2GB or more.
-
-The official CrewChief "Jim" audio files are ~0.5GB.
-
-The .wav files generated by `crew-chief-autovoicepack` are (perhaps unnecessarily) larger since they are stored with 32-bit resolution at 24KHz. There are also many more .wav files in your new voicepack due to the `--variation_count` parameter, which defaults to 2, but can be set to 0 to disable variations and save storage space (or higher to potentially generate more varied audio at the cost of storage).
+If you make a change to the `generate_voice_pack.py` script or the `phrase_inventory.csv` file while the process is running, the changes will not be picked up until you stop and restart the container (and even in that case, you'll only see changes if those individual files are directly mounted into the container as shown elsewhere here). Rebuilding the Docker image (`docker build ...`) ensures that your changes are incorporated into the container, but this is not necessary for simple changes. Entirely new filenames may need a corresponding `COPY` command in the Dockerfile, for example if you make a copy of the `phrase_inventory.csv` with a new name. Alternately, you can always mount the new file over the originally expected name, i.e. `docker run ... -v /my_renamed_phrase_inventory.csv:/app/phrase_inventory.csv`
 
 
 ## Common Question: I have plenty of disk space, why shouldn't I set variation_count to 25 or more?
@@ -286,9 +327,9 @@ Understanding this, **you can add your own phrases** to the voice pack by editin
 
 For example, if you want to add a new phrase which is played when CrewChief looks for audio intended for `didn't understand`, add a new row to `phrase_inventory.csv` file like this:
 
-| audio_filename                               | original_text                      |
-|----------------------------------------------|------------------------------------|
-| \voice\acknowledge\didnt_understand:15.wav   | I have no idea what you're saying! |
+| audio_filename                               | original_text                           |
+|----------------------------------------------|-----------------------------------------|
+| \voice\acknowledge\didnt_understand:15.wav   | I have no idea what you're saying, man! |
 
 ...and now alongside the existing 14 official phrases that will be generated and output to the `../didnt_understand` folder, `crew-chief-autovoicepack` will generate a new totally custom "I have no idea what you're saying!" audio clip.
 
@@ -302,7 +343,7 @@ Recommended places to start:
 - Add a bunch of custom celebratory messages to `\voice\lap_counter\finished_race_good_finish`
 - Berate your terrible performance with new rows for `\voice\lap_counter\finished_race_last`
 - In general, start with the same value for the `text_for_tts` column the same as `original_text`
-- Perfect the bad pronounciation of your favorite corners in `\voice\corners` by adding a different value for the `text_for_tts` column.
+- Perfect the bad pronunciation of your favorite corners in `\voice\corners` by adding a different value for the `text_for_tts` column.
 
 
 ## Common Question: My generated voice pack sounds a lot worse and has a lot more corrupted audio files than the official repo's voice packs. What will improve my results?
@@ -320,7 +361,7 @@ The source of your issues is very likely from imperfections in the input audio r
   9) Don't obsess over capturing the voice in a wide emotional range, as the xtts model tends to diminish those aspects anyway. Similarly, be deliberate, but don't worry too much about capturing a specific phonetic range -- it's hard to figure out which details will make it into the cloned voice without experimenting.
 
 Other tips:
-- Use a modern audio file editor (ocenaudio, Audacity, etc.) to view the waveform for each audio clip.
+- Use a modern audio file editor ([ocenaudio](https://www.ocenaudio.com/), Audacity, etc.) to view the waveform for each audio clip.
 - Look at the provided voice recordings in the repo's `baseline` folder for examples of what recorded voice clips should look like.
 - The `record_elevenlabs_voice.py` script automatically captures an appropriate number of suitable-length high-quality voice samples, applying suitable audio effects such as normalization, and saving them in the correct format.
 - Audio from YouTube videos (for example, captured from an interview with a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)) is generally usable after applying ALL the considerations above, but the speaker's voice needs to be 100% isolated with no background noise, music, chatter, etc.
@@ -341,7 +382,7 @@ I've not done this since I only use English, but here's a rough outline of sugge
 - Machine-translate the `original_text` column of `phrase_inventory.csv` using an LLM like ChatGPT. This can be done iteratively, copy/pasting an acceptable number of rows at a time to the LLM, or fully automated via API calls.
 - After translation, manually review the csv file in a tool like Excel or LibreOffice Calc
 - Manually edit any translations that are incorrect
-- Optionally, tweak the TTS pronounciation column for troublesome entries
+- Optionally, tweak the TTS pronunciation column for troublesome entries
 - Generate the voicepack using the normal process
   - Important: ensure that your updated `phrase_inventory.csv` file is mounted into the container using the `docker run ... -v ...` command line parameter.
   - For example, use `docker run ... -v /path/to/MY_CUSTOM_phrase_inventory.csv:/app/phrase_inventory.csv ...` to override the default phrases with your translated phrases.
@@ -353,37 +394,20 @@ The coqui xtts model is multilingual and should work well with many languages, b
 
 ## Common Task: Package a voice pack to share with other users
 - Create a voice pack (e.g. `Luis`) using the normal process
-- Zip the voice pack folder (e.g. `Luis`) and share it with others
+- Zip the entire voice pack folder (e.g. `Luis`) and share it with others
 
-If you have a reason to create multiple below-2GB zip files for the voice pack, you may use the optional `zip_voice_pack.sh` script. This is relevant primarily because the voice pack downloads on this page are hosted by GitHub Releases, which limits files to 2GB or less. Since you will be providing the download link from a different provider, you may not have this same requirement, and a single larger file may be more convenient.
+If you have a reason to keep the size of each zip file below 2GB, feel free to use the provided `zip_voice_pack.sh` script. This is relevant primarily because the voice pack downloads on this page are hosted by GitHub Releases, which limits files to 2GB or less. Since you will be providing the download link from a different provider, you may not have this same requirement, and a single larger file may be more convenient in your case.
 ```
 # if needed, from the root directory of the running container
 ./zip_voice_pack.sh output/Luis
 ```
 
 **Want to contribute your new voice pack to the community?**
-- Ensure you used something neutral like `''` for the `--your_name` parameter when running `generate_voice_pack.py`. This will avoid your voice pack from being littered with references to your personal name (which are otherwise cool). Alternatively, just remove the ReplacementRule which adds those references.
+- Ensure you used something neutral like `'Champ'` for the `--your_name` parameter when running `generate_voice_pack.py`. This will prevent your public-facing voice pack from including references to your personal name. Alternatively, just remove the ReplacementRule which adds those references.
 - Zip the entire voice pack folder (e.g. `output/Luis`)
 - Upload the zip file to a publicly-accessible location (Google Drive, OneDrive, Dropbox, Mediafire, Mega.nz, etc.)
 - Use the Issues tab at top of this page to create an Issue with an explanation and link to the file.
 - I will review and add the link to the list of voice packs available for download.
-
-
-## Common Task: Create baseline recordings using an Elevenlabs.io voice 
-Elevenlabs.io provides a professional-quality text-to-speech service that can be used to generate high-quality baseline recordings for use with `crew-chief-autovoicepack`. This is a great way to create a voice pack that sounds like a professional voice actor.
-
-1. Sign up for a free account at Elevenlabs.io
-2. Browse the library and select the voice you want to use as the baseline for your voice pack
-3. Find the "voice id" from the URL of the voice (from the Elevenlabs.io "voices" page)
-4. Use the provided `record_elevenlabs_voice.py` script to create the baseline audio files:
-```
-# from the running container
-> python3 record_elevenlabs_voice.py --eleven_labs_api_key XXXXXXX --voice_id XXXXXXX --voice_name Luis
-```
-5. The script will generate a folder of ~20 baseline speech audio files based on this voice in the `baseline` folder. This folder matches the default location of the `--baseline_audio_dir` parameter used by `generate_voice_pack.py`, so you are now ready to generate a new voice pack based on this `voice_name` (see instructions elsewhere on this page).
-```
-> python3 generate_voice_pack.py --voice_name 'Luis' ...
-```
 
 
 ## Common Question: When I use one of the voice packs downloaded from this page, why does the new CrewChief voice have frequent garbled or weird speech output?
@@ -396,12 +420,12 @@ Improving the quality of the reference audio files used for voice cloning helps 
 ... which would definitely help, but these mitigations have not yet been implemented.
 
 
-## Common Question: Some of the voice packs seem to have different audio levels, is this expected?
-Yes, the audio levels of the generated audio files can vary based on the original audio recordings used to create the voice pack, as well as likely due to the processing (especially dynamic range normalization) that was added to all the baseline records used for testing thus far. This was done in particular as it made a large difference to the quality of the final TTS output.
+## Common Question: Some of the voice packs seem to have different audio volumes, is this expected?
+Yes, the audio volume level of each voice pack can vary based on the baseline audio recordings used to create it, as well as due to the processing (especially dynamic range normalization). The normalization was done in particular as it made a large difference to the quality of the final TTS output.
 
 The best solution is to use an audio editing tool to adjust the gain your baseline recordings prior to normalizing them. Another easy solution is to modify the volume of the output voice samples up or down using the `gain` parameter in `generate_voice_pack.py :: apply_audio_effects()`.
 
-Keep in mind that CrewChief has a pretty wide volume range slider within the app itself (and the noise of listening environments varies dramatically), so it may not be worth the effort to find a "perfect" volume, but you will want your generated voice clips to be at a similar volume to the spotter and radio check messages so that it's comfortable for the listener to hear clips mixed together from both.
+Keep in mind that CrewChief has a pretty wide volume range slider within the app itself (and the noise of listening environments varies dramatically), so it may not be worth the effort to find a "perfect" volume, but you will want your generated voice clips to be at a similar volume to the spotter and radio check messages so that it's comfortable for the listener to hear clips mixed together from both sources.
 
 
 ## Uncommon Task: Understand the structure of this repo
@@ -425,7 +449,7 @@ CrewChief has a common folder for all radio check audio clips, generally the mai
 ## Uncommon Question: Elevenlabs.io audio quality is much better, can I just use that service directly?
 Yes! It's easy enough to change the `generate_voice_pack.py` script to use the ElevenLabs.io API to generate high-quality voice recordings. This works fine (with minor additional code) and was the initial approach I took, but it is simply too expensive for the average user as it **requires several hundred dollars** worth of API requests to create a full voice pack.
 
-Note that the alternate approach of "importing" a voice from Elevenlabs.io to serve as a baseline for a locally Text-to-Speech engine is a highly-recommended approach which can be done for free, covered elsewhere on this page. This will still create inferior audio files compared to using Elevenlabs directly, but 🤷.
+Consider the highly-recommended alternate approach of "importing" a voice from Elevenlabs.io to serve as a baseline for a local Text-to-Speech engine, which can be done for free, covered elsewhere on this page. This will still create inferior audio files compared to using Elevenlabs directly, but 🤷.
 
 
 ## Uncommon Task: Change to a different Text-to-Speech model or service
@@ -441,14 +465,20 @@ Replace the `generate_voice_pack.py` function named `generate_speech_coqui_tts()
 _ Edit, rebuild, run, over and over while reviewing the output/ dir results
 
 
+## Uncommon Question: How much GPU VRAM is required to run the Text-to-Speech process using a GPU?
+Your "graphics card" (Graphics Processing Unit, or GPU) has memory (Video RAM, or VRAM) which is used by the GPU to store textures, frame buffers, and other data. Crew-chief-autovoicepack uses a deep learning model which can utilize your GPU to greatly speed up the text-to-speech process.
+
+The model requires approximately 2.6GB of VRAM. If your GPU has 8GB VRAM or more, you will be able to run multiple containers in parallel using the instructions found elsewhere on this page, which will produce your voice pack up to 8x+ faster.
+
+
 ## Uncommon Task: Rebuilding the crew-chief-autovoicepack Docker image
 Note that you can avoid rebuilding the container image simply by mounting the local version of the files you want to modify in place of the version baked into the container image, such as `generate_voice_pack.py` or `phrase_inventory.csv`. See instructions elsewhere on this page for how to mount a local file into the container.
 
-However, if you make signficant changes to the files in the repo, including the Dockerfile, you may prefer to rebuild the Docker image (`docker build ...`) to include those changes.
+However, if you make significant changes to the files in the repo, including the Dockerfile, you may prefer to rebuild the Docker image (`docker build ...`) to include those changes.
 
-The process may seem daunting the first time, but it will complete very quickly each run after the initial build since Docker caches the intermediate steps. This means you won't have to wait to download the base Linux image, apt packages, pytorch dependencies, the machine learning models, etc. but you can change the python code and rebuild the image in seconds.
+The process may seem daunting and slow the first time, but it will complete very quickly each run after the initial build since Docker caches the intermediate steps. This means you won't have to wait to download the base Linux image, apt packages, pytorch dependencies, ML models, etc. but you will be able to change the python code and rebuild the image in seconds.
 
-You may encounter dependency resolution issues or other software supply chain problems, but hopefully are able to work through them with the help of the community or the Internet.
+As the repo ages, you may encounter dependency resolution issues or other software supply chain problems, but hopefully are able to work through them with the help of the community or the Internet.
 
 From the crew-chief-autovoicepack root folder:
 ```
@@ -456,7 +486,7 @@ From the crew-chief-autovoicepack root folder:
 ```
 On Windows, it's easiest to run this from the WSL2 (Linux) bash prompt, but it may also work from the Windows Command Prompt or PowerShell.
 
-If you are using Docker Desktop, you may also see the build process appear on the "Active Builds" tab of "Builds". You can review the progress or check error logs there.
+If you are using Docker Desktop, you can also see the build process appear on the "Active Builds" tab of "Builds". You can review the progress or check error logs there.
 
 Once the image has been rebuilt, you can run it with `docker run ...` as usual.
 
@@ -472,6 +502,13 @@ Once the image has been rebuilt, you can run it with `docker run ...` as usual.
 - coqui should be operational from the command line:
   - `tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Claribel Dervla' --language_idx en --use_cuda true --out_path /tmp/x.wav --text 'This is a test.'`
 - modify `generate_voice_pack.py` as needed to point to the right resource locations 
+
+
+## Possible Future Improvements
+- Incorporate RVC (Real Voice Cloning) to better match the original speaker's voice -- this would take the TTS generated audio and post-process it to sound even more like the original. Could also be applied to the original CrewChief "Jim" voice pack audio to retain the emotional inflection and pacing (though unavoidably inheriting the regional jargon and matey-ness).
+- Support creating new spotter voices
+- Support alternate text-to-speech services and models
+- Automate multilingual machine translation (see "How do I create a voice pack in a different language?")
 
 
 ## References

@@ -9,10 +9,10 @@ services:
       # In GPU MODE, the constraint will be the amount of GPU memory.
       # I've been able to run 8 replicas with a 24GB GPU.
       #
-      # CPU ONLY MODE can only use 1 replica since the container already
+      # CPU ONLY MODE should only use 1 replica since the container already
       # scales itself to use all available CPU cores. Thus, there is
-      # no benefit to using docker compose in CPU-only mode, just run it
-      # via `docker run` directly, for example:
+      # no benefit to using docker compose in CPU-only mode, just run the
+      # container directly via `docker run`, for example:
       # docker run --rm -it --name crew-chief-autovoicepack -v /tmp/crew-chief-autovoicepack/output:/app/output crew-chief-autovoicepack:v0.1
       #
       replicas: 8
@@ -68,6 +68,6 @@ services:
     # The command below will generate a voice pack for "Luis" in CPU-only mode with the default settings.
     # REMOVE the --cpu_only flag to run in GPU mode.
     #
-    command: [ "sh", "-c", "for voice in Ana Bart Blake David Don Hiroshi Jamal Luis Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
+    #command: [ "sh", "-c", "for voice in Ana Bart Blake David Don Hiroshi Jamal Luis Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
     #command: [ "sh", "-c", "for voice in Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
-    #command: [ "python3", "generate_voice_pack.py", "--your_name", "Champ", "--voice_name", "Luis" ]
+    command: [ "python3", "generate_voice_pack.py", "--your_name", "Champ", "--voice_name", "Luis" ]

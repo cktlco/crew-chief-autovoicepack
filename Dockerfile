@@ -55,7 +55,7 @@ RUN echo 'export PS1="crew-chief-autovoicepack > "' >> /root/.bashrc
 
 # Add some canned command lines to the shell history for convenience
 RUN echo "python3 record_elevenlabs_voice.py --voice_name XXX --voice_id XXX" >> ~/.bash_history
-RUN echo "python3 generate_voice_pack.py --your_name '' --voice_name ''" >> ~/.bash_history
+RUN echo "python3 generate_voice_pack.py --your_name 'Champ' --voice_name 'Luis'" >> ~/.bash_history
 
 # Sit at a bash prompt when the container starts
 # (use up-arrow to browse some suggested command lines)
