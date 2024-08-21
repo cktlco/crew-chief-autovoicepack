@@ -23,7 +23,7 @@ TBD
 
 
 ## ⏬ In a hurry? Download an existing voice pack
-Make your own, or download one of these ready-to-go, **full replacement voices** for CrewChief.
+Make your own, or download one of these ready-to-go **full replacement voices for CrewChief**.
 
 [Unzip](#-common-task-add-your-new-voice-pack-to-crewchief) and use immediately. Over 30,000 .wav files in each pack.
 
@@ -86,7 +86,7 @@ This is an automated process. The only required software on your machine is **a 
 
 The core concept is to **launch a temporary "Docker container"** which is a lightweight, isolated Linux virtual machine **that runs the crew-chief-autovoicepack processes**. You'll enable the container to access your GPU (optional), phrase inventory, and your baseline audio recordings. A Python **script running in the container will generate the audio files for your new voice pack**, which will be saved to the output folder on your local machine.
 
-Using the Docker container enables you to **run a very sophisticated software environment on your own machine without having to manually manage** the dozens of required Python packages, OS packages, and other dependencies yourself.
+Using the Docker container enables you to **run a very sophisticated software environment on your own machine without having to install or manually manage** the dozens of required Python libraries, OS packages, and other dependencies yourself.
 
 Windows or Mac users can **install Docker** via [Docker Desktop](https://docs.docker.com/desktop/), while Linux users can install via OS package manager or the official installation instructions.
 
@@ -100,12 +100,12 @@ On Windows, **Docker Desktop also requires WSL2** (Windows Subsystem for Linux) 
 **Linux**: https://docs.docker.com/engine/install/
  ... and enable Linux support for GPU containers: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
-Note that all instructions here will be performed via the command line (not via the Docker Desktop GUI), so **ensure the basic Docker [hello-world](https://hub.docker.com/_/hello-world) tests work from a fresh terminal window** before proceeding.
+Note that all instructions here will be performed via the command line (not via the Docker Desktop GUI), so **ensure the basic Docker [hello-world](https://hub.docker.com/_/hello-world) tests work from a fresh terminal window** before proceeding:
 ```
 C:\Users\YOUR_NAME> docker run hello-world
 
-Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
+...
+Pulling from library/hello-world
 c1ec31eb5944: Pull complete ...
 
 Hello from Docker!
@@ -115,7 +115,7 @@ This message shows that your installation appears to be working correctly.
 
 ### STEP 2. Download the crew-chief-autovoicepack Docker image with:
 ```
-docker pull TBD-REPONAME/crew-chief-autovoicepack:v0.1
+docker pull ghcr.io/cktlco/crew-chief-autovoicepack:v1.0.0
 ```
 You can **confirm this step worked** with `docker image list crew-chief-autovoicepack`.
 
