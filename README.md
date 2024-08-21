@@ -3,18 +3,18 @@
 
 
 ## 🧠️ Capabilities
-- natural-sounding AI generated speech
-- supports all CrewChief phrases and sims (Assetto Corsa, ACC, iRacing, etc.)
-- no-cost, unlimited usage, run locally on your PC
-- easily replace original CrewChief commentary with fully custom phrases
-- use ANY voice you want: your own, a friend, or celebrity
-- easily import high-quality professional voices from ElevenLabs.io (for free)
-- multiply the original phrase library with new variations
-- generate voice packs in any language (requires machine/human text translation)
-- fast: 1-2 hours to create 30,000 audio files (RTX 3090)
-- runs on any hardware, Windows/Mac/Linux, CPU-only or Nvidia GPU
-- elegantly packaged as a ready-to-use Docker image
-- friendly Python code you are encouraged to tweak
+- **natural-sounding** AI generated speech
+- supports **all CrewChief phrases** and sims (Assetto Corsa, ACC, iRacing, etc.)
+- **no-cost**, unlimited usage, run locally on your PC
+- easily replace original CrewChief commentary with **fully custom phrases**
+- **use ANY voice**: your own, a friend, or celebrity
+- easily import high-quality professional **voices from ElevenLabs.io** (for free)
+- multiply the original phrase library with automatic **variations**
+- generate voice packs **in any language** (requires machine/human text translation)
+- **fast**: 1-2 hours to create **30,000 audio files** (RTX 3090)
+- runs on **any hardware**, Windows/Mac/Linux, CPU-only or Nvidia GPU
+- elegantly packaged as a **ready-to-use** Docker image
+- **friendly** Python code you are encouraged to tweak
 - remove (or introduce!) swear words, gender assumptions, and regional language quirks
 
 
@@ -46,7 +46,7 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 - occasional **poor or incorrect TTS pronunciations** (driver names, corner names, etc.)
 - occasional **garbled or corrupt audio** (a few percent of the total)
 - generated voices **do not exactly match the original** speaker's voice
-- speed/pace is not easily adjustable (i.e. "rushed" CrewChief phrases are not rushed)
+- **speed/pace** is not easily adjustable (i.e. "rushed" CrewChief phrases are not rushed)
 - minor: may adopt incorrect accent or diminish original accent on certain phrases
 - minor: emotional inflection is worse than a human voice actor
 - minor: voice pack name must use ASCII characters (e.g. UTF-8 chars like é, ñ, are not supported)
@@ -57,7 +57,7 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 
 1. **Sign up** for a free account at [Elevenlabs.io](https://elevenlabs.io/). Note your API key.
 2. Browse the library and **select the voice you want to use** as the baseline for your voice pack
-3. Find the "**voice id**" from the URL of the voice (from the Elevenlabs.io "voices" page)
+3. Find the "**voice id**" for the voice, from the Elevenlabs.io "voices" page
 4. Use the provided `record_elevenlabs_voice.py` script to **create the baseline audio files**:
 ```
 # from the running container
@@ -73,20 +73,20 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 ## 🎤 Common Task: Prepare recordings of your favorite voice
 As an alternative to using an Elevenlabs.io voice, **record yourself or use an existing source like a YouTube video** (via a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)).
 
-1. Record at least **3x 10-second clips of the voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
+1. Record at least **3x 10-second .wav file clips of the voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
 2. Trim the recordings to **remove all silence** at the beginning or end of every file, and remove silence longer than ~0.4 seconds from the middle of any file.
 3. When saving, **format the audio files** as 32-bit float PCM WAV files with a 22.5 kHz sample rate and mono channel.
-4. See the ["Common Task: My generated voice pack sounds a lot worse..."](#common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) section on this page **for more recommendations** on capturing audio.
+4. See the ["Common Task: My generated voice pack sounds a lot worse..."](#common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) section **for more recommendations** on capturing audio.
 
 
 ## 📦 Common Task: Generate a full CrewChief voice pack
 _Pre-requisite: At least 3x 10-second audio clips of your chosen voice._
 
-This is an automated process. The only required software on your machine is **a working installation of Docker**.
+This is an **automated process**. The only required software on your machine is **a working installation of Docker**.
 
 The core concept is to **launch a temporary "Docker container"** which is a lightweight, isolated Linux virtual machine **that runs the crew-chief-autovoicepack processes**. You'll enable the container to access your GPU (optional), phrase inventory, and your baseline audio recordings. A Python **script running in the container will generate the audio files for your new voice pack**, which will be saved to the output folder on your local machine.
 
-Using the Docker container enables you to **run a very sophisticated software environment on your own machine without having to install or manually manage** the dozens of required Python libraries, OS packages, and other dependencies yourself.
+Using the Docker container enables you to **run a very sophisticated software environment on your own machine without having to manually install and manage** the dozens of required Python libraries, OS packages, and other dependencies yourself.
 
 Windows or Mac users can **install Docker** via [Docker Desktop](https://docs.docker.com/desktop/), while Linux users can install via OS package manager or the official installation instructions.
 
@@ -183,7 +183,7 @@ As an example, consider a voice pack with the root folder `Luis`.
 - Open two file explorer windows and navigate to both the CrewChief `...\sounds` folder (noted above) and the folder containing the voice pack.
 2) Within the `...\sounds` folder, **create a new folder named `alt`** (if not already there)
 3) **Copy** the entire `Luis` folder into the CrewChief `...\sounds\alt\` folder.
-4) **Radio check voices**: Enter the `...sounds\alt\Luis` folder and you will see a subfolder named `radio_check_Luis`. **Copy the `radio_check_Luis` folder into the CrewChief main `...\sounds\voice` folder.** This folder has the official Jim voice as well as `radio_check_XXX` for each crew chief or spotter voice.
+4) **Radio check voices**: Enter the `...\sounds\alt\Luis` folder and you will see a subfolder named `radio_check_Luis`. **Copy the `radio_check_Luis` folder into the CrewChief main `...\sounds\voice` folder.** This folder has the official Jim voice as well as `radio_check_XXX` for each crew chief or spotter voice.
 5) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
 
 
@@ -236,7 +236,7 @@ The official CrewChief "Jim" audio files are ~0.5GB.
 
 The .wav files generated by `crew-chief-autovoicepack` are (perhaps unnecessarily) larger since they are stored with 32-bit resolution at 24KHz. There are also **many more .wav files in your new voice pack** due to the `--variation_count` parameter, which defaults to 2, but can be set to 0 to disable variations and save storage space, or higher to potentially generate more varied audio at the cost of storage.
 
-The Docker image itself is ~21GB, specifically including large data dependencies, including in the image a pre-trained text-to-speech model alongside related machine learning frameworks. This avoids having to download these large files (and wait) each time the container runs.
+The Docker image itself is ~21GB, specifically including large data dependencies in the image, such as a pre-trained text-to-speech model alongside related machine learning frameworks. This avoids having to download these large files (and wait several minutes) each time the container runs.
 
 
 ## 🗑️ Common Question: Can I remove individual audio files from the output folder?
