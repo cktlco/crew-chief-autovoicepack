@@ -762,7 +762,7 @@ def generate_subtitle_files(
 
 def group_entries_by_path(entries: List[CrewChiefAudioFile]) -> dict:
     """Group together phrase_inventory.csv rows from the same folder."""
-    subtitle_entries = {}
+    subtitle_entries: dict[Any, Any] = {}
     for entry in entries:
         if entry.audio_path_filtered not in subtitle_entries:
             subtitle_entries[entry.audio_path_filtered] = []
