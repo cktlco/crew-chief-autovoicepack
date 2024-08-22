@@ -273,7 +273,8 @@ To speed up the process of generating a voice pack, you can **run multiple conta
 
 Instead of starting a single instance of the Docker container with `docker run ...` you can **use Docker Compose** and the provided `docker-compose.yml` file to **start, stop, and restart multiple containers** at once.
 
-1. Edit the `docker-compose.yml` file to **specify the number of containers** you want to run in parallel ("replicas").
+1. Clone this repo (`git clone https://github.com/cktlco/crew-chief-autovoicepack.git`) or otherwise get the `docker-compose.yml` file.
+2. Edit the `docker-compose.yml` file to **specify the number of containers** you want to run in parallel ("replicas").
 2. Ensure you have downloaded the crew-chief-autovoicepack **Docker image** as mentioned [above](#step-2-download-the-crew-chief-autovoicepack-docker-image-with).
 3. **Start the containers** with `docker compose up -d crew-chief-autovoicepack`
 4. **Monitor the progress** of the audio generation with `docker compose logs -f`

@@ -40,7 +40,8 @@ RUN git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /root/.local/
 RUN pip --no-cache-dir install deepspeed
 
 # Copy the Python scripts, data files, and baseline recording into the Docker image
-COPY generate_voice_pack.py record_elevenlabs_voice.py zip_voice_pack.py phrase_inventory.csv baseline/Luis ./
+COPY generate_voice_pack.py record_elevenlabs_voice.py zip_voice_pack.py phrase_inventory.csv ./
+COPY baseline/Luis ./baseline/Luis/
 
 # Customize shell prompt and add canned command lines to the shell history
 RUN echo 'export PS1="crew-chief-autovoicepack > "' >> /root/.bashrc && \
