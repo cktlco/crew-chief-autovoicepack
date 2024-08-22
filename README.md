@@ -77,7 +77,7 @@ As an alternative to using an Elevenlabs.io voice, **record yourself or use an e
 
 
 ## 📦 Common Task: Generate a full CrewChief voice pack
-_Pre-requisite: At least three 10-second audio clips of your chosen voice._
+_Pre-requisite: At least three 10-second audio clips of your chosen voice. Or you can test with the provided voice "Luis"._
 
 This is an **automated process**. The only required software on your machine is **a working installation of Docker**.
 

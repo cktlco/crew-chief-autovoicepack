@@ -42,7 +42,7 @@ services:
     volumes:
 
       # output directory for the generated .wav files
-      - C:\Users\MYUSER\crew-chief-autovoicepack:/app
+      - /dev_local/crew-chief-autovoicepack:/app
 
       # directory holding the input voice recordings
       - ./baseline:/app/baseline

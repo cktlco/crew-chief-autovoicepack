@@ -276,7 +276,7 @@ def is_invalid_wav_file(file_path: str, tts_text: str) -> bool:
     )
 
     if is_invalid:
-        logging.error(f"Invalid .wav file detected: {file_path}")
+        logging.warning(f"Invalid .wav file detected: {file_path}")
 
     return is_invalid
 
