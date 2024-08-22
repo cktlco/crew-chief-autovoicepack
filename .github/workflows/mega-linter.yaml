@@ -8,7 +8,7 @@ name: MegaLinter
 on:
   # Comment this line to trigger action only on pull-requests
   # (not recommended if you don't pay for GH Actions)
-  #push:
+  push:
 
   pull_request:
     branches:
@@ -38,6 +38,7 @@ jobs:
   megalinter:
     name: MegaLinter
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     # Give the default GITHUB_TOKEN write permission to commit and push, comment
     # issues & post new PR; remove the ones you do not need

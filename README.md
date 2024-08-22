@@ -156,11 +156,11 @@ Note the requirement to include `--cpu_only` on the command line **when not runn
 
 Within a few minutes, **logs will start to flow showing the progress** of the audio file generation. You can monitor the progress and any errors that occur, and stop the container at any time by pressing Ctrl+C in the terminal or with `docker stop crew-chief-autovoicepack` from another terminal window.
 
-Optional: To run multiple containers at once to **greatly speed up the process**, see [these instructions](#common-task-running-multiple-containers-in-parallel-to-speed-up-voice-pack-generation).
+Optional: To run multiple containers at once to **greatly speed up the process**, see [these instructions](#-common-task-running-multiple-containers-in-parallel-to-speed-up-voice-pack-generation).
 
 **Eventually, the script will complete** generation of all ~30K+ audio files with the messages `All entries in phrase_inventory.csv have been generated.` and `All radio check audio clips have been generated.`.
 
-**You now have a full voice pack** in the `output` folder you mounted from your local machine. [Add this voice pack to your CrewChief installation](#common-task-add-your-new-voice-pack-to-crewchief) and enjoy a break from Jim!
+**You now have a full voice pack** in the `output` folder you mounted from your local machine. [Add this voice pack to your CrewChief installation](#-common-task-add-your-new-voice-pack-to-crewchief) and enjoy a break from Jim!
 
 
 ## 🎯 Common Task: Add your new voice pack to CrewChief
