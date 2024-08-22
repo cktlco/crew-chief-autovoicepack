@@ -69,7 +69,7 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 ## 🎤 Common Task: Prepare recordings of your favorite voice
 As an alternative to using an Elevenlabs.io voice, **record yourself or use an existing source like a YouTube video** (via a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)).
 
-1. Record at least **3x 10-second .wav file clips of the voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
+1. Record at least **three 10-second .wav file clips of the voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
 2. Trim the recordings to **remove all silence** at the beginning or end of every file, and remove silence longer than ~0.4 seconds from the middle of any file.
 3. When saving, **format the audio files** as 32-bit float PCM WAV files with a 22.5 kHz sample rate and mono channel.
 4. Save the wav files with a simple filename into the `baseline/` folder
@@ -77,7 +77,7 @@ As an alternative to using an Elevenlabs.io voice, **record yourself or use an e
 
 
 ## 📦 Common Task: Generate a full CrewChief voice pack
-_Pre-requisite: At least 3x 10-second audio clips of your chosen voice._
+_Pre-requisite: At least three 10-second audio clips of your chosen voice._
 
 This is an **automated process**. The only required software on your machine is **a working installation of Docker**.
 
@@ -112,7 +112,7 @@ This message shows that your installation appears to be working correctly.
 
 ### STEP 2. Download the crew-chief-autovoicepack Docker image with:
 ```
-docker pull ghcr.io/cktlco/crew-chief-autovoicepack:v1.0.0
+docker pull ghcr.io/cktlco/crew-chief-autovoicepack:latest
 ```
 **This is a large file (18GB)** and will take time to download.
 
