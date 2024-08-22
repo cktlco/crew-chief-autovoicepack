@@ -2,7 +2,7 @@
 # and tear down with: docker compose down crew-chief-autovoicepack
 services:
   crew-chief-autovoicepack:
-    image: crew-chief-autovoicepack:v0.1
+    image: ghcr.io/cktlco/crew-chief-autovoicepack:latest
     restart: no
     deploy:
 
