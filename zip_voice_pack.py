@@ -1,7 +1,7 @@
 import os
 import sys
 import zipfile
-from typing import Any, List
+from typing import Any
 
 
 # Create a zip archive
