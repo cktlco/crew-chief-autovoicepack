@@ -500,7 +500,7 @@ As the repo ages, you may encounter dependency resolution issues or other softwa
 
 To **build**, from the crew-chief-autovoicepack root folder:
 ```
-> DOCKER_BUILDKIT=1 docker build -f Dockerfile .
+> docker build -t crew-chief-autovoicepack:my_custom_version .
 ```
 On Windows, it's easiest to run this from the WSL2 (Linux) bash prompt, but it may also work from the Windows Command Prompt or PowerShell.
 
@@ -518,11 +518,12 @@ Once the image has been rebuilt, you can run it with `docker run ...` as usual.
   - Optionally, install Deepspeed (recommended)
 - Install coqui-tts, **as shown in the Dockerfile**
 - Coqui should be operational from the command line:
-  - `tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Claribel Dervla' --language_idx en --use_cuda true --out_path /tmp/x.wav --text 'This is a test.'`
+- `tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Claribel Dervla' --language_idx en --use_cuda true --out_path /tmp/x.wav --text 'This is a test.'`
+- Edit and run the `generate_voice_pack.py` script however needed
 
 
 ## 🔮 Possible Future Improvements
-- Incorporate **RVC** ([Retrieval-based Voice Conversion](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/blob/main/docs/en/README.en.md)) to better match the original speaker's voice -- this would take the TTS generated audio and post-process it to sound even more like the original. Could also be applied to the original CrewChief "Jim" voice pack audio to retain the emotional inflection and pacing (though unavoidably inheriting the regional jargon and matey-ness).
+- Incorporate **RVC** ([Retrieval-based Voice Conversion](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/blob/main/docs/en/README.en.md)) to better match the original speaker's voice -- this would take the TTS generated audio and post-process it to sound even more like the original. Could also be applied to the original CrewChief "Jim" voice pack audio to swap the voice but retain the emotional inflection and pacing (though unavoidably inheriting the regional jargon and matey-ness).
 - Support creating **new spotter voices**
 - Support **alternate text-to-speech services** and models, for example a model like [Bark](https://huggingface.co/spaces/suno/bark) can produce sound effects, breathing, sighing, and a wide range of emotions.
 - Automate **multilingual machine translation** (see ["How do I create a voice pack in a different language?"](#-common-question-how-do-i-create-a-voice-pack-in-a-different-language))
