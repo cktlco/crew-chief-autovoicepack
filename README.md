@@ -73,7 +73,7 @@ As an alternative to using an Elevenlabs.io voice, **record yourself or use an e
 2. Trim the recordings to **remove all silence** at the beginning or end of every file, and remove silence longer than ~0.4 seconds from the middle of any file.
 3. When saving, **format the audio files** as 32-bit float PCM WAV files with a 22.5 kHz sample rate and mono channel.
 4. Save the wav files with a simple filename into the `baseline/` folder
-5. See the ["Common Task: My generated voice pack sounds a lot worse..."](#-common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) 
+5. See guidelines at ["Common Task: My generated voice pack sounds a lot worse..."](#-common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) 
 
 
 ## 📦 Common Task: Generate a full CrewChief voice pack
@@ -85,7 +85,7 @@ The core concept is to **launch a temporary "Docker container"** which is a ligh
 
 Using the Docker container enables you to **run a very sophisticated software environment on your own machine without having to manually install and manage** the dozens of required Python libraries, OS packages, and other dependencies yourself.
 
-Windows or Mac users can **install Docker** via [Docker Desktop](https://docs.docker.com/desktop/), while Linux users can install via OS package manager or the official installation instructions.
+Windows or Mac users can **install Docker** via Docker Desktop, while Linux users can install Docker Engine via the OS package manager or the official installation instructions.
 
 
 ### STEP 1. Install Docker
@@ -109,6 +109,9 @@ Hello from Docker!
 This message shows that your installation appears to be working correctly.
 ```
 
+If you see a message like `error during connect`, **ensure the Docker Desktop application is running** (i.e. from the Start menu).
+
+
 
 ### STEP 2. Download the crew-chief-autovoicepack Docker image with:
 ```
@@ -123,12 +126,12 @@ You can **confirm this step worked** with `docker image list crew-chief-autovoic
 
 Windows:
 ```
-docker run -it --rm --gpus all --name crew-chief-autovoicepack -v C:\Users\myuser\Desktop\crew-chief-autovoicepack\output:/app/output crew-chief-autovoicepack:v0.1
+docker run -it --rm --gpus all --name crew-chief-autovoicepack -v C:\Users\myuser\Desktop\crew-chief-autovoicepack\output:/app/output ghcr.io/cktlco/crew-chief-autovoicepack:latest
 ```
 
 Linux:
 ```
-docker run -it --rm --gpus all --name crew-chief-autovoicepack -v ~/crew-chief-autovoicepack/output:/app/output crew-chief-autovoicepack:v0.1
+docker run -it --rm --gpus all --name crew-chief-autovoicepack -v ~/crew-chief-autovoicepack/output:/app/output ghcr.io/cktlco/crew-chief-autovoicepack:latest
 ```
 
 Important:
