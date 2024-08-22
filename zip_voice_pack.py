@@ -1,6 +1,7 @@
 import os
 import sys
 import zipfile
+from typing import Any, List
 
 
 # Create a zip archive
@@ -43,7 +44,7 @@ for f in os.listdir(output_path):
 
 # Group files by size
 zip_groups = []
-current_group = []
+current_group: List[Any] = []
 current_size = 0
 
 for root, _, files in os.walk(dir_path):
