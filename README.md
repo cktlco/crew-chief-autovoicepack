@@ -526,6 +526,7 @@ Once the image has been rebuilt, you can run it with `docker run ...` as usual.
 - Support creating **new spotter voices**
 - Support **alternate text-to-speech services** and models, for example a model like [Bark](https://huggingface.co/spaces/suno/bark) can produce sound effects, breathing, sighing, and a wide range of emotions.
 - Automate **multilingual machine translation** (see ["How do I create a voice pack in a different language?"](#-common-question-how-do-i-create-a-voice-pack-in-a-different-language))
+- Reduce the size of the Docker image
 
 
 ## 📖 References
