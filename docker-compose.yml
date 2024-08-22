@@ -1,0 +1,73 @@
+# run with: docker compose up -d crew-chief-autovoicepack
+# and tear down with: docker compose down crew-chief-autovoicepack
+services:
+  crew-chief-autovoicepack:
+    image: crew-chief-autovoicepack:v0.1
+    restart: no
+    deploy:
+
+      # In GPU MODE, the constraint will be the amount of GPU memory.
+      # I've been able to run 8 replicas with a 24GB GPU.
+      #
+      # CPU ONLY MODE should only use 1 replica since the container already
+      # scales itself to use all available CPU cores. Thus, there is
+      # no benefit to using docker compose in CPU-only mode, just run the
+      # container directly via `docker run`, for example:
+      # docker run --rm -it --name crew-chief-autovoicepack -v /tmp/crew-chief-autovoicepack/output:/app/output crew-chief-autovoicepack:v0.1
+      #
+      replicas: 8
+
+      # the lines below enable exposing the host machine's nvidia GPU to the container
+      #
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+    # This is the directory on your local machine where the generated voice pack
+    # will be saved.
+    #
+    # Since the container is ephemeral, you want to mount a directory from your
+    # local host machine so the output is collected in a central location. This
+    # makes it easy to play and review the voice pack output while it is being
+    # created, and this is the directory where you will stage the completed
+    # voice pack before copying it into your Crew Chief sounds/ directory.
+    #
+    # This also enables sharing the output directory across replicas, which is
+    # necessary so each can keep track of which files have already been generated.
+    #
+    volumes:
+
+      # output directory for the generated .wav files
+      - /dev_local/crew-chief-autovoicepack:/app
+
+      # directory holding the input voice recordings
+      - ./baseline:/app/baseline
+
+      # optionally override the default phrase inventory file to use your local edits
+      - ./phrase_inventory.csv:/app/phrase_inventory.csv
+
+      # or optionally override the generate_voice_pack.py script to use your local edits
+      # - my_local_dir/generate_voice_pack.py:/app/generate_voice_pack.py
+
+      # optional: mount the pytorch caches from local to reuse across container restarts
+      # enables several *minutes* faster startup time for the script when deepspeed caches are present
+      - ~/.cache/torch:/root/.cache/torch
+      - ~/.cache/torch_extensions:/root/.cache/torch_extensions
+      - ~/.cache/huggingface:/root/.cache/huggingface
+
+    # Note that this command will run once for each replica, which enables massive speedup since each
+    # replica can generate a portion of voice pack in parallel.
+    #
+    # Freely change this command to add/remove parameters you wish to use.
+    # Remember that each space-separated part of the command needs to be a separate element in the list.
+    #
+    # The command below will generate a voice pack for "Luis" in CPU-only mode with the default settings.
+    # REMOVE the --cpu_only flag to run in GPU mode.
+    #
+    #command: [ "sh", "-c", "for voice in Ana Bart Blake David Don Hiroshi Jamal Luis Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
+    #command: [ "sh", "-c", "for voice in Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
+    command: [ "python3", "generate_voice_pack.py", "--your_name", "Champ", "--voice_name", "Luis" ]
