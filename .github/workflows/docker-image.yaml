@@ -9,9 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     permissions:
-      contents: write
-      workflows: write
+      contents: write  # Allows writing to the repository
 
     steps:
       - name: Checkout code
