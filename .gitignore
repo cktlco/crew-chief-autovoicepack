@@ -1,7 +1,6 @@
-output
-coqui-tts
 __pycache__
-original_sounds
 .idea
-/coqui-tts/
-/recordings/
+/baseline/
+/resources/support/
+/archive/
+/output/
