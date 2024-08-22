@@ -754,9 +754,9 @@ def generate_subtitle_files(
         subtitle_filename = f"{args.voicepack_base_dir}{subtitle_path}/subtitles.csv"
 
         if not args.overwrite and os.path.isfile(subtitle_filename):
-            logging.info(f"Skipping subtitles.csv since it exists at {subtitle_path}")
+            logging.debug(f"Skipping subtitles.csv since it exists at {subtitle_path}")
         else:
-            logging.info(f"Creating subtitles.csv for {subtitle_path}")
+            logging.debug(f"Creating subtitles.csv for {subtitle_path}")
             write_subtitle_file(subtitle_filename, entry_details, args.variation_count)
 
 
