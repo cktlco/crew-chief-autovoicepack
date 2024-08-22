@@ -39,8 +39,8 @@ jobs:
         run: |
             echo "Free space:"
             df -h
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
+        #with:
+        #  context: .
+        #  push: true
+        #  tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
 
