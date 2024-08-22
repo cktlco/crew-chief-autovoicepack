@@ -4,11 +4,15 @@ on:
   push:
     branches:
       - main  # Change this to your default branch
+  pull_request:
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      workflows: write
 
     steps:
       - name: Checkout code
