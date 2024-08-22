@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main  # Change this to your default branch
+      - main
   pull_request:
   workflow_dispatch:  # Allows manual triggering
 
@@ -34,11 +34,7 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.7.0
-        #run: |
-        #    echo "Free space:"
-        #    df -h
         with:
-          context: .
           push: true
           tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
 
