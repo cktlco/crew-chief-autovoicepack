@@ -40,6 +40,6 @@ jobs:
           push: true
           tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
           no-cache: true
-          #cache-from: type=gha
-          #cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
