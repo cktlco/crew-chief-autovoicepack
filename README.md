@@ -1,9 +1,8 @@
 # crew-chief-autovoicepack
-## Automatically generate a full [CrewChief](https://gitlab.com/mr_belowski/CrewChiefV4) voice pack from any 30-second recording.
+## Automatically generate a [CrewChief](https://gitlab.com/mr_belowski/CrewChiefV4) voice pack using natural AI speech.
 
 
 ## 🧠️ Capabilities
-- **natural-sounding** AI generated speech
 - supports **all CrewChief phrases** and sims (Assetto Corsa, ACC, iRacing, etc.)
 - **no-cost**, unlimited usage, run locally on your PC
 - easily replace original CrewChief commentary with **fully custom phrases**
@@ -36,6 +35,8 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 1. **Prepare 30 seconds of audio** -- record your own voice or use ElevenLabs
 2. Run `generate_voice_pack.py` from a **Docker container** ([full instructions](#-common-task-generate-a-full-crewchief-voice-pack)).
 3. **Add the new voice pack** to CrewChief ([full instructions](#-common-task-add-your-new-voice-pack-to-crewchief)).
+
+Bonus: Run the process using a GPU freely provided by Google Cloud Colab. See ["Run using Google Cloud Colab"](#-common-task-run-crew-chief-autovoicepack-in-google-cloud-colab)
 
 
 ## 🚧️ Known Issues
@@ -185,6 +186,57 @@ As an example, consider a voice pack with the root folder `Luis`.
 3) **Copy** the entire `Luis` folder into the CrewChief `...\sounds\alt\` folder.
 4) **Radio check voices**: Enter the `...\sounds\alt\Luis` folder and you will see a subfolder named `radio_check_Luis`. **Copy the `radio_check_Luis` folder into the CrewChief main `...\sounds\voice` folder.** This folder has the official Jim voice as well as `radio_check_XXX` for each crew chief or spotter voice.
 5) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
+
+
+## 👟 Common Task: Run crew-chief-autovoicepack in Google Cloud Colab
+
+
+> **Note**: You can use up to 1-2 hours per day of GPU time on the free Colab plan. Your processes will be killed with all files removed unceremoniously upon hitting time/usage limits.
+> 
+> If you have a Google Drive mounted to the notebook, you will be able to refresh the page, reconnect, and continue where you left off (if your daily GPU allotment has not been used up).
+> 
+> This will take several attempts over 3 to 5 days waiting for your allotment to reset, and thus is not recommended compared to just running the process via docker using your own PC, even in CPU-only mode.
+
+
+1. Open **[Google Colab](https://colab.research.google.com/drive/1HWl7_vIpgA95uOq4IeMmmqP7VF620ew3?usp=sharing)**
+    - Provides users with a 2-click process to demo voice pack creation
+    - The interface is referred to as a "notebook" (aka Jupyter notebook). It's immensely cumbersome and annoying compared to a simple text editor, but supports the python and bash commands needed to install dependencies and generate a voice pack
+
+
+2. From the `Runtime` menu, select `Change runtime type` and ensure the following settings:
+   - Runtime type: Python 3
+   - Hardware accelerator: **GPU** 
+
+   
+3. Then select the **Connect** (or Reconnect) button toward the top-right of the page. 
+
+
+4. Once connected to a GPU runtime:: 
+   - Click on the first cell, review or change any options, then click the **Run** button (▶️) in the top-left corner of the cell.
+   
+
+5. **(Optional) Mount Google Drive**:
+   - To save results between sessions, enable the `mount_google_drive` option in the first cell.
+   - Follow the prompts to mount your Google Drive. This will allow you to persist the results between Colab sessions.
+   - Note that I've only been able to mount a Google Drive account aligned to the currently active Google account (even with sharing enabled), so it does not seem feasible to just switch between Google accounts (to reset the GPU usage limits) but still use the same Google Drive.
+
+
+6. **(Optional) Upload Baseline Audio Files**:
+   - If you have already [**recorded your own voice**](#-common-task-prepare-recordings-of-your-favorite-voice) or have [**"imported" a voice from ElevenLabs.io**](#common-task-bootstrap-your-voice-pack-with-an-elevenlabsio-voice-), you can use those .wav files by copying from your local machine into the running container's filesystem by clicking the folder icon on the left sidebar, then the "**Upload to session storage**" button.
+   - Upload the files to the `/content/crew-chief-autovoicepack/baseline/VOICE_NAME` folder.
+   - If you **do not wish to provide your own recordings**, you can skip this step and use the provided `Luis` baseline voice. In this case, ensure the `voice_name` parameter in the first cell is set to `Luis`.
+
+
+7. **Start Voice Pack Generation**:
+   - Scroll down to the second cell and click **Run** (▶️).
+   - This process will run for many hours, generating .wav files into the `/content/crew-chief-autovoicepack/output` folder.
+   - You can see ongoing progress by opening the `/content/crew-chief-autovoicepack/log.txt` folder in the Colab file browser. Re-open the file to see updates.
+   - By default, this start 3 parallel processes, which will not even come close to using all the available GPU VRAM, but is constrained by the limited System RAM available in the Colab environment. Additional processes will be killed with an "out of memory" error.
+   
+
+8. **Save the Voice Pack Results**
+    - At any point, you can download the `crew-chief-autovoicepack/output/VOICE_NAME` folder from Google Drive (or the ephemeral container filesystem) to your local machine
+    - The folder will contain all the .wav files for your new voice pack, ready to be [added to CrewChief](#-common-task-add-your-new-voice-pack-to-crewchief).
 
 
 ## 🔧 Common Question: Which options can I use with the `generate_voice_pack.py` script?
@@ -491,7 +543,7 @@ Replace the `generate_voice_pack.py` function named `generate_speech_coqui_tts()
 - Rebuild the docker image (see recommended docker commands elsewhere on this page)
 - Run the docker image with the output folder mounted to a local folder
 - From the container's bash prompt, use the up arrow and select a relevant command line to start with
-_ Edit, rebuild, run, over and over while reviewing the output/ dir results
+- Edit, rebuild, run, over and over while reviewing the output/ dir results
 
 
 ## 💻 Uncommon Question: How much GPU VRAM is required to run the Text-to-Speech process using a GPU?
@@ -525,18 +577,19 @@ Once the image has been rebuilt, you can run it with `docker run ...` as usual.
 - Install all necessary OS packages and python dependencies as closely as possible to those **specified in the Dockerfile**
 - If using a GPU:
   - Ensure recent nvidia and CUDA drivers
-  - Install the Nvidia Container Toolkit (Linux): https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
   - Optionally, install Deepspeed (recommended)
 - Install coqui-tts, **as shown in the Dockerfile**
 - Coqui should be operational from the command line:
-- `tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Claribel Dervla' --language_idx en --use_cuda true --out_path /tmp/x.wav --text 'This is a test.'`
+```
+tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Claribel Dervla' --language_idx en --use_cuda true --out_path /tmp/x.wav --text 'This is a test.'
+```
 - Edit and run the `generate_voice_pack.py` script however needed
 
 
 ## 🔮 Possible Future Improvements
 - Incorporate **RVC** ([Retrieval-based Voice Conversion](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI/blob/main/docs/en/README.en.md)) to better match the original speaker's voice -- this would take the TTS generated audio and post-process it to sound even more like the original. Could also be applied to the original CrewChief "Jim" voice pack audio to swap the voice but retain the emotional inflection and pacing (though unavoidably inheriting the regional jargon and matey-ness).
 - Support creating **new spotter voices**
-- Support **alternate text-to-speech services** and models, for example a model like [Bark](https://huggingface.co/spaces/suno/bark) can produce sound effects, breathing, sighing, and a wide range of emotions.
+- Support **alternate text-to-speech services** and models
 - Automate **multilingual machine translation** (see ["How do I create a voice pack in a different language?"](#-common-question-how-do-i-create-a-voice-pack-in-a-different-language))
 - Reduce the size of the Docker image
 
