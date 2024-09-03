@@ -16,7 +16,7 @@
 - **friendly** Python code you are encouraged to tweak
 - remove (or introduce!) swear words, gender assumptions, and regional language quirks
 
-[![introduction video](/../../main/resources/images/video_thumbnail_3.png)](https://www.youtube.com/watch?v=9Vg7UFPcC3A)
+[![introduction video](/resources/images/video_thumbnail_3.png)](https://www.youtube.com/watch?v=9Vg7UFPcC3A)
 
 
 ## ⏬ In a hurry? Download an existing voice pack
