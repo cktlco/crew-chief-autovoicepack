@@ -17,6 +17,9 @@
 - remove (or introduce!) swear words, gender assumptions, and regional language quirks
 
 
+[![crew-chief-autovoicepack introduction video](resources/images/video_thumbnail_3.png)](https://www.youtube.com/watch?v=9Vg7UFPcC3A)
+
+
 ## ⏬ In a hurry? Download an existing voice pack
 Make your own, or download one of these ready-to-go **full replacement voices for CrewChief**.
 
