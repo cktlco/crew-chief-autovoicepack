@@ -12,7 +12,6 @@
 - generate voice packs **in any language** (requires machine/human text translation)
 - **fast**: 1-2 hours to create **30,000 audio files** (RTX 3090)
 - runs on **any hardware**, Windows/Mac/Linux, CPU-only or Nvidia GPU
-- elegantly packaged as a **ready-to-use** Docker image
 - **friendly** Python code you are encouraged to tweak
 - remove (or introduce!) swear words, gender assumptions, and regional language quirks
 
@@ -213,7 +212,7 @@ As an example, consider a voice pack with the root folder `Luis`.
 3. Then select the **Connect** (or Reconnect) button toward the top-right of the page. 
 
 
-4. Once connected to a GPU runtime:: 
+4. Once connected to a GPU runtime:
    - Click on the first cell, review or change any options, then click the **Run** button (▶️) in the top-left corner of the cell.
    
 
