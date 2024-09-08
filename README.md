@@ -6,7 +6,7 @@
 - supports **all CrewChief phrases** and sims (Assetto Corsa, ACC, iRacing, etc.)
 - **no-cost**, unlimited usage, run locally on your PC
 - easily replace original CrewChief commentary with **fully custom phrases**
-- **use ANY voice**: your own, a friend, or celebrity
+- customize the voice
 - easily import high-quality professional **voices from ElevenLabs.io** (for free)
 - multiply the original phrase library with automatic **variations**
 - generate voice packs **in any language** (requires machine/human text translation)
@@ -55,7 +55,8 @@ Bonus: Run the process using a GPU freely provided by Google Cloud Colab. See ["
 
 1. **Sign up** for a free account at [Elevenlabs.io](https://elevenlabs.io/). Note your API key.
 2. Browse the library and **select the voice you want to use** as the baseline for your voice pack
-3. Find the "**voice id**" for the voice, from the Elevenlabs.io "voices" page
+3. Find the "**voice id**" for the voice, from the Elevenlabs.io "Voices" page
+    - You may have to dig around to find the voice_id. Most recently, it can be found by clicking "Voices" in the left panel, then on the row for a specific Voice (e.g. 'Alice') click the "View" button on the far right side, then click the "ID" button in the bottom right of the panel that appears to copy the voice ID to your clipboard (or hover over to see it).
 4. Use the provided `record_elevenlabs_voice.py` script to **create the baseline audio files**:
 ```
 # from the running container
@@ -68,10 +69,10 @@ Bonus: Run the process using a GPU freely provided by Google Cloud Colab. See ["
 6. You are **now ready to generate a full voice pack** using this voice as the baseline.
 
 
-## 🎤 Common Task: Prepare recordings of your favorite voice
+## 🎤 Common Task: Prepare recordings of your voice
 As an alternative to using an Elevenlabs.io voice, **record yourself or use an existing source like a YouTube video** (via a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)).
 
-1. Record at least **three 10-second .wav file clips of the voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
+1. Record at least **three 10-second .wav file clips of your voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
 2. Trim the recordings to **remove all silence** at the beginning or end of every file, and remove silence longer than ~0.4 seconds from the middle of any file.
 3. When saving, **format the audio files** as 32-bit float PCM WAV files with a 22.5 kHz sample rate and mono channel.
 4. Save the wav files with a simple filename into the `baseline/` folder
@@ -79,7 +80,7 @@ As an alternative to using an Elevenlabs.io voice, **record yourself or use an e
 
 
 ## 📦 Common Task: Generate a full CrewChief voice pack
-_Pre-requisite: At least three 10-second audio clips of your chosen voice. Or you can test with the provided voice "Luis"._
+_Pre-requisite: At least three 10-second audio clips of your voice. Or you can test with the provided voice "Luis"._
 
 This is an **automated process**. The only required software on your machine is **a working installation of Docker**.
 
@@ -128,16 +129,16 @@ You can **confirm this step worked** with `docker image list ghcr.io/cktlco/crew
 
 Windows:
 ```
-docker run -it --rm --gpus all --name crew-chief-autovoicepack -v C:\Users\myuser\Desktop\crew-chief-autovoicepack\output:/app/output ghcr.io/cktlco/crew-chief-autovoicepack:latest
+docker run -it --rm --gpus all --name crew-chief-autovoicepack -v C:\Users\myuser\Desktop\crew-chief-autovoicepack\output:/app/output -v C:\Users\myuser\Desktop\crew-chief-autovoicepack\my_recordings:/app/baseline ghcr.io/cktlco/crew-chief-autovoicepack:latest
 ```
 
 Linux:
 ```
-docker run -it --rm --gpus all --name crew-chief-autovoicepack -v ~/crew-chief-autovoicepack/output:/app/output ghcr.io/cktlco/crew-chief-autovoicepack:latest
+docker run -it --rm --gpus all --name crew-chief-autovoicepack -v ~/crew-chief-autovoicepack/output:/app/output -v ~/crew-chief-autovoicepack/my_recordings:/app/baseline ghcr.io/cktlco/crew-chief-autovoicepack:latest
 ```
 
 Important:
-- Change the first part of the mounted folder path above (`-v ...`) to **a location on your local machine** where you want the generated audio files to be saved. Don't change the part after the colon (`:/app/output`).
+- Note the two `-v` options in the command, these make folders from your local machine storage available to the Docker container. Change the first part of each mounted folder path to **a location on your local machine** where you want the generated audio files to be saved ("output") or the location of the .wav file recordings you prepared in an earlier step ("baseline"). Don't change the part after the colon (`:/app/output` or `:/app/baseline`).
 - Remember to include the `--gpus all` parameter **if you have a modern NVIDIA GPU** and want to use it for the voice pack generation.
 
 Running `docker run -it ...` will create a new container and drop you at a (customized) bash prompt:
@@ -189,6 +190,30 @@ As an example, consider a voice pack with the root folder `Luis`.
 5) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
 
 
+## 🔍️ Common Question: How do I know it's working/running/progressing?
+After starting the container via `docker run ...` and from the shell prompt starting the `generate_voice_pack.py` script, you may see initialization and warning log messages for several minutes, but thereafter should see a stream of **logs indicating the progress** of the audio file generation:
+
+```
+Generating audio for 80 - 'right 5' -> 'right 5'
+File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-a.wav
+File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-b.wav
+File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-c.wav
+```
+
+These messages will continue until the script has processed all the phrases in the phrase inventory. If you see no messages for a long time, **it is safe to investigate**, including stopping or restarting the container again later (see relevant question elsewhere on this page).
+
+In the example above, it's generating audio files for the 80th phrase in the phrase inventory, out of a total of almost 10,000 phrases. A minor note is that the order of phrase generation is purposefully randomized compared to the original csv file, so "audio file 80" in the example above is not the 80th row in the csv file (search instead for `corner_5_right_reversed` to find the correct row).
+
+When running multiple containers in parallel via `docker compose`, you can **view the logs of all replica containers at once** with `docker compose logs -f` (Ctrl+C to exit).
+
+Based on how quickly these messages are flowing, you can estimate how long the total process will take.
+
+**Bonus** -- Easy ways to gauge the voice pack quality in real-time:
+- Manually: Browse the `output` folder, clicking through to each folder and listening to the audio files as they are generated
+- Use an audio player that will let you listen to an entire folder tree
+- (Linux) Loop over and play each file in the output folder: `find output/Luis/ -type f -name '*.wav' | while read -r file; do echo "$file"; paplay "$file"; done`
+
+
 ## 👟 Common Task: Run crew-chief-autovoicepack in Google Cloud Colab
 
 
@@ -232,7 +257,7 @@ As an example, consider a voice pack with the root folder `Luis`.
    - Scroll down to the second cell and click **Run** (▶️).
    - This process will run for many hours, generating .wav files into the `/content/crew-chief-autovoicepack/output` folder.
    - You can see ongoing progress by opening the `/content/crew-chief-autovoicepack/log.txt` folder in the Colab file browser. Re-open the file to see updates.
-   - By default, this start 3 parallel processes, which will not even come close to using all the available GPU VRAM, but is constrained by the limited System RAM available in the Colab environment. Additional processes will be killed with an "out of memory" error.
+   - By default, this will start 3 parallel processes, which will not use all the available GPU VRAM, but is constrained by the limited System RAM available in the Colab environment. Additional processes will be killed with an "out of memory" error.
    
 
 8. **Save the Voice Pack Results**
@@ -251,7 +276,7 @@ As an example, consider a voice pack with the root folder `Luis`.
 | `--output_audio_dir`          | Path to the directory **where the generated audio files will be saved**.                                                                                                           |
 | `--original_inventory_order`  | **Do not randomize the order** of the audio files in the inventory. Recommended to keep shuffling enabled when running multiple instances in parallel.                             |
 | `--phrase_inventory`          | Path to the CSV file containing **the list of audio files to create** alongside the text used to generate them.                                                                    |
-| `--baseline_audio_dir`        | Path to the directory containing the **baseline audio recordings** to clone the speaker's voice.                                                                                   |
+| `--baseline_audio_dir`        | Path to the directory containing the **baseline audio recordings** used to initialize the TTS model.                                                                               |
 | `--overwrite`                 | **Overwrite existing audio files**. If running multiple instances in parallel, all replicas will perform the work.                                                                 |
 | `--disable_audio_effects`     | **Prevent applying audio effects** to the generated audio files.                                                                                                                   |
 | `--disable_text_replacements` | **Prevent applying text replacement** rules to the generated audio files.                                                                                                          |
@@ -273,7 +298,7 @@ crew-chief-autovoicepack has mostly [idempotent](https://en.wikipedia.org/wiki/I
 
 
 ## ⏲️ Common Question: How long does it take to generate a voice pack?
-**1 to 2 hours** with a modern GPU, 4 to 12 hours with CPU only.
+**1 to 2 hours** with a modern GPU and fast storage, 12 hours or more with CPU only.
 
 The overall **duration depends** on the number of phrases in the CrewChief phrase inventory (~10,000 by default), the container host machine's CPU/GPU/RAM, whether crew-chief-autovoicepack is running with a GPU or in CPU-only mode, the number of variants (the `--variant_count` parameter), and the number of containers running in parallel.
 
@@ -344,30 +369,6 @@ Instead of starting a single instance of the Docker container with `docker run .
 NOTE: Annoyingly, there is a difference between `docker-compose` (dash) and `docker compose` (space), based on legacy choices around installing Docker Compose as a plugin versus standalone. `docker compose` is the correct version, and hopefully works for you from the command line ("Command Prompt", "Terminal", etc. depending on your operating system).
 
 If you installed Docker Desktop for Windows or macOS, **you should have `docker compose` available by default**, and will not need to install anything additional.
-
-
-## 🔍️ Common Question: How do I know it's working/running/progressing?
-After starting the container via `docker run ...` and from the shell prompt starting the `generate_voice_pack.py` script, you may see initialization and warning log messages for several minutes, but thereafter should see a stream of **logs indicating the progress** of the audio file generation:
-
-```
-Generating audio for 80 - 'right 5' -> 'right 5'
-File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-a.wav
-File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-b.wav
-File created at: ./output/Luis/voice/codriver/corner_5_right_reversed/117-c.wav
-```
-
-These messages will continue until the script has processed all the phrases in the phrase inventory. If you see no messages for a long time, **it is safe to investigate**, including stopping or restarting the container again later (see relevant question elsewhere on this page).
-
-In the example above, it's generating audio files for the 80th phrase in the phrase inventory, out of a total of almost 10,000 phrases. A minor note is that the order of phrase generation is purposefully randomized compared to the original csv file, so "audio file 80" in the example above is not the 80th row in the csv file (search instead for `corner_5_right_reversed` to find the correct row).
-
-When running multiple containers in parallel via `docker compose`, you can **view the logs of all replica containers at once** with `docker compose logs -f` (Ctrl+C to exit).
-
-Based on how quickly these messages are flowing, you can estimate how long the total process will take.
-
-**Bonus** -- Easy ways to gauge the voice pack quality in real-time:
-- Manually: Browse the `output` folder, clicking through to each folder and listening to the audio files as they are generated
-- Use an audio player that will let you listen to an entire folder tree
-- (Linux) Loop over and play each file in the output folder: `find output/Luis/ -type f -name '*.wav' | while read -r file; do echo "$file"; paplay "$file"; done`
 
 
 ## ⏹️ Common Question: If I stop or delete the container, will I lose progress?
@@ -444,8 +445,7 @@ Other tips:
 - Use a modern audio file editor ([ocenaudio](https://www.ocenaudio.com/), Audacity, etc.) to **view the waveform** for each audio clip.
 - **Look at the provided voice recordings** in the repo's `baseline` folder for examples of what recorded voice clips should look like.
 - The `record_elevenlabs_voice.py` script automatically captures an appropriate number of suitable-length high-quality voice samples, applying suitable audio effects such as normalization, and saving them in the correct format. Use it to **get started quickly**
-- **Audio from YouTube** videos (for example, captured from an interview with a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)) **is generally usable** after applying ALL the considerations above, but the speaker's voice needs to be 100% isolated with no background noise, music, chatter, etc.
-- Recording **your own voice** also works well, when following the guidelines above.
+- Recording **your own voice** works well when following the guidelines above.
 
 
 ## 🐞 Common Question: How do I report a bug, or ask for more help?
@@ -493,7 +493,7 @@ If you have a reason to keep the size of each zip file **below 2GB**, feel free 
 
 
 ## 🗣️ Common Question: When I use one of the voice packs downloaded from this page, why does the new CrewChief voice have frequent garbled or weird speech output?
-Alas, the xtts machine learning model which is performing the text-to-speech work is a "generative" model, which means **its output is not constrained to the exact text we provide**, and it can generate *any* audio data that the model deems as **probabilistically correct** -- even if it's clearly nonsense to a listener.
+Alas, some of the generated sound files just sound bad. The xtts machine learning model which is performing the text-to-speech work is a "generative" model, which means **its output is not constrained to the exact text we provide**, and it can generate *any* audio data that the model deems as **probabilistically correct** -- even if it's clearly nonsense to a listener.
 
 Improving the quality of the reference audio files used for voice cloning **helps greatly**, but in practice, the best option is simply to **wait for related technology to improve**, then plumb in a more capable and robust text-to-speech tool when available. This is a very active research area with many promising developments in progress.
 
@@ -593,6 +593,7 @@ tts --model_name tts_models/multilingual/multi-dataset/xtts_v2 --speaker_idx 'Cl
 - Support **alternate text-to-speech services** and models
 - Automate **multilingual machine translation** (see ["How do I create a voice pack in a different language?"](#-common-question-how-do-i-create-a-voice-pack-in-a-different-language))
 - Reduce the size of the Docker image
+- Speedup the TTS process by: batching model inference calls, detect invalid files using fast python methods (i.e. torchaudio) instead of calling external sox/ffmpeg command, similar for adding audio effects like overdrive
 
 
 ## 📖 References
