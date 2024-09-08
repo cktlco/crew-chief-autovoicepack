@@ -81,7 +81,7 @@ def parse_arguments():
         "--baseline_audio_dir",
         type=str,
         default="./baseline",
-        help="Path to the directory containing the baseline audio recordings which will be used to clone that speaker's voice.",
+        help="Path to the directory containing the **baseline audio recordings** used to initialize the TTS model.",
     )
     parser.add_argument(
         "--overwrite",
@@ -839,6 +839,8 @@ def main():
 
     if not args.skip_radio_check:
         generate_radio_checks(args)
+
+    # TODO: generate subtitles.csv for the radio_check folder
 
     # TODO: generate audio for the driver_names folder, optionally either including all the CrewChief names
     #       (from a static JSON file in this repo) or just a single name based on args.your_name with a dozen variants

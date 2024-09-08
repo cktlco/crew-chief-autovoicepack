@@ -65,9 +65,8 @@ services:
     # Freely change this command to add/remove parameters you wish to use.
     # Remember that each space-separated part of the command needs to be a separate element in the list.
     #
-    # The command below will generate a voice pack for "Luis" in CPU-only mode with the default settings.
-    # REMOVE the --cpu_only flag to run in GPU mode.
+    # The command below will generate a voice pack for "Luis" with the default settings.
     #
     #command: [ "sh", "-c", "for voice in Ana Bart Blake David Don Hiroshi Jamal Luis Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
     #command: [ "sh", "-c", "for voice in Madeline Norm Paul Rajan Sally Shannon; do python3 generate_voice_pack.py --your_name Champ --voice_name $${voice}; done" ]
-    command: [ "python3", "generate_voice_pack.py", "--your_name", "Champ", "--voice_name", "Luis" ]
+    command: [ "python3", "generate_voice_pack.py", "--your_name", "Champ", "--voice_name", "Luis", "--voice_name_tts", "Looees" ]
