@@ -139,6 +139,7 @@ docker run -it --rm --gpus all --name crew-chief-autovoicepack -v ~/crew-chief-a
 
 Important:
 - Note the two `-v` options in the command, these make folders from your local machine storage available to the Docker container. Change the first part of each mounted folder path to **a location on your local machine** where you want the generated audio files to be saved ("output") or the location of the .wav file recordings you prepared in an earlier step ("baseline"). Don't change the part after the colon (`:/app/output` or `:/app/baseline`).
+- Omit the `-v` option for the baseline folder if you want to test with the provided `Luis` voice
 - Remember to include the `--gpus all` parameter **if you have a modern NVIDIA GPU** and want to use it for the voice pack generation.
 
 Running `docker run -it ...` will create a new container and drop you at a (customized) bash prompt:
