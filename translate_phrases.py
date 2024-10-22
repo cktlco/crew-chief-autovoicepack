@@ -66,19 +66,8 @@ def translate_phrase_ollama(
         logging.error(f"Failed to decode JSON response: {response.text}")
         return None
 
-    if not sanity_check_llm_response(translated_phrase):
-        logging.error("LLM response failed sanity check.")
-        return None
-
     return translated_phrase
 
-
-def sanity_check_llm_response(response: str) -> bool:
-    """
-    Check the response from the Ollama API to ensure it is only the translated
-    phrase and not a longer comment, question, or result other than the translation.
-    """
-    return True
 
 
 def main():
