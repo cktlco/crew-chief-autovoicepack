@@ -9,7 +9,7 @@
 - customize the voice
 - easily import high-quality professional **voices from ElevenLabs.io** (for free)
 - multiply the original phrase library with automatic **variations**
-- generate voice packs **in any language** (requires machine/human text translation)
+- generate voice packs **in any language** (experimental)
 - **fast**: 1-2 hours to create **30,000 audio files** (RTX 3090)
 - runs on **any hardware**, Windows/Mac/Linux, CPU-only or Nvidia GPU
 - **friendly** Python code you are encouraged to tweak
@@ -462,10 +462,12 @@ Fork the repo, make your changes, and **submit a pull request**. Please include 
 
 
 ## 🌐 Common Question: How do I create a voice pack in a different language?
-I've not done this since I only use English, but here's a rough outline of **suggested steps**:
 
-- **Machine-translate** the `original_text` column of `phrase_inventory.csv` using an LLM like ChatGPT. This can be done iteratively, copy/pasting an acceptable number of rows at a time to the LLM, or fully automated via API calls.
-- After translation, **manually review** the csv file in a tool like Excel or LibreOffice Calc
+Rough steps:
+- **Translate** the `original_text` column of `phrase_inventory.csv` manually (oof) or using an external language tool (ChatGPT, etc).
+- **Recommended**: This step can be done **automatically** with the provided `translate_phrases.py` script, using a locally-accessible [Ollama](https://ollama.com) language model such as Mistral, Qwen, or LLama 3.1. Read the script for usage information.
+
+- After translation, **manually review** the csv (comma-separated values) file in a spreadsheet application such as Microsoft Excel or [LibreOffice Calc](https://www.libreoffice.org/discover/calc/)
 - Manually edit any **incorrect translations**
 - Optionally, tweak the **TTS pronunciation** column `text_for_tts` for troublesome entries
 - Generate the voice pack **using the normal process**

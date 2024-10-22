@@ -72,7 +72,7 @@ def translate_phrase_ollama(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Translate crew-chief-autovoicepack phrase text from English to the language of your choosing, using a local LLM API, with initial support for Ollama."
+        description="Translate crew-chief-autovoicepack phrase text from English to the language of your choosing, using a local LLM API, with initial support for Ollama. Expect this process to take at least several hours, since it's not at all optimized for speed or efficiency (slow model, no batching, no caching, slow sanity check, etc)."
     )
     parser.add_argument(
         "--target_language",
@@ -90,13 +90,13 @@ def main():
     )
     parser.add_argument(
         "--max_retries",
-        help="Maximum number of retries to attempt for each phrase translation. Used when the LLM returns an unusuable response.",
+        help="Maximum number of retries to attempt for each phrase translation. Used when the LLM returns an incompatible response.",
         default=100,
     )
     parser.add_argument(
         "--sanity_check",
         help="If True, translate the LLM response back to English and display the result in the logs. This will help an observer gain confidence that the translation is accurate, but will slow down the process by approximately half since it requires an extra call to the LLM.",
-        default=False,
+        default=True,
     )
     args = parser.parse_args()
 
