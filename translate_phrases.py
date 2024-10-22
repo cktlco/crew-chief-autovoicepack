@@ -104,6 +104,11 @@ def main():
         help="Maximum number of retries to attempt for each phrase translation. Used when the LLM returns an unusuable response.",
         default=100,
     )
+    parser.add_argument(
+        "--sanity_check",
+        help="If True, translate the LLM response back to English and display the result in the logs. This will help an observer gain confidence that the translation is accurate, but will slow down the process by approximately half since it requires an extra call to the LLM.",
+        default=False,
+    )
     args = parser.parse_args()
 
     entries: List[CrewChiefAudioFile] = parse_phrase_inventory(args.phrase_inventory)
@@ -150,10 +155,17 @@ def main():
             translated_phrase = translated_phrase or "TRANSLATION_FAILED"
 
             # sanity check by translating it back to English
-            retranslated_phrase = translate_phrase_ollama(
-                translated_phrase,
-                source_language_name="German",
-                target_language_name="English",
+            retranslated_phrase = (
+                (
+                    translate_phrase_ollama(
+                        translated_phrase,
+                        source_language_name="German",
+                        target_language_name="English",
+                    )
+                    or "[Sanity check LLM call failed]"
+                )
+                if args.sanity_check
+                else "..."
             )
 
             logging.info(

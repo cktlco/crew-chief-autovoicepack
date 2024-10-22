@@ -39,8 +39,10 @@ def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]
 
         # read each row of the csv file in one at a time
         for row in csvreader:
-            row_fields = row[:4] # only consider the first 4 fields
-            audio_path_windows, audio_filename_with_ext, subtitle, text_for_tts = row_fields
+            row_fields = row[:4]  # only consider the first 4 fields
+            audio_path_windows, audio_filename_with_ext, subtitle, text_for_tts = (
+                row_fields
+            )
 
             audio_filename = audio_filename_with_ext.replace(".wav", "")
             # swap from backslashes (Windows) to forward slashes (Linux)
