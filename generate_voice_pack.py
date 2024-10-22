@@ -15,6 +15,8 @@ import torchaudio
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
 
+from utils import CrewChiefAudioFile, parse_phrase_inventory
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -134,56 +136,6 @@ def parse_arguments():
     return parser.parse_args()
 
 
-@dataclass
-class CrewChiefAudioFile:
-    """
-    A simple data structure aligned to the contents of the audio file inventory.
-    """
-
-    def __init__(
-        self,
-        audio_path: str,
-        audio_filename: str,
-        subtitle: str,
-        text_for_tts: str,
-    ):
-        self.audio_path = audio_path
-        self.audio_filename = audio_filename
-        self.subtitle = subtitle
-        self.text_for_tts = text_for_tts
-        self.audio_path_filtered = ""
-        self.subtitle_filtered = ""
-        self.text_for_tts_filtered = ""
-
-
-def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]:
-    """
-    Read the audio file inventory into a list of CrewChiefAudioFile objects.
-    """
-    entries: List[CrewChiefAudioFile] = []
-
-    with open(inventory_file_path, newline="", encoding="utf-8") as csvfile:
-        csvreader = csv.reader(csvfile)
-
-        # skip header row
-        next(csvreader)
-
-        # read each row of the csv file in one at a time
-        for row in csvreader:
-            audio_path_windows, audio_filename_with_ext, subtitle, text_for_tts = row
-
-            audio_filename = audio_filename_with_ext.replace(".wav", "")
-            # swap from backslashes (Windows) to forward slashes (Linux)
-            audio_path = audio_path_windows.replace("\\", "/")
-
-            # put the csv file data into a more friendly data structure
-            entries.append(
-                CrewChiefAudioFile(audio_path, audio_filename, subtitle, text_for_tts)
-            )
-
-    return entries
-
-
 def apply_audio_effects(input_file: str, output_file: str) -> None:
     """
     Apply audio effects to the generated audio files:
@@ -203,6 +155,8 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         "-V1",
         "-q",
         input_file,
+        "-C",
+        "64",
         output_file,
         "gain",
         "-3",

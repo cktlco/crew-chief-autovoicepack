@@ -31,13 +31,15 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 | **Paul** [[part 1 - 1.8GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Paul-1of2.zip), [[part 2 - 0.1GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Paul-2of2.zip)<br/><br/><video src="https://github.com/user-attachments/assets/3dd22ced-a388-49e5-a8e7-3ba992e246c5"></video>          | **Hiroshi** [[part 1 - 1.8GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Hiroshi-1of2.zip), [[part 2 - 0.9GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Hiroshi-2of2.zip)<br/><br/><video src="https://github.com/user-attachments/assets/36d31d74-c98d-4475-a0ae-91831847e691"></video>  | **Bart** [[download - 1.5GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Bart-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/a9f16ad9-9ee8-4754-918f-0447193ffae8"></video>                                                                                                           |
 | **Luis** [[download - 1.6GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Luis-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/5989f428-6f34-46c2-87e7-ee1f56fa6f70"></video>                                                                                                                                                | **Madeline** [[download - 1.5GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Madeline-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/ca18a5a7-df31-47a0-84b6-6a87b1ce99c9"></video>                                                                                                   |                                                                                                                                                                                                                                                                                                                                                       |
 
+ 
+🆕 German language: [Luis - 0.0GB](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v2.0.0/crew-chief-autovoicepack-Luis_de.zip) (experimental)
+
 
 ## 🚀 Quickstart
+
 1. **Prepare 30 seconds of audio** -- record your own voice or use ElevenLabs
 2. Run `generate_voice_pack.py` from a **Docker container** ([full instructions](#-common-task-generate-a-full-crewchief-voice-pack)).
 3. **Add the new voice pack** to CrewChief ([full instructions](#-common-task-add-your-new-voice-pack-to-crewchief)).
-
-Bonus: Run the process using a GPU freely provided by Google Cloud Colab. See ["Run using Google Cloud Colab"](#-common-task-run-crew-chief-autovoicepack-in-google-cloud-colab)
 
 
 ## 🚧️ Known Issues

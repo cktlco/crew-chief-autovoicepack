@@ -10,7 +10,7 @@
 
 # Use a "devel" version of the CUDA image since deepspeed needs nvcc for runtime kernel compilation
 # This image is fully-compatible with non-GPU systems, operations will just fall back to the CPU
-FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.6.0-devel-ubuntu22.04
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ WORKDIR /app
 # - espeak-ng, libsndfile1-dev are OS-level dependencies for the coqui TTS application
 # - git Large File Support (LFS) is needed to download the xtts text-to-speech model from huggingface. Note that this is saved into the Docker image filesystem, not downloaded at runtime.
 # - ffmpeg, sox are needed for audio processing (mp3 to wav conversion, silence trimming)
-RUN apt-get update && apt-get install -y --no-install-recommends gcc g++ make curl python3 python3-dev python3-pip python3-venv python3-wheel espeak-ng libsndfile1-dev git git-lfs ffmpeg sox && rm -rf /var/lib/apt/lists/* && apt-get clean && rm -rf /root/.cache/pip
+RUN apt-get update && apt-get install -y --no-install-recommends gcc g++ make curl python3 python3-dev python3-pip python3-venv python3-wheel espeak-ng libsndfile1-dev git git-lfs ffmpeg sox iputils-ping telnet && rm -rf /var/lib/apt/lists/* && apt-get clean && rm -rf /root/.cache/pip
 
 # git Large File Support
 RUN git lfs install
@@ -40,12 +40,14 @@ RUN git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /root/.local/
 RUN pip --no-cache-dir install deepspeed
 
 # Copy the Python scripts, data files, and baseline recording into the Docker image
-COPY generate_voice_pack.py record_elevenlabs_voice.py zip_voice_pack.py phrase_inventory.csv ./
+COPY generate_voice_pack.py utils.py record_elevenlabs_voice.py zip_voice_pack.py phrase_inventory.csv translate_phrases.py ./
 COPY baseline/Luis ./baseline/Luis/
 
 # Customize shell prompt and add canned command lines to the shell history
 RUN echo 'export PS1="crew-chief-autovoicepack > "' >> /root/.bashrc && \
+    echo "python3 translate_phrases.py --target_language German --translated_phrase_inventory phrase_inventory_de.csv" >> ~/.bash_history && \
     echo "python3 record_elevenlabs_voice.py --voice_name XXX --voice_id XXX" >> ~/.bash_history && \
+    echo "python3 generate_voice_pack.py --your_name 'Sieger' --voice_name 'Luis_de' --tts_voice_name 'Looees' --phrase_inventory phrase_inventory_de.csv --variation_count 1" && \
     echo "python3 generate_voice_pack.py --your_name 'Champ' --voice_name 'Luis'" >> ~/.bash_history
 
 # Sit at a bash prompt when the container starts
