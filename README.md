@@ -9,7 +9,7 @@
 - customize the voice
 - easily import high-quality professional **voices from ElevenLabs.io** (for free)
 - multiply the original phrase library with automatic **variations**
-- generate voice packs **in any language** (requires machine/human text translation)
+- generate voice packs **in any language** (experimental)
 - **fast**: 1-2 hours to create **30,000 audio files** (RTX 3090)
 - runs on **any hardware**, Windows/Mac/Linux, CPU-only or Nvidia GPU
 - **friendly** Python code you are encouraged to tweak
@@ -31,13 +31,15 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 | **Paul** [[part 1 - 1.8GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Paul-1of2.zip), [[part 2 - 0.1GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Paul-2of2.zip)<br/><br/><video src="https://github.com/user-attachments/assets/3dd22ced-a388-49e5-a8e7-3ba992e246c5"></video>          | **Hiroshi** [[part 1 - 1.8GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Hiroshi-1of2.zip), [[part 2 - 0.9GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Hiroshi-2of2.zip)<br/><br/><video src="https://github.com/user-attachments/assets/36d31d74-c98d-4475-a0ae-91831847e691"></video>  | **Bart** [[download - 1.5GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Bart-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/a9f16ad9-9ee8-4754-918f-0447193ffae8"></video>                                                                                                           |
 | **Luis** [[download - 1.6GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Luis-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/5989f428-6f34-46c2-87e7-ee1f56fa6f70"></video>                                                                                                                                                | **Madeline** [[download - 1.5GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Madeline-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/ca18a5a7-df31-47a0-84b6-6a87b1ce99c9"></video>                                                                                                   |                                                                                                                                                                                                                                                                                                                                                       |
 
+ 
+🆕 German language: [Luis - 1.6GB](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v2.0.0/crew-chief-autovoicepack-Luis_de.zip) (experimental)
+
 
 ## 🚀 Quickstart
+
 1. **Prepare 30 seconds of audio** -- record your own voice or use ElevenLabs
 2. Run `generate_voice_pack.py` from a **Docker container** ([full instructions](#-common-task-generate-a-full-crewchief-voice-pack)).
 3. **Add the new voice pack** to CrewChief ([full instructions](#-common-task-add-your-new-voice-pack-to-crewchief)).
-
-Bonus: Run the process using a GPU freely provided by Google Cloud Colab. See ["Run using Google Cloud Colab"](#-common-task-run-crew-chief-autovoicepack-in-google-cloud-colab)
 
 
 ## 🚧️ Known Issues
@@ -460,10 +462,12 @@ Fork the repo, make your changes, and **submit a pull request**. Please include 
 
 
 ## 🌐 Common Question: How do I create a voice pack in a different language?
-I've not done this since I only use English, but here's a rough outline of **suggested steps**:
 
-- **Machine-translate** the `original_text` column of `phrase_inventory.csv` using an LLM like ChatGPT. This can be done iteratively, copy/pasting an acceptable number of rows at a time to the LLM, or fully automated via API calls.
-- After translation, **manually review** the csv file in a tool like Excel or LibreOffice Calc
+Rough steps:
+- **Translate** the `original_text` column of `phrase_inventory.csv` manually (oof) or using an external language tool (ChatGPT, etc).
+- **Recommended**: This step can be done **automatically** with the provided `translate_phrases.py` script, using a locally-accessible [Ollama](https://ollama.com) language model such as Mistral, Qwen, or LLama 3.1. Read the script for usage information.
+
+- After translation, **manually review** the csv (comma-separated values) file in a spreadsheet application such as Microsoft Excel or [LibreOffice Calc](https://www.libreoffice.org/discover/calc/)
 - Manually edit any **incorrect translations**
 - Optionally, tweak the **TTS pronunciation** column `text_for_tts` for troublesome entries
 - Generate the voice pack **using the normal process**
