@@ -6539,7 +6539,7 @@ audio_path,audio_filename,subtitle,text_for_tts,original_english
 /voice/position/p13,1,R13,R13,P13
 /voice/position/p13,13,R13,R13,P13
 /voice/position/p13,2,13. Platz,13. Platz,13th place
-/voice/position/p14,1,14.,14.,14th
+/voice/position/p14,1,14,14,14th
 /voice/position/p14,14,R14,R14,P14
 /voice/position/p14,3,R14,R14,P14
 /voice/position/p15,15,R15,R15,P15
@@ -6551,7 +6551,7 @@ audio_path,audio_filename,subtitle,text_for_tts,original_english
 /voice/position/p17,1,R17,R17,P17
 /voice/position/p17,17,R17,R17,P17
 /voice/position/p17,2,17. Platz,17. Platz,17th place
-/voice/position/p18,1,18.,18.,18th
+/voice/position/p18,1,18,18,18th
 /voice/position/p18,18,R18,R18,P18
 /voice/position/p18,2,R18,R18,P18
 /voice/position/p19,19,R19,R19,P19
@@ -7629,7 +7629,7 @@ audio_path,audio_filename,subtitle,text_for_tts,original_english
 /voice/tyre_monitor/locking_rears_corner_warning,10,du verriegelst deine Hinterreifen beim Einbiegen,du verriegelst deine Hinterreifen beim Einbiegen,you're locking your rears going into
 /voice/tyre_monitor/locking_rears_corner_warning,11,du verriegelst deine Hinterreifen in,du verriegelst deine Hinterreifen in,you're locking your rears into
 /voice/tyre_monitor/locking_rears_corner_warning,12,wir sehen eine Hinterachsverriegelung bei,wir sehen eine Hinterachsverriegelung bei,we're seeing rear locking into
-/voice/tyre_monitor/locking_rears_lap_warning,1_op_prefix_ok,du verriegelst deine Hinterreifen经常,du verriegelst deine Hinterreifen经常,you're locking your rears a lot
+/voice/tyre_monitor/locking_rears_lap_warning,1_op_prefix_ok,du verriegelst deine Hinterreifen,du verriegelst deine Hinterreifen,you're locking your rears a lot
 /voice/tyre_monitor/locking_rears_lap_warning,2,wir beobachten viel Bremsversagen am Hintern,wir beobachten viel Bremsversagen am Hintern,we're seeing lots of rear brake locking
 /voice/tyre_monitor/locking_rears_lap_warning,3_op_prefix_ok,wir beobachten viel Hinterachsverriegelung,wir beobachten viel Hinterachsverriegelung,we're seeing lots of rear locking
 /voice/tyre_monitor/locking_right_front_corner_warning,4,du verriegelst deine rechte Vorderrinne beim Einfahren,du verriegelst deine rechte Vorderrinne beim Einfahren,you're locking your right front going into
@@ -9103,19 +9103,19 @@ audio_path,audio_filename,subtitle,text_for_tts,original_english
 /personalisations/YOUR_NAME/prefixes_and_suffixes/come_on,2,"Komm schon, YOUR_NAME","Komm schon, YOUR_NAME","C'mon, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/come_on,3,"Komm schon, YOUR_NAME","Komm schon, YOUR_NAME","C'mon, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/come_on,4,"Komm schon, YOUR_NAME","Komm schon, YOUR_NAME","C'mon, YOUR_NAME"
-/personalisations/YOUR_NAME/prefixes_and_suffixes/oh_dear,1,"Aha, DEIN_NAME...","Aha, DEIN_NAME...","Ah, YOUR_NAME..."
-/personalisations/YOUR_NAME/prefixes_and_suffixes/oh_dear,2,"Ach, DEIN_NAME","Ach, DEIN_NAME","Oh, YOUR_NAME"
+/personalisations/YOUR_NAME/prefixes_and_suffixes/oh_dear,1,"Aha, YOUR_NAME...","Aha, YOUR_NAME...","Ah, YOUR_NAME..."
+/personalisations/YOUR_NAME/prefixes_and_suffixes/oh_dear,2,"Ach, YOUR_NAME","Ach, YOUR_NAME","Oh, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/oh_dear,sweary_3,"Verdammt, YOUR_NAME!","Verdammt, YOUR_NAME!","Shit, YOUR_NAME!"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/oh_dear,sweary_4,"Aw Scheiße, YOUR_NAME!","Aw Scheiße, YOUR_NAME!","Aw shit, YOUR_NAME!"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/oh_dear,sweary_5,"Ach Scheiße, YOUR_NAME.","Ach Scheiße, YOUR_NAME.","Ahh shit, YOUR_NAME."
-/personalisations/YOUR_NAME/prefixes_and_suffixes/ok,1,"Okay, DEIN_NAME","Okay, DEIN_NAME","Okay, YOUR_NAME"
+/personalisations/YOUR_NAME/prefixes_and_suffixes/ok,1,"Okay, YOUR_NAME","Okay, YOUR_NAME","Okay, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/ok,2,"In Ordnung, YOUR_NAME","In Ordnung, YOUR_NAME","Okay, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/ok,3,"In Ordnung, YOUR_NAME","In Ordnung, YOUR_NAME","Okay, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/ok,4,"In Ordnung, YOUR_NAME","In Ordnung, YOUR_NAME","Okay, YOUR_NAME"
-/personalisations/YOUR_NAME/prefixes_and_suffixes/please,1,"Bitte, DEIN_NAME","Bitte, DEIN_NAME","Please, YOUR_NAME"
-/personalisations/YOUR_NAME/prefixes_and_suffixes/please,2,"Bitte, DEIN_NAME","Bitte, DEIN_NAME","Please, YOUR_NAME"
-/personalisations/YOUR_NAME/prefixes_and_suffixes/please,3,"Bitte, NAME_DES_NUTZERS","Bitte, NAME_DES_NUTZERS","Please, YOUR_NAME"
-/personalisations/YOUR_NAME/prefixes_and_suffixes/please,4,"Bitte, DEIN_NAME","Bitte, DEIN_NAME","Please, YOUR_NAME"
+/personalisations/YOUR_NAME/prefixes_and_suffixes/please,1,"Bitte, YOUR_NAME","Bitte, YOUR_NAME","Please, YOUR_NAME"
+/personalisations/YOUR_NAME/prefixes_and_suffixes/please,2,"Bitte, YOUR_NAME","Bitte, YOUR_NAME","Please, YOUR_NAME"
+/personalisations/YOUR_NAME/prefixes_and_suffixes/please,3,"Bitte, YOUR_NAME","Bitte, YOUR_NAME","Please, YOUR_NAME"
+/personalisations/YOUR_NAME/prefixes_and_suffixes/please,4,"Bitte, YOUR_NAME","Bitte, YOUR_NAME","Please, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/well_done,1,"Hell ja, YOUR_NAME!","Hell ja, YOUR_NAME!","Hell yeah, YOUR_NAME!"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/well_done,2,"In Ordnung, YOUR_NAME","In Ordnung, YOUR_NAME","Alright, YOUR_NAME"
 /personalisations/YOUR_NAME/prefixes_and_suffixes/well_done,3,"Gute Arbeit, YOUR_NAME","Gute Arbeit, YOUR_NAME","Good job, YOUR_NAME"
