@@ -32,7 +32,7 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 | **Luis** [[download - 1.6GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Luis-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/5989f428-6f34-46c2-87e7-ee1f56fa6f70"></video>                                                                                                                                                | **Madeline** [[download - 1.5GB]](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v1.0.0/crew-chief-autovoicepack-Madeline-1of1.zip)<br/><br/><video src="https://github.com/user-attachments/assets/ca18a5a7-df31-47a0-84b6-6a87b1ce99c9"></video>                                                                                                   |                                                                                                                                                                                                                                                                                                                                                       |
 
  
-🆕 German language: [Luis - 0.0GB](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v2.0.0/crew-chief-autovoicepack-Luis_de.zip) (experimental)
+🆕 German language: [Luis - 1.6GB](https://github.com/cktlco/crew-chief-autovoicepack/releases/download/v2.0.0/crew-chief-autovoicepack-Luis_de.zip) (experimental)
 
 
 ## 🚀 Quickstart
