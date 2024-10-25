@@ -464,7 +464,7 @@ Fork the repo, make your changes, and **submit a pull request**. Please include 
 ## 🌐 Common Question: How do I create a voice pack in a different language?
 
 Rough steps:
-- **Translate** the `subtitle` column of `phrase_inventory.csv` manually (oof) or using an external language tool (ChatGPT, etc).
+- **Translate** the `text_for_tts` column of `phrase_inventory.csv` manually (oof) or using an external language tool (ChatGPT, etc).
 - **Recommended**: This step can be done **automatically** with the provided `translate_phrases.py` script, using a locally-accessible [Ollama](https://ollama.com) language model such as Mistral, Qwen, or LLama 3.1. Read the script for usage information.
 
 - After translation, **manually review** the csv (comma-separated values) file in a spreadsheet application such as Microsoft Excel or [LibreOffice Calc](https://www.libreoffice.org/discover/calc/)
