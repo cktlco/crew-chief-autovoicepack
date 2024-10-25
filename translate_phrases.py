@@ -23,6 +23,7 @@ def translate_phrase_ollama(
     prompt = (
         'Respond with JSON only using this format: { "translation": "" }.'
         "DO NOT include any notes or comments or other human-readable text. JSON only."
+        f"Translate all Arabic numerals like 1, 2, 3 to their equivalent word form in {target_language_name}."
         "Note that these phrases are related to the status of a race car on track, so use comparable terms.\n\n"
         f"Translate this phrase from {source_language_name} to {target_language_name}:\n\n{input_phrase}"
     )
@@ -69,7 +70,6 @@ def translate_phrase_ollama(
     return translated_phrase
 
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="Translate crew-chief-autovoicepack phrase text from English to the language of your choosing, using a local LLM API, with initial support for Ollama. Expect this process to take at least several hours, since it's not at all optimized for speed or efficiency (slow model, no batching, no caching, slow sanity check, etc)."
@@ -100,7 +100,9 @@ def main():
     )
     args = parser.parse_args()
 
-    entries: List[CrewChiefAudioFile] = parse_phrase_inventory(args.phrase_inventory)
+    entries: List[CrewChiefAudioFile] = parse_phrase_inventory(
+        args.phrase_inventory, convert_slashes=False
+    )
 
     if not entries:
         logging.error("No entries found in the phrase inventory. Exiting.")
@@ -165,7 +167,7 @@ def main():
             csvwriter.writerow(
                 [
                     entry.audio_path,
-                    entry.audio_filename,
+                    f"{entry.audio_filename}.wav",
                     translated_phrase,  # subtitle field
                     translated_phrase,  # text_for_tts field
                     english_phrase,  # not used, for comparison only, original English subtitle

@@ -25,7 +25,9 @@ class CrewChiefAudioFile:
         self.text_for_tts_filtered = ""
 
 
-def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]:
+def parse_phrase_inventory(
+    inventory_file_path: str, convert_slashes: bool = True
+) -> List[CrewChiefAudioFile]:
     """
     Read the audio file inventory into a list of CrewChiefAudioFile objects.
     """
@@ -46,7 +48,8 @@ def parse_phrase_inventory(inventory_file_path: str) -> List[CrewChiefAudioFile]
 
             audio_filename = audio_filename_with_ext.replace(".wav", "")
             # swap from backslashes (Windows) to forward slashes (Linux)
-            audio_path = audio_path_windows.replace("\\", "/")
+            if convert_slashes:
+                audio_path = audio_path_windows.replace("\\", "/")
 
             # put the csv file data into a more friendly data structure
             entries.append(

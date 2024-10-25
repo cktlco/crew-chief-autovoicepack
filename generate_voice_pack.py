@@ -8,7 +8,7 @@ import subprocess
 from dataclasses import dataclass
 import csv
 from functools import lru_cache
-from typing import List, Any
+from typing import List, Any, Optional
 import re
 import torch
 import torchaudio
@@ -132,7 +132,12 @@ def parse_arguments():
         default=30,
         help="Maximum number of attempts to generate a valid .wav file before giving up. This is used to prevent the script from getting stuck on a single problematic phrase, but keeping it high naturally encourages higher-quality audio output.",
     )
-
+    parser.add_argument(
+        "--radio_check_tts_text",
+        type=str,
+        default=None,
+        help="Custom text to use for the radio check audio clips. If not provided, a default set of radio check phrases will be used. This is mainly useful for voicepack languages other than English.",
+    )
     return parser.parse_args()
 
 
@@ -155,11 +160,9 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         "-V1",
         "-q",
         input_file,
-        "-C",
-        "64",
         output_file,
-        "gain",
-        "-3",
+        # "gain",
+        # "-3",
         "equalizer",
         "100",
         "0.5q",
@@ -741,7 +744,9 @@ def generate_radio_checks(args: argparse.Namespace) -> None:
     """Generate the radio check audio clips"""
     logging.info("Generating radio check audio clips...")
     voice_name_tts = args.voice_name_tts or args.voice_name
-    radio_check_phrases = get_radio_check_phrases(voice_name_tts)
+    radio_check_phrases = args.radio_check_tts_text or get_radio_check_phrases(
+        voice_name_tts
+    )
 
     for radio_check_idx, radio_check_phrase in enumerate(radio_check_phrases, 1):
         logging.info(
