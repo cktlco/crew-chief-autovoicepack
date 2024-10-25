@@ -397,7 +397,7 @@ For example, upon noticing a Full-Course Yellow Flag in the sim, CrewChief will 
 
 This corresponds to these rows of the `phrase_inventory.csv` file:
 
-| audio_filename                                 | original_text                              |
+| audio_filename                                 | subtitle                              |
 |------------------------------------------------|--------------------------------------------|
 | `\voice\flags\fc_yellow_in_progress_usa:1.wav` | `we're under caution, the pace car is out` |
 | `\voice\flags\fc_yellow_in_progress_usa:2.wav` | `full course yellow, pace car is out`      |
@@ -411,7 +411,7 @@ Understanding this, **you can add your own phrases** to the voice pack by editin
 
 **As another example**, if you want to add a new phrase which is played when CrewChief looks for audio intended for `didn't understand`, add a new row to `phrase_inventory.csv` file like this:
 
-| audio_filename                               | original_text                             |
+| audio_filename                               | subtitle                             |
 |----------------------------------------------|-------------------------------------------|
 | `\voice\acknowledge\didnt_understand:15.wav` | `I have no idea what you're saying, man!` |
 
@@ -426,7 +426,7 @@ Additionally, there is nothing stopping you from cleverly co-opting a certain fo
 Recommended **places to start**:
 - Add a bunch of **custom celebratory messages** to `\voice\lap_counter\finished_race_good_finish`
 - Berate your **terrible performance** with new rows for `\voice\lap_counter\finished_race_last`
-- In general, start with the same value for the `text_for_tts` and `original_text` columns
+- In general, start with the same value for the `text_for_tts` and `subtitle` columns
 - Fix the **bad pronunciation** of your favorite corners in `\voice\corners` by adding a different value for the `text_for_tts` column.
 
 
@@ -464,7 +464,7 @@ Fork the repo, make your changes, and **submit a pull request**. Please include 
 ## 🌐 Common Question: How do I create a voice pack in a different language?
 
 Rough steps:
-- **Translate** the `original_text` column of `phrase_inventory.csv` manually (oof) or using an external language tool (ChatGPT, etc).
+- **Translate** the `text_for_tts` column of `phrase_inventory.csv` manually (oof) or using an external language tool (ChatGPT, etc).
 - **Recommended**: This step can be done **automatically** with the provided `translate_phrases.py` script, using a locally-accessible [Ollama](https://ollama.com) language model such as Mistral, Qwen, or LLama 3.1. Read the script for usage information.
 
 - After translation, **manually review** the csv (comma-separated values) file in a spreadsheet application such as Microsoft Excel or [LibreOffice Calc](https://www.libreoffice.org/discover/calc/)
