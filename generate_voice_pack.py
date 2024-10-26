@@ -744,8 +744,10 @@ def generate_radio_checks(args: argparse.Namespace) -> None:
     """Generate the radio check audio clips"""
     logging.info("Generating radio check audio clips...")
     voice_name_tts = args.voice_name_tts or args.voice_name
-    radio_check_phrases = args.radio_check_tts_text or get_radio_check_phrases(
-        voice_name_tts
+    radio_check_phrases = (
+        [args.radio_check_tts_text]
+        if args.radio_check_tts_text
+        else get_radio_check_phrases(voice_name_tts)
     )
 
     for radio_check_idx, radio_check_phrase in enumerate(radio_check_phrases, 1):
