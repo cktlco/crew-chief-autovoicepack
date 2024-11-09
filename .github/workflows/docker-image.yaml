@@ -1,46 +1,62 @@
 name: Build and Push Docker Image
 
 on:
-# Disabling since keeps running out of System RAM on the GitHub runner
-#  push:
-#    branches:
-#      - main
-#  pull_request:
+  push:
+    branches:
+      - main
+  #pull_request:
   workflow_dispatch:  # Allows manual triggering
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: /home/runner/work/crew-chief-autovoicepack/crew-chief-autovoicepack
 
     permissions:
       contents: write  # Allows writing to the repository
+      packages: write  # Allows writing to GitHub Packages repo
+      attestations: write
+      id-token: write
 
     steps:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 512
-          swap-size-mb: 1024
+          root-reserve-mb: 32000
+          swap-size-mb: 512
+          temp-reserve-mb: 1024
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
           remove-codeql: 'true'
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+          remove-docker-images: 'true'
 
-      - name: Log in to GitHub Container Registry
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6.7.0
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
           push: true
           tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
-          no-cache: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
+          labels: ${{ steps.meta.outputs.labels }}
