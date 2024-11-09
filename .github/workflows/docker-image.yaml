@@ -7,6 +7,9 @@ on:
   pull_request:
   workflow_dispatch:  # Allows manual triggering
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
@@ -34,15 +37,21 @@ jobs:
           remove-codeql: 'true'
           remove-docker-images: 'true'
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Check disk space
         run: df -h
@@ -51,7 +60,13 @@ jobs:
         uses: docker/build-push-action@v6.7.0
         with:
           push: true
-          tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
+          tags: ghcr.io/cktlco/crew-chief-autovoicepack:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+#      - name: Generate artifact attestation
+#        uses: actions/attest-build-provenance@v1
+#        with:
+#          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+#          subject-digest: ${{ steps.push.outputs.digest }}
+#          push-to-registry: true
