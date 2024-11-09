@@ -26,11 +26,11 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86
 
 RUN wget -q https://developer.download.nvidia.com/compute/cuda/12.6.2/local_installers/cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb
 
-RUN dpkg -i cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb \
+RUN dpkg -i cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb > /dev/null \
     && cp /var/cuda-repo-ubuntu2204-12-6-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
-    && apt-get update \
+    && apt-get update > /dev/null \
     && apt-get -q install -y --no-install-recommends \
-    cuda-toolkit-12-6 \
+    cuda-toolkit-12-6 > /dev/null \
     && rm -rf /var/lib/apt/lists/* && apt-get clean && rm -rf /tmp/* /var/tmp/* \
     && rm -rf /app/cuda-repo* /var/cuda-repo* \
     && rm -rf /opt/nvidia/nsight-compute /opt/nvidia/nsight-systems
@@ -55,7 +55,10 @@ RUN pip --no-cache-dir install coqui-tts
 
 # Download the 1.5GB xtts model weights from huggingface, save into the Docker image filesystem
 # This is the slowest step in the build process, but will be cached for future builds
-RUN git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2 && rm -rf /root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2/.git
+RUN git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /app/data/tts_models--multilingual--multi-dataset--xtts_v2 \
+    && rm -rf /app/data/tts_models--multilingual--multi-dataset--xtts_v2/.git \
+    && mkdir -p /root/.local/share/tts \
+    && ln -s /app/data/tts_models--multilingual--multi-dataset--xtts_v2 /root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2
 
 # Deepspeed is optional and requires a CUDA GPU, but greatly speeds up text-to-speech generation
 RUN pip --no-cache-dir install deepspeed
