@@ -49,35 +49,6 @@ Make your own, or download one of these ready-to-go **full replacement voices fo
 - minor: voice pack name must use ASCII characters (e.g. UTF-8 chars like é, ñ, are not supported)
 
 
-## 🎙️Common Task: Bootstrap your voice pack with an Elevenlabs.io voice 
-[Elevenlabs.io](https://elevenlabs.io/) provides a professional-quality text-to-speech service that can be used to **generate high-quality baseline recordings** for use with `crew-chief-autovoicepack`. This is a great way to create a voice pack that sounds similar to a professional voice actor you choose.
-
-1. **Sign up** for a free account at [Elevenlabs.io](https://elevenlabs.io/). Note your API key.
-2. Browse the library and **select the voice you want to use** as the baseline for your voice pack
-3. Find the "**voice id**" for the voice, from the Elevenlabs.io "Voices" page
-    - You may have to dig around to find the voice_id. Most recently, it can be found by clicking "Voices" in the left panel, then on the row for a specific Voice (e.g. 'Alice') click the "View" button on the far right side, then click the "ID" button in the bottom right of the panel that appears to copy the voice ID to your clipboard (or hover over to see it).
-4. Use the provided `record_elevenlabs_voice.py` script to **create the baseline audio files**:
-```
-# from the running container
-> python3 record_elevenlabs_voice.py --eleven_labs_api_key XXXXXXX --voice_id XXXXXXX --voice_name Luis
-```
-5. The script will generate a folder of **~20 "baseline" speech audio files based on this voice** in the `baseline` folder, including automatically normalizing and trimming silence.
-```
-> python3 generate_voice_pack.py --voice_name 'Luis' ...
-```
-6. You are **now ready to generate a full voice pack** using this voice as the baseline.
-
-
-## 🎤 Common Task: Prepare recordings of your voice
-As an alternative to using an Elevenlabs.io voice, **record yourself or use an existing source like a YouTube video** (via a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)).
-
-1. Record at least **three 10-second .wav file clips of your voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
-2. Trim the recordings to **remove all silence** at the beginning or end of every file, and remove silence longer than ~0.4 seconds from the middle of any file.
-3. When saving, **format the audio files** as 32-bit float PCM WAV files with a 22.5 kHz sample rate and mono channel.
-4. Save the wav files with a simple filename into the `baseline/` folder
-5. See guidelines at ["Common Task: My generated voice pack sounds a lot worse..."](#-common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) 
-
-
 ## 📦 Common Task: Generate a full CrewChief voice pack
 _Pre-requisite: At least three 10-second audio clips of your voice. Or you can test with the provided voice "Luis"._
 
@@ -119,7 +90,7 @@ If you see a message like `error during connect`, **ensure the Docker Desktop ap
 ```
 docker pull ghcr.io/cktlco/crew-chief-autovoicepack:latest
 ```
-**This is a large file (18GB)** and will take time to download.
+**This is a large file (15GB)** and will take time to download.
 
 You can **confirm this step worked** with `docker image list ghcr.io/cktlco/crew-chief-autovoicepack`.
 
@@ -190,6 +161,34 @@ As an example, consider a voice pack with the root folder `Luis`.
 5) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
 
 
+## 🎤 Common Task: Prepare recordings of your voice
+As an alternative to using an Elevenlabs.io voice, **record yourself or use an existing source like a YouTube video** (via a tool like [yt-dlp](https://github.com/yt-dlp/yt-dlp)).
+
+1. Record at least **three 10-second .wav file clips of your voice** for the baseline audio recordings (hint: record yourself speaking the `text_samples` in `record_elevenlabs_voice.py` for easy results). Only the first 10 seconds of each clip will be considered.
+2. Trim the recordings to **remove all silence** at the beginning or end of every file, and remove silence longer than ~0.4 seconds from the middle of any file.
+3. When saving, **format the audio files** as 32-bit float PCM WAV files with a 22.5 kHz sample rate and mono channel.
+4. Save the wav files with a simple filename into the `baseline/` folder
+5. See guidelines at ["Common Task: My generated voice pack sounds a lot worse..."](#-common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) 
+
+## 🎙️Common Task: Bootstrap your voice pack with an Elevenlabs.io voice 
+[Elevenlabs.io](https://elevenlabs.io/) provides a professional-quality text-to-speech service that can be used to **generate high-quality baseline recordings** for use with `crew-chief-autovoicepack`. This is a great way to create a voice pack that sounds similar to a professional voice actor you choose.
+
+1. **Sign up** for a free account at [Elevenlabs.io](https://elevenlabs.io/). Note your API key.
+2. Browse the library and **select the voice you want to use** as the baseline for your voice pack
+3. Find the "**voice id**" for the voice, from the Elevenlabs.io "Voices" page
+    - You may have to dig around to find the voice_id. Most recently, it can be found by clicking "Voices" in the left panel, then on the row for a specific Voice (e.g. 'Alice') click the "View" button on the far right side, then click the "ID" button in the bottom right of the panel that appears to copy the voice ID to your clipboard (or hover over to see it).
+4. Use the provided `record_elevenlabs_voice.py` script to **create the baseline audio files**:
+```
+# from the running container
+> python3 record_elevenlabs_voice.py --eleven_labs_api_key XXXXXXX --voice_id XXXXXXX --voice_name Luis
+```
+5. The script will generate a folder of **~20 "baseline" speech audio files based on this voice** in the `baseline` folder, including automatically normalizing and trimming silence.
+```
+> python3 generate_voice_pack.py --voice_name 'Luis' ...
+```
+6. You are **now ready to generate a full voice pack** using this voice as the baseline.
+
+
 ## 🔍️ Common Question: How do I know it's working/running/progressing?
 After starting the container via `docker run ...` and from the shell prompt starting the `generate_voice_pack.py` script, you may see initialization and warning log messages for several minutes, but thereafter should see a stream of **logs indicating the progress** of the audio file generation:
 
@@ -215,7 +214,6 @@ Based on how quickly these messages are flowing, you can estimate how long the t
 
 
 ## 👟 Common Task: Run crew-chief-autovoicepack in Google Cloud Colab
-
 
 > **Note**: You can use up to 1-2 hours per day of GPU time on the free Colab plan. Your processes will be killed with all files removed unceremoniously upon hitting time/usage limits.
 > 
@@ -317,7 +315,7 @@ The .wav files generated by `crew-chief-autovoicepack` are (perhaps unnecessaril
 
 ## 💼 Common Question: How large is the Docker image? Can I free up that disk space once the voice pack is complete?
 
-The Docker image itself is large at ~18GB, specifically including large data and developer dependencies in the image, such as a pre-trained text-to-speech model alongside related machine learning frameworks. 
+The Docker image itself is large at ~15GB, specifically including large data and developer dependencies in the image, such as a pre-trained text-to-speech model alongside related machine learning frameworks. 
 
 Once you are satisfied with your generated voice pack, you can remove the downloaded Docker image from your local machine with `docker image rm ghcr.io/cktlco/crew-chief-autovoicepack:latest`.
 
