@@ -46,7 +46,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.7.0
         with:
-          context: /home/runner/work/crew-chief-autovoicepack/crew-chief-autovoicepack
           push: true
           tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
           # no-cache: true
