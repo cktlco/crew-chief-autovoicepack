@@ -60,7 +60,6 @@ RUN pip --no-cache-dir install deepspeed
 # Copy the Python scripts, data files, and baseline recording into the Docker image
 COPY generate_voice_pack.py utils.py record_elevenlabs_voice.py zip_voice_pack.py phrase_inventory.csv translate_phrases.py ./
 COPY baseline/Luis ./baseline/Luis/
-COPY extra/ ./extra/
 
 # Customize shell prompt and add canned command lines to the shell history
 RUN echo 'export PS1="crew-chief-autovoicepack > "' >> /root/.bashrc && \
