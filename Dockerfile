@@ -18,12 +18,12 @@ WORKDIR /app
 # - git Large File Support (LFS) is needed to download the xtts text-to-speech model from huggingface. Note that this is saved into the Docker image filesystem, not downloaded at runtime.
 # - ffmpeg, sox are needed for audio processing (mp3 to wav conversion, silence trimming)
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get -q update && apt-get -q install -y --no-install-recommends gcc g++ make curl python3 python3-dev python3-pip python3-venv python3-wheel wget espeak-ng libsndfile1-dev ca-certificates gnupg git git-lfs ffmpeg sox iputils-ping telnet vim && rm -rf /var/lib/apt/lists/* && apt-get -q clean && rm -rf /root/.cache/pip
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends gcc g++ make curl python3 python3-dev python3-pip python3-venv python3-wheel wget espeak-ng libsndfile1-dev ca-certificates gnupg git git-lfs ffmpeg sox iputils-ping telnet vim && rm -rf /var/lib/apt/lists/* && apt-get -qq clean && rm -rf /root/.cache/pip
 
 # Add NVIDIA package repositories, install CUDA Toolkit (includes nvcc needed by deepspeed)
-RUN wget -q https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin \
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin \
     && mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 \
-    && wget -q https://developer.download.nvidia.com/compute/cuda/12.6.2/local_installers/cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb \
+    && wget https://developer.download.nvidia.com/compute/cuda/12.6.2/local_installers/cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb \
     && dpkg -i cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb \
     && cp /var/cuda-repo-ubuntu2204-12-6-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
     && apt-get update \
