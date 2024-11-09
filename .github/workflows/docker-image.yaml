@@ -1,11 +1,9 @@
 name: Build and Push Docker Image
 
 on:
-# Disabling since keeps running out of System RAM on the GitHub runner
-#  push:
-#    branches:
-#      - main
-  pull_request:
+  push:
+    branches:
+      - main
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
@@ -17,6 +15,9 @@ jobs:
 
     permissions:
       contents: write  # Allows writing to the repository
+      packages: write  # Allows writing to GitHub Packages repo
+      attestations: write
+      id-token: write
 
     steps:
       - name: Maximize build space
@@ -49,7 +50,6 @@ jobs:
         with:
           push: true
           tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
-          # no-cache: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
