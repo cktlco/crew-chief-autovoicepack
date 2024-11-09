@@ -170,6 +170,7 @@ As an alternative to using an Elevenlabs.io voice, **record yourself or use an e
 4. Save the wav files with a simple filename into the `baseline/` folder
 5. See guidelines at ["Common Task: My generated voice pack sounds a lot worse..."](#-common-question-my-generated-voice-pack-sounds-a-lot-worse-and-has-a-lot-more-corrupted-audio-files-than-the-official-repos-voice-packs-what-will-improve-my-results) 
 
+
 ## 🎙️Common Task: Bootstrap your voice pack with an Elevenlabs.io voice 
 [Elevenlabs.io](https://elevenlabs.io/) provides a professional-quality text-to-speech service that can be used to **generate high-quality baseline recordings** for use with `crew-chief-autovoicepack`. This is a great way to create a voice pack that sounds similar to a professional voice actor you choose.
 
