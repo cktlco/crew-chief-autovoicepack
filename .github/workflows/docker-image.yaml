@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: /home/runner/work/crew-chief-autovoicepack/crew-chief-autovoicepack
 
     permissions:
       contents: write  # Allows writing to the repository
@@ -20,11 +23,13 @@ jobs:
         uses: easimon/maximize-build-space@master
         with:
           root-reserve-mb: 512
-          swap-size-mb: 1024
+          swap-size-mb: 2048
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
           remove-codeql: 'true'
+          remove-docker-images: 'true'
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -35,12 +40,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check disk space
+        run: df -h
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.7.0
         with:
+          context: /home/runner/work/crew-chief-autovoicepack/crew-chief-autovoicepack
           push: true
           tags: ghcr.io/cktlco/crew-chief-autovoicepack:latest
-          no-cache: true
+          # no-cache: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

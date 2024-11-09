@@ -17,6 +17,7 @@ WORKDIR /app
 # - espeak-ng, libsndfile1-dev are OS-level dependencies for the coqui TTS application
 # - git Large File Support (LFS) is needed to download the xtts text-to-speech model from huggingface. Note that this is saved into the Docker image filesystem, not downloaded at runtime.
 # - ffmpeg, sox are needed for audio processing (mp3 to wav conversion, silence trimming)
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends gcc g++ make curl python3 python3-dev python3-pip python3-venv python3-wheel wget espeak-ng libsndfile1-dev ca-certificates gnupg git git-lfs ffmpeg sox iputils-ping telnet vim && rm -rf /var/lib/apt/lists/* && apt-get clean && rm -rf /root/.cache/pip
 
 # Add NVIDIA package repositories, install CUDA Toolkit (includes nvcc needed by deepspeed)
