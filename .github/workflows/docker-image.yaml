@@ -18,11 +18,11 @@ jobs:
       run:
         working-directory: /home/runner/work/crew-chief-autovoicepack/crew-chief-autovoicepack
 
-    permissions:
-      contents: write  # Allows writing to the repository
-      packages: write  # Allows writing to GitHub Packages repo
-      attestations: write
-      id-token: write
+#    permissions:
+#      contents: write  # Allows writing to the repository
+#      packages: write  # Allows writing to GitHub Packages repo
+#      attestations: write
+#      id-token: write
 
     steps:
 #      - name: Maximize build space
