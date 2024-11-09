@@ -26,10 +26,10 @@ RUN wget -q https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/
     && wget -q https://developer.download.nvidia.com/compute/cuda/12.6.2/local_installers/cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb \
     && dpkg -i cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb \
     && cp /var/cuda-repo-ubuntu2204-12-6-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
-    && apt-get -q update \
-    && apt-get -q install -y --no-install-recommends \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
     cuda-toolkit-12-6 \
-    && rm -rf /var/lib/apt/lists/* && apt-get -q clean && rm -rf /tmp/* /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/* && apt-get clean && rm -rf /tmp/* /var/tmp/* \
     && rm -rf /app/cuda-repo* /var/cuda-repo* \
     && rm -rf /opt/nvidia/nsight-compute /opt/nvidia/nsight-systems
 
