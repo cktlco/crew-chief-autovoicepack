@@ -20,7 +20,7 @@ if len(sys.argv) < 2:
 
 # Maximum size of each zip file in bytes
 max_size_bytes = 2100000000
-output_path = "./output/zip/"
+output_path = "../output/zip/"
 
 # Get the full folder path and extract the folder name
 dir_path = sys.argv[1]

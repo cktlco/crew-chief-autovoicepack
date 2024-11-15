@@ -53,7 +53,7 @@ RUN pip --no-cache-dir install coqui-tts
 
 # Download the 1.5GB xtts model weights from huggingface, save into the Docker image filesystem
 # This is the slowest step in the build process, but will be cached for future builds
-RUN git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /app/data/tts_models--multilingual--multi-dataset--xtts_v2 \
+RUN mkdir -p /app/data/ && git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /app/data/tts_models--multilingual--multi-dataset--xtts_v2 \
     && rm -rf /app/data/tts_models--multilingual--multi-dataset--xtts_v2/.git \
     && mkdir -p /root/.local/share/tts \
     && ln -s /app/data/tts_models--multilingual--multi-dataset--xtts_v2 /root/.local/share/tts/tts_models--multilingual--multi-dataset--xtts_v2
@@ -61,8 +61,13 @@ RUN git clone --branch v2.0.3 https://huggingface.co/coqui/XTTS-v2 /app/data/tts
 # Deepspeed is optional and requires a CUDA GPU, but greatly speeds up text-to-speech generation
 RUN pip --no-cache-dir install deepspeed
 
+# Install the xtts-integrity model used to detect invalid .wav files
+RUN date +%y%m%d > /tmp/docker-build-cache-buster && \
+  git clone https://github.com/cktlco/xtts-integrity.git && cd /app/xtts-integrity && python3 setup.py install
+
 # Copy the Python scripts, data files, and baseline recording into the Docker image
-COPY generate_voice_pack.py utils.py record_elevenlabs_voice.py zip_voice_pack.py phrase_inventory.csv translate_phrases.py ./
+COPY generate_voice_pack.py utils.py record_elevenlabs_voice.py phrase_inventory*.csv translate_phrases.py ./
+COPY extra/* ./extra/
 COPY baseline/Luis ./baseline/Luis/
 
 # Customize shell prompt and add canned command lines to the shell history

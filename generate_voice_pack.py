@@ -138,6 +138,17 @@ def parse_arguments():
         default=None,
         help="Custom text to use for the radio check audio clips. If not provided, a default set of radio check phrases will be used. This is mainly useful for voicepack languages other than English.",
     )
+    parser.add_argument(
+        "--simple_validity_check",
+        action="store_true",
+        help="Use the legacy validity check for .wav files. This will bypass the xtts-integrity model validation output and use a simple check for silence and file size",
+    )
+    parser.add_argument(
+        "--xtts_speed",
+        type=float,
+        default=1.5,
+        help="Speed factor for the TTS engine. Somewhat arbitrary, but a value of 1.2 is recommended.",
+    )
     return parser.parse_args()
 
 
@@ -211,18 +222,11 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         # TODO: raise the error for the caller
 
 
-def is_invalid_wav_file(file_path: str, tts_text: str) -> bool:
+def is_invalid_file_simple(file_path: str, tts_text: str) -> bool:
     """
-    # TODO: keep adding to these checks
-    Acceptance criteria for a valid file:
-    - no periods of silence longer than x seconds
-    - not longer than expected based on the input text
-    - file size is not over x MB
-    - audio duration not over x seconds
-    - not materially longer than its other variants
-    - no weird frequencies (?)
-
-    Return False if the caller should regenerate this file (ie, try again to make a clean file)
+    Use a simplistic check on the size, duration, and amount of silence in
+    a xtts-created .wav file to determine if it is valid.
+    Return False if the caller should regenerate this file (ie, try again to make a clean file).
     """
     is_invalid = (
         detect_excess_silence(
@@ -233,7 +237,75 @@ def is_invalid_wav_file(file_path: str, tts_text: str) -> bool:
     )
 
     if is_invalid:
-        logging.warning(f"Invalid .wav file detected: {file_path}")
+        logging.warning(
+            f"simple_validity_check :: Invalid .wav file detected: {file_path}"
+        )
+
+    return is_invalid
+
+
+def is_invalid_xtts_integrity(file_path: str) -> bool:
+    """
+    Use the xtts-integrity ML model to perform the .wav file validity check.
+    Return False if the caller should regenerate this file (ie, try again to make a clean file).
+    """
+
+    # conditional imports since these are not needed unless the xtts-integrity model is used
+    from torch.utils.data import DataLoader
+    from xtts_integrity.transform import InferenceAudioTransform
+    from xtts_integrity.infer import AudioInferenceDataset, load_model, run_inference
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model_path = "/app/xtts-integrity/checkpoints/xtts-integrity-20241112.pth"
+    model = load_model(model_path, device)
+    transform = InferenceAudioTransform()
+
+    wav_files = [file_path]
+    inference_dataset = AudioInferenceDataset(wav_files, transform=transform)
+    inference_loader = DataLoader(inference_dataset, batch_size=48, shuffle=False)
+
+    valid_files, invalid_files = run_inference(
+        model, inference_loader, device, threshold=0.9
+    )
+
+    is_invalid = len(invalid_files) > 0
+
+    if is_invalid:
+        if len(invalid_files) < 1:
+            logging.error(
+                f"Error: Something unexpected went wrong when using xtts-integrity for file {file_path}"
+            )
+            return False
+
+        score = invalid_files[0][1]
+        logging.warning(f"Invalid .wav file detected: {file_path} with score {score:.2f}")
+
+    else:
+        score = valid_files[0][1]
+        logging.info(
+            f"xtts_integrity validity check passed for {file_path} with score {score:.2f}"
+        )
+
+    return is_invalid
+
+
+def is_invalid_wav_file(file_path: str, tts_text: str, use_xtts_integrity=True) -> bool:
+    """
+    Acceptance criteria for a valid file:
+    - no periods of silence longer than x seconds
+    - not longer than expected based on the input text
+    - file size is not over x MB
+    - audio duration not over x seconds
+    - not materially longer than its other variants
+    - no weird artifacts
+
+    Return False if the caller should regenerate this file (ie, try again to make a clean file)
+    """
+    is_invalid = (
+        is_invalid_xtts_integrity(file_path)
+        if use_xtts_integrity
+        else is_invalid_file_simple(file_path=file_path, tts_text=tts_text)
+    )
 
     return is_invalid
 
@@ -375,6 +447,7 @@ def generate_speech(
     enable_audio_effects: bool = True,
     keep_invalid_files: bool = True,
     max_invalid_attempts: int = 30,
+    use_xtts_integrity=True,
 ):
     """
     Create a .wav file based on the input text and the reference speaker's voice.
@@ -398,7 +471,9 @@ def generate_speech(
 
         file_path = f"{output_path}/{output_filename}.wav"
 
-        if was_generated and is_invalid_wav_file(file_path=file_path, tts_text=text):
+        if was_generated and is_invalid_wav_file(
+            file_path=file_path, tts_text=text, use_xtts_integrity=use_xtts_integrity
+        ):
             # skip the invalid file check if the file already existed from a previous run
             logging.info(f"Regenerating invalid .wav file: {output_filename}")
 
@@ -566,7 +641,7 @@ def prepare_arguments() -> argparse.Namespace:
     args = parse_arguments()
     args.voicepack_base_dir = f"{args.output_audio_dir}/{args.voice_name}"
     args.tts_args = {
-        "speed": 1.2,
+        "speed": args.xtts_speed,
         "temperature": random.uniform(0.2, 0.3),
         "reference_speaker_wav_paths": glob.glob(
             f"{args.baseline_audio_dir}/{args.voice_name}/*.wav"
@@ -577,6 +652,7 @@ def prepare_arguments() -> argparse.Namespace:
         "use_deepspeed": (not args.disable_deepspeed) and (not args.cpu_only),
         "keep_invalid_files": args.keep_invalid_files,
         "max_invalid_attempts": args.max_invalid_attempts,
+        "use_xtts_integrity": True if not args.simple_validity_check else False,
     }
     return args
 
