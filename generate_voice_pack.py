@@ -147,7 +147,7 @@ def parse_arguments():
         "--xtts_speed",
         type=float,
         default=1.5,
-        help="Speed factor for the TTS engine. Somewhat arbitrary, but a value of 1.2 is recommended.",
+        help="Speed factor for the TTS engine. Somewhat arbitrary, but a value of 1.2-1.7 is recommended.",
     )
     return parser.parse_args()
 
@@ -222,7 +222,7 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         # TODO: raise the error for the caller
 
 
-def is_invalid_file_simple(file_path: str, tts_text: str) -> bool:
+def is_invalid_wav_simple(file_path: str, tts_text: str) -> bool:
     """
     Use a simplistic check on the size, duration, and amount of silence in
     a xtts-created .wav file to determine if it is valid.
@@ -237,14 +237,12 @@ def is_invalid_file_simple(file_path: str, tts_text: str) -> bool:
     )
 
     if is_invalid:
-        logging.warning(
-            f"simple_validity_check :: Invalid .wav file detected: {file_path}"
-        )
+        logging.warning(f"Invalid .wav file detected (simple check): {file_path}")
 
     return is_invalid
 
 
-def is_invalid_xtts_integrity(file_path: str) -> bool:
+def is_invalid_wav_xtts_integrity(file_path: str) -> bool:
     """
     Use the xtts-integrity ML model to perform the .wav file validity check.
     Return False if the caller should regenerate this file (ie, try again to make a clean file).
@@ -278,7 +276,9 @@ def is_invalid_xtts_integrity(file_path: str) -> bool:
             return False
 
         score = invalid_files[0][1]
-        logging.warning(f"Invalid .wav file detected: {file_path} with score {score:.2f}")
+        logging.warning(
+            f"Invalid .wav file detected: {file_path} with score {score:.2f}"
+        )
 
     else:
         score = valid_files[0][1]
@@ -302,9 +302,9 @@ def is_invalid_wav_file(file_path: str, tts_text: str, use_xtts_integrity=True) 
     Return False if the caller should regenerate this file (ie, try again to make a clean file)
     """
     is_invalid = (
-        is_invalid_xtts_integrity(file_path)
+        is_invalid_wav_xtts_integrity(file_path)
         if use_xtts_integrity
-        else is_invalid_file_simple(file_path=file_path, tts_text=tts_text)
+        else is_invalid_wav_simple(file_path=file_path, tts_text=tts_text)
     )
 
     return is_invalid
@@ -408,10 +408,7 @@ def init_xtts_model(cpu_only: bool = False, use_deepspeed: bool = True) -> Any:
         checkpoint_dir=model_path,
         use_deepspeed=use_deepspeed,
     )
-    if not cpu_only:
-        model.cuda()
-    else:
-        model.cpu()
+    model.cuda() if not cpu_only else model.cpu()
 
     return model
 
