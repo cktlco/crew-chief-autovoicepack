@@ -151,7 +151,7 @@ phrases_to_match_list = [
 ]
 
 # Path to the CSV file
-csv_file_path = "phrase_inventory.csv"
+csv_file_path = "../phrase_inventory.csv"
 names = [
     "Ana",
     "Bart",
