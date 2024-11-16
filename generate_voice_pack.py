@@ -268,6 +268,9 @@ def is_invalid_wav_xtts_integrity(file_path: str) -> bool:
     inference_loader = DataLoader(inference_dataset, batch_size=48, shuffle=False)
 
     valid_files, invalid_files = run_inference(
+        # note that threshold here can be lowered to allow lower-confidence
+        # files to be accepted, which will reduce the amount of regeneration
+        # at the cost of more audio artifacts slipping through
         model, inference_loader, device, threshold=0.9
     )
 
