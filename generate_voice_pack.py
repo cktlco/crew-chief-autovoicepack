@@ -146,7 +146,7 @@ def parse_arguments():
     parser.add_argument(
         "--xtts_speed",
         type=float,
-        default=1.5,
+        default=1.6,
         help="Speed factor for the TTS engine. Somewhat arbitrary, but a value of 1.2-1.7 is recommended.",
     )
     return parser.parse_args()
@@ -155,11 +155,12 @@ def parse_arguments():
 def apply_audio_effects(input_file: str, output_file: str) -> None:
     """
     Apply audio effects to the generated audio files:
-    - slight gain reduction
     - equalizer adjustments to make it sound more like a motorsports radio call
     - slight overdrive
     - trim silence from both ends
     - normalize
+    - downsample to 22.05KHz to match existing CrewChief format (optional)
+    - ensure single channel
     Note that noise is not added since the CrewChief overlays background noise separately.
 
     You are encouraged to modify these effects to suit your own preferences. Use `man sox`
@@ -213,6 +214,10 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         "reverse",
         "norm",
         "-1",
+        "channels",
+        "1",
+        "rate",
+        "22050"
     ]
 
     try:
