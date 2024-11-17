@@ -21,7 +21,7 @@
 ## ⏬ In a hurry? Download an existing voice pack
 Make your own, or download one of these ready-to-go **full replacement voices for CrewChief**.
 
-[Unzip](#-common-task-add-your-new-voice-pack-to-crewchief) and use immediately. Over 30,000 .wav files in each pack.
+Unzip and [use](#-common-task-add-your-new-voice-pack-to-crewchief) and use immediately. Over 30,000 .wav files in each pack.
 
 (Download links have been updated to v3.0, but audio previews still use the previous slower speaking rate)
 |                                                                                                                                                                                                                                                                                                                                                                        |                                                                                                                                                                                                                                                                                                                                                       |
