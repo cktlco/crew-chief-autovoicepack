@@ -3,6 +3,8 @@ import sys
 import zipfile
 from typing import Any
 
+# Example usage:
+# find ./output -mindepth 1 -maxdepth 1 -type d -name '[A-Z]*' | while read -r dir; do     python3 /dev_local/crew-chief-autovoicepack/extra/zip_voice_pack.py "$dir"; done
 
 # Create a zip archive
 def create_zip(zip_file_name, files, root_dir, subdir_name):
@@ -75,9 +77,10 @@ for i, (group, size) in enumerate(zip_groups, 1):
 
 # Create the zip files
 for i, (group, size) in enumerate(zip_groups, 1):
-    zip_file_name = os.path.join(
-        output_path, f"crew-chief-autovoicepack-{input_folder}-{i}of{total_zips}.zip"
-    )
+    zip_file_base_name = f"crew-chief-autovoicepack-{input_folder}-{i}of{total_zips}.zip" \
+        if total_zips > 1 \
+        else f"crew-chief-autovoicepack-{input_folder}.zip"
+    zip_file_name = os.path.join(output_path, zip_file_base_name)
     size_gb = size / (1024**3)
     print(
         f"Creating {zip_file_name} with {len(group)} files and uncompressed size {size_gb:.2f} GB..."
