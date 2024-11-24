@@ -1,6 +1,7 @@
 import logging
 import argparse
 import datetime
+import glob
 import os
 import random
 import subprocess
@@ -17,8 +18,13 @@ from TTS.tts.models.xtts import Xtts
 from xtts_integrity.transform import InferenceAudioTransform
 from xtts_integrity.infer import AudioInferenceDataset, load_model, run_inference
 
-from utils import CrewChiefAudioFile, parse_phrase_inventory, progress_string, count_wav_files_in_tree, \
-    log_progress_string
+from utils import (
+    CrewChiefAudioFile,
+    parse_phrase_inventory,
+    progress_string,
+    count_wav_files_in_tree,
+    log_progress_string,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -769,6 +775,7 @@ def write_installation_instructions(args: argparse.Namespace) -> None:
         f.write(instructions_text.format(voice_name=args.voice_name))
     logging.info(f"Installation instructions written to {instructions_filename}.")
 
+
 def process_phrase_inventory(args: argparse.Namespace) -> None:
     """Load and process the phrase inventory, generating audio files"""
     entries = parse_phrase_inventory(args.phrase_inventory)
@@ -835,7 +842,6 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
 
     logging.info(f"All entries in {args.phrase_inventory} have been generated.")
     generate_subtitle_files(entries, args)
-
 
 
 def process_phrase_entry(entry: CrewChiefAudioFile, args: argparse.Namespace) -> None:

@@ -83,7 +83,6 @@ def log_progress_string(
     logging.info(progress)
 
 
-
 def progress_string(
     current_total: int,
     total: int,
