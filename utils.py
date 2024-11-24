@@ -1,6 +1,9 @@
+import glob
+import os
 from dataclasses import dataclass
 from typing import List
 import csv
+import logging
 
 
 @dataclass
@@ -57,3 +60,81 @@ def parse_phrase_inventory(
             )
 
     return entries
+
+
+def log_progress_string(
+    current_total: int,
+    total: int,
+    start_time: float,
+    current_time: float,
+    previous_total: int,
+    previous_time: float,
+    initial_total: int,
+):
+    progress = progress_string(
+        current_total=current_total,
+        total=total,
+        start_time=start_time,
+        current_time=current_time,
+        previous_total=previous_total,
+        previous_time=previous_time,
+        initial_total=initial_total,
+    )
+    logging.info(progress)
+
+
+def progress_string(
+    current_total: int,
+    total: int,
+    start_time: float,
+    current_time: float,
+    previous_total: int,
+    previous_time: float,
+    initial_total: int,
+) -> str:
+    """
+    Generate a formatted string showing the progress of the audio generation process.
+
+    Example output:
+    Progress:   29.8% [==>       ] 2721/9145 phrases, 4.9 phrases/sec, ETA 0h 26m
+    """
+    percentage = (current_total / total) * 100 if total > 0 else 100
+    bar_length = 10
+    filled_length = (
+        int(bar_length * current_total // total) if total > 0 else bar_length
+    )
+
+    if filled_length >= bar_length:
+        bar = "=" * bar_length
+    else:
+        bar = "=" * filled_length + ">" + " " * (bar_length - filled_length - 1)
+
+    # Calculate phrases per second based on the difference since last update
+    time_diff = current_time - previous_time
+    phrases_diff = current_total - previous_total
+    phrases_per_sec = phrases_diff / time_diff if time_diff > 0 else 0
+
+    # If phrases_per_sec is zero, use cumulative average
+    if phrases_per_sec <= 0:
+        total_time = current_time - start_time
+        phrases_diff = current_total - initial_total
+        phrases_per_sec = phrases_diff / total_time if total_time > 0 else 0
+
+    remaining_phrases = total - current_total
+    eta_sec = 99999.9 if phrases_per_sec <= 0 else remaining_phrases / phrases_per_sec
+    eta_hours = int(eta_sec // 3600)
+    eta_minutes = int((eta_sec % 3600) // 60) + 1
+    eta_string = (
+        f"ETA {eta_hours}h {eta_minutes}m" if eta_sec != float("inf") else "ETA Unknown"
+    )
+
+    progress = (
+        f"Progress: {percentage:4.1f}% [{bar}] {current_total}/{total} phrases, "
+        f"{phrases_per_sec:.1f} phrases/sec, {eta_string}"
+    )
+    return progress
+
+
+def count_wav_files_in_tree(directory: str) -> int:
+    """Count all .wav files in the directory tree under the given directory"""
+    return len(glob.glob(os.path.join(directory, "**", "*.wav"), recursive=True))

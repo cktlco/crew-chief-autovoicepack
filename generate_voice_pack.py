@@ -5,6 +5,7 @@ import glob
 import os
 import random
 import subprocess
+import time
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import List, Any, Optional
@@ -17,7 +18,13 @@ from TTS.tts.models.xtts import Xtts
 from xtts_integrity.transform import InferenceAudioTransform
 from xtts_integrity.infer import AudioInferenceDataset, load_model, run_inference
 
-from utils import CrewChiefAudioFile, parse_phrase_inventory
+from utils import (
+    CrewChiefAudioFile,
+    parse_phrase_inventory,
+    progress_string,
+    count_wav_files_in_tree,
+    log_progress_string,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -156,6 +163,12 @@ def parse_arguments():
         type=float,
         default=0.9,
         help="Threshold for the xtts-integrity model to consider a .wav file valid. This is a value between 0 and 1, where a higher value means the model will be more strict in what it considers valid. Lowering this value will allow more files to pass the validity check, but may also allow more audio artifacts to slip through.",
+    )
+    parser.add_argument(
+        "--progress_check_interval",
+        type=float,
+        default=30.0,
+        help="Interval in seconds between progress updates (which may be expensive/slow to calculate since it scans the entire output directory).",
     )
     return parser.parse_args()
 
@@ -621,6 +634,15 @@ class ReplacementRule:
     )
 
 
+def prepare_replacement_rules(args: argparse.Namespace) -> None:
+    """Prepare text replacement rules"""
+    args.replacement_rules = (
+        []
+        if args.disable_text_replacements
+        else generate_replacement_rules(args.your_name)
+    )
+
+
 def generate_replacement_rules(your_name: str) -> List[ReplacementRule]:
     """
     Consider these ReplacementRules as very optional, you probably want to do most editing in the `phrase_inventory.csv` file, since it's easier to simply edit the `text_for_tts` column to change the text that is used to generate the audio .wav file.
@@ -767,6 +789,19 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
     if not args.original_inventory_order:
         random.shuffle(entries)
 
+    # Expecting this many .wav files at the end (NOT including radio checks and other special files)
+    total_wav_files = len(entries) * (1 + args.variation_count)
+
+    start_time = time.time()
+    last_update_time = start_time
+    next_update_interval = args.progress_check_interval
+
+    # Get the initial count of existing .wav files
+    voicepack_voice_dir = f"{args.voicepack_base_dir}/voice"
+    initial_wav_count = count_wav_files_in_tree(voicepack_voice_dir)
+    previous_wav_count = initial_wav_count
+    previous_time = start_time
+
     for entry_idx, entry in enumerate(entries, 1):
         logging.info(
             f"Considering phrase {entry_idx} - '{entry.subtitle}' -> '{entry.text_for_tts}'"
@@ -774,17 +809,40 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
 
         process_phrase_entry(entry, args)
 
+        # Recount .wav files if it's time to update progress
+        current_time = time.time()
+        elapsed_since_last_update = current_time - last_update_time
+
+        if elapsed_since_last_update >= next_update_interval:
+            current_wav_count = count_wav_files_in_tree(voicepack_voice_dir)
+            log_progress_string(
+                current_total=current_wav_count,
+                total=total_wav_files,
+                start_time=start_time,
+                current_time=current_time,
+                previous_total=previous_wav_count,
+                previous_time=previous_time,
+                initial_total=initial_wav_count,
+            )
+            last_update_time = current_time
+            previous_wav_count = current_wav_count
+            previous_time = current_time
+
+    # Final progress update after processing all entries
+    current_time = time.time()
+    current_wav_count = count_wav_files_in_tree(voicepack_voice_dir)
+    log_progress_string(
+        current_total=current_wav_count,
+        total=total_wav_files,
+        start_time=start_time,
+        current_time=current_time,
+        previous_total=previous_wav_count,
+        previous_time=previous_time,
+        initial_total=initial_wav_count,
+    )
+
     logging.info(f"All entries in {args.phrase_inventory} have been generated.")
     generate_subtitle_files(entries, args)
-
-
-def prepare_replacement_rules(args: argparse.Namespace) -> None:
-    """Prepare text replacement rules"""
-    args.replacement_rules = (
-        []
-        if args.disable_text_replacements
-        else generate_replacement_rules(args.your_name)
-    )
 
 
 def process_phrase_entry(entry: CrewChiefAudioFile, args: argparse.Namespace) -> None:
@@ -920,11 +978,6 @@ def main():
 
     if not args.skip_radio_check:
         generate_radio_checks(args)
-
-    # TODO: add progress bar in this format:
-    #    phrase (truncated)...      50%[========================>                         ] 56/30,000 phrases, x phrases per second    ETA 12h 14m
-    #    using a "slow" check which counts all the .wav files in the directory tree every 30-60 seconds
-    #    and compares it to the total expected number of phrases to generate
 
     # TODO: generate subtitles.csv for the radio_check folder
 
