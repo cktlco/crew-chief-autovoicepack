@@ -789,7 +789,7 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
     if not args.original_inventory_order:
         random.shuffle(entries)
 
-    # Expecting this many .wav files at the end
+    # Expecting this many .wav files at the end (NOT including radio checks and other special files)
     total_wav_files = len(entries) * (1 + args.variation_count)
 
     start_time = time.time()
@@ -797,7 +797,8 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
     next_update_interval = args.progress_check_interval
 
     # Get the initial count of existing .wav files
-    initial_wav_count = count_wav_files_in_tree(args.voicepack_base_dir)
+    voicepack_voice_dir = f"{args.voicepack_base_dir}/voice"
+    initial_wav_count = count_wav_files_in_tree(voicepack_voice_dir)
     previous_wav_count = initial_wav_count
     previous_time = start_time
 
@@ -813,7 +814,7 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
         elapsed_since_last_update = current_time - last_update_time
 
         if elapsed_since_last_update >= next_update_interval:
-            current_wav_count = count_wav_files_in_tree(args.voicepack_base_dir)
+            current_wav_count = count_wav_files_in_tree(voicepack_voice_dir)
             log_progress_string(
                 current_total=current_wav_count,
                 total=total_wav_files,
@@ -829,7 +830,7 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
 
     # Final progress update after processing all entries
     current_time = time.time()
-    current_wav_count = count_wav_files_in_tree(args.voicepack_base_dir)
+    current_wav_count = count_wav_files_in_tree(voicepack_voice_dir)
     log_progress_string(
         current_total=current_wav_count,
         total=total_wav_files,
