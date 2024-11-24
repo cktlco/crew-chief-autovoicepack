@@ -847,7 +847,9 @@ def progress_string(
     """
     percentage = (current_total / total) * 100 if total > 0 else 100
     bar_length = 10
-    filled_length = int(bar_length * current_total // total) if total > 0 else bar_length
+    filled_length = (
+        int(bar_length * current_total // total) if total > 0 else bar_length
+    )
 
     if filled_length >= bar_length:
         bar = "=" * bar_length
@@ -856,7 +858,6 @@ def progress_string(
 
     elapsed_time = time.time() - start_time
     phrases_per_sec = current_created / elapsed_time if elapsed_time > 0 else 0
-    remaining_phrases = total - current_total
     remaining_created = total - current_created
     eta_sec = (
         remaining_created / phrases_per_sec if phrases_per_sec > 0 else float("inf")
