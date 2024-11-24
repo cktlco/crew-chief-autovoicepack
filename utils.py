@@ -121,9 +121,7 @@ def progress_string(
         phrases_per_sec = phrases_diff / total_time if total_time > 0 else 0
 
     remaining_phrases = total - current_total
-    eta_sec = (
-        remaining_phrases / phrases_per_sec if phrases_per_sec > 0 else float("inf")
-    )
+    eta_sec = 99999.9 if phrases_per_sec <= 0 else remaining_phrases / phrases_per_sec
     eta_hours = int(eta_sec // 3600)
     eta_minutes = int((eta_sec % 3600) // 60) + 1
     eta_string = (
