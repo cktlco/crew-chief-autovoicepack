@@ -479,6 +479,7 @@ def init_xtts_latents(
     Note that this function is cached, so it will only run once.
     """
     logging.info("xtts - Computing speaker latents...")
+
     gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(
         audio_path=list(reference_speaker_wav_paths)
     )
@@ -703,12 +704,13 @@ def prepare_arguments() -> argparse.Namespace:
     """Parse command-line arguments and prepare any derived values."""
     args = parse_arguments()
     args.voicepack_base_dir = f"{args.output_audio_dir}/{args.voice_name}"
+    reference_speaker_wav_paths = glob.glob(
+        f"{args.baseline_audio_dir}/{args.voice_name}/*.wav"
+    )
     args.tts_args = {
         "speed": args.xtts_speed,
         "temperature": random.uniform(0.2, 0.3),
-        "reference_speaker_wav_paths": glob.glob(
-            f"{args.baseline_audio_dir}/{args.voice_name}/*.wav"
-        ),
+        "reference_speaker_wav_paths": reference_speaker_wav_paths,
         "overwrite": args.overwrite,
         "enable_audio_effects": not args.disable_audio_effects,
         "cpu_only": args.cpu_only,
@@ -718,6 +720,19 @@ def prepare_arguments() -> argparse.Namespace:
         "use_xtts_integrity": True if not args.simple_validity_check else False,
         "xtts_integrity_threshold": args.xtts_integrity_threshold,
     }
+
+    # verify the baseline recordings were found
+    if len(reference_speaker_wav_paths) == 0:
+        raise FileNotFoundError(
+            "Baseline speaker files not found.",
+            "This usually means you need to enable the Docker container to see the files "
+            "in your baseline folder using the -v option as mentioned in "
+            "https://github.com/cktlco/crew-chief-autovoicepack/blob/main/README.md#step-3-start-a-container-to-run-the-downloaded-image . "
+            "Confirm that the folder contains a subfolder named with your VOICE_NAME and which contains .wav files.\n"
+            f"Baseline folder: {args.baseline_audio_dir}\n"
+            f"Baseline folder contents: {os.listdir(args.baseline_audio_dir)}\n",
+        )
+
     return args
 
 
