@@ -709,25 +709,35 @@ def setup_directories_and_files(args: argparse.Namespace) -> None:
 
 def write_attribution_file(args: argparse.Namespace) -> None:
     """Write the attribution file."""
-    attribution_filename = f"{args.voicepack_base_dir}/CREATED_BY.txt"
+    attribution_filename = os.path.join(args.voicepack_base_dir, "CREATED_BY.txt")
+
     attribution_text = (
         "This voice pack was created using crew-chief-autovoicepack\n"
         "(https://github.com/cktlco/crew-chief-autovoicepack)\n\n"
         "...for use with the venerable virtual race engineer application CrewChief\n"
         "(https://thecrewchief.org/)\n"
-        "(https://gitlab.com/mr_belowski/CrewChiefV4)\n\n"
-        "Voice name: {voice_name}\n"
-        "Version {voicepack_version}\n"
+        "(https://gitlab.com/mr_belowski/CrewChiefV4)\n\n\n"
     )
-    with open(attribution_filename, "w") as f:
-        f.write(
-            attribution_text.format(
-                voice_name=args.voice_name, voicepack_version=args.voicepack_version
-            )
+
+    # Add the rest of the args to the end in a key/value format
+    attribution_text += "Configuration:\n\n"
+    for key, value in vars(args).items():
+        if key != "tts_args":  # only include user-specified arguments
+            attribution_text += f"{key}: {value}\n"
+
+    try:
+        # Ensure the base directory exists
+        os.makedirs(args.voicepack_base_dir, exist_ok=True)
+
+        with open(attribution_filename, "w", encoding="utf-8") as f:
+            f.write(attribution_text)  # Removed .format()
+
+        logging.info(
+            f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}'."
         )
-    logging.info(
-        f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}."
-    )
+    except Exception as e:
+        logging.error(f"Failed to write attribution file: {e}")
+        raise
 
 
 def write_installation_instructions(args: argparse.Namespace) -> None:
