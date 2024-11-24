@@ -772,7 +772,6 @@ def write_installation_instructions(args: argparse.Namespace) -> None:
 
 def process_phrase_inventory(args: argparse.Namespace) -> None:
     """Load and process the phrase inventory, generating audio files"""
-    # Parse the phrase inventory
     entries = parse_phrase_inventory(args.phrase_inventory)
 
     if not entries:
@@ -784,10 +783,10 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
     if not args.original_inventory_order:
         random.shuffle(entries)
 
-    # expecting this many .wav files at the end
-    total_wav_files = len(entries) * args.variation_count
+    # Expecting this many .wav files at the end
+    total_wav_files = len(entries) * (1 + args.variation_count)
 
-    start_time: float = time.time()
+    start_time = time.time()
     last_update_time = start_time
     next_update_interval = args.progress_check_interval
 
@@ -826,23 +825,29 @@ def log_progress_string(
     total_wav_files: int,
     initial_wav_count: int,
 ):
-    """Log a progress string showing the current status of the audio generation process"""
-    existing_wav_count = count_wav_files_in_tree(voicepack_base_dir)
-    wav_files_created = existing_wav_count - initial_wav_count
-    progress = progress_string(wav_files_created, total_wav_files, start_time)
+    wav_files_in_dir = count_wav_files_in_tree(voicepack_base_dir)
+    wav_files_created = wav_files_in_dir - initial_wav_count
+    progress = progress_string(
+        current_total=wav_files_in_dir,
+        total=total_wav_files,
+        current_created=wav_files_created,
+        start_time=start_time,
+    )
     logging.info(progress)
 
 
-def progress_string(current: int, total: int, start_time: float) -> str:
+def progress_string(
+    current_total: int, total: int, current_created: int, start_time: float
+) -> str:
     """
     Generate a formatted string showing the progress of the audio generation process.
 
     Example output:
-    Progress:   29.8% [==>       ] 2721/9145 phrases, 4.9 phrases per second, ETA 0h 26m
+    Progress:   29.8% [==>       ] 2721/9145 phrases, 4.9 phrases/sec, ETA 0h 26m
     """
-    percentage = (current / total) * 100 if total > 0 else 100
+    percentage = (current_total / total) * 100 if total > 0 else 100
     bar_length = 10
-    filled_length = int(bar_length * current // total) if total > 0 else bar_length
+    filled_length = int(bar_length * current_total // total) if total > 0 else bar_length
 
     if filled_length >= bar_length:
         bar = "=" * bar_length
@@ -850,10 +855,11 @@ def progress_string(current: int, total: int, start_time: float) -> str:
         bar = "=" * filled_length + ">" + " " * (bar_length - filled_length - 1)
 
     elapsed_time = time.time() - start_time
-    phrases_per_sec = current / elapsed_time if elapsed_time > 0 else 0
-    remaining_phrases = total - current
+    phrases_per_sec = current_created / elapsed_time if elapsed_time > 0 else 0
+    remaining_phrases = total - current_total
+    remaining_created = total - current_created
     eta_sec = (
-        remaining_phrases / phrases_per_sec if phrases_per_sec > 0 else float("inf")
+        remaining_created / phrases_per_sec if phrases_per_sec > 0 else float("inf")
     )
     eta_hours = int(eta_sec // 3600)
     eta_minutes = int((eta_sec % 3600) // 60)
@@ -862,7 +868,7 @@ def progress_string(current: int, total: int, start_time: float) -> str:
     )
 
     progress = (
-        f"Progress: {percentage:4.1f}% [{bar}] {current}/{total} phrases, "
+        f"Progress: {percentage:4.1f}% [{bar}] {current_total}/{total} phrases, "
         f"{phrases_per_sec:.1f} phrases/sec, {eta_string}"
     )
     return progress
