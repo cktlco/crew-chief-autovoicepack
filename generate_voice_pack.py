@@ -162,7 +162,7 @@ def parse_arguments():
         "--progress_check_interval",
         type=float,
         default=30.0,
-        help="Interval in seconds between progress updates (which may be slow to calculate since it scans the entire output directory).",
+        help="Interval in seconds between progress updates (which may be expensive/slow to calculate since it scans the entire output directory).",
     )
     return parser.parse_args()
 
