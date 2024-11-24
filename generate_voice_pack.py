@@ -18,7 +18,7 @@ from TTS.tts.models.xtts import Xtts
 from xtts_integrity.transform import InferenceAudioTransform
 from xtts_integrity.infer import AudioInferenceDataset, load_model, run_inference
 
-from utils import CrewChiefAudioFile, parse_phrase_inventory
+from utils import CrewChiefAudioFile, parse_phrase_inventory, progress_string, count_wav_files_in_tree
 
 # Configure logging
 logging.basicConfig(
@@ -769,7 +769,6 @@ def write_installation_instructions(args: argparse.Namespace) -> None:
         f.write(instructions_text.format(voice_name=args.voice_name))
     logging.info(f"Installation instructions written to {instructions_filename}.")
 
-
 def process_phrase_inventory(args: argparse.Namespace) -> None:
     """Load and process the phrase inventory, generating audio files"""
     entries = parse_phrase_inventory(args.phrase_inventory)
@@ -792,6 +791,8 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
 
     # Get the initial count of existing .wav files
     initial_wav_count = count_wav_files_in_tree(args.voicepack_base_dir)
+    previous_wav_count = initial_wav_count
+    previous_time = start_time
 
     for entry_idx, entry in enumerate(entries, 1):
         logging.info(
@@ -805,14 +806,31 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
         elapsed_since_last_update = current_time - last_update_time
 
         if elapsed_since_last_update >= next_update_interval:
+            current_wav_count = count_wav_files_in_tree(args.voicepack_base_dir)
             log_progress_string(
-                args.voicepack_base_dir, start_time, total_wav_files, initial_wav_count
+                current_total=current_wav_count,
+                total=total_wav_files,
+                start_time=start_time,
+                current_time=current_time,
+                previous_total=previous_wav_count,
+                previous_time=previous_time,
+                initial_total=initial_wav_count,
             )
             last_update_time = current_time
+            previous_wav_count = current_wav_count
+            previous_time = current_time
 
     # Final progress update after processing all entries
+    current_time = time.time()
+    current_wav_count = count_wav_files_in_tree(args.voicepack_base_dir)
     log_progress_string(
-        args.voicepack_base_dir, start_time, total_wav_files, initial_wav_count
+        current_total=current_wav_count,
+        total=total_wav_files,
+        start_time=start_time,
+        current_time=current_time,
+        previous_total=previous_wav_count,
+        previous_time=previous_time,
+        initial_total=initial_wav_count,
     )
 
     logging.info(f"All entries in {args.phrase_inventory} have been generated.")
@@ -820,64 +838,24 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
 
 
 def log_progress_string(
-    voicepack_base_dir: str,
+    current_total: int,
+    total: int,
     start_time: float,
-    total_wav_files: int,
-    initial_wav_count: int,
+    current_time: float,
+    previous_total: int,
+    previous_time: float,
+    initial_total: int,
 ):
-    wav_files_in_dir = count_wav_files_in_tree(voicepack_base_dir)
-    wav_files_created = wav_files_in_dir - initial_wav_count
     progress = progress_string(
-        current_total=wav_files_in_dir,
-        total=total_wav_files,
-        current_created=wav_files_created,
+        current_total=current_total,
+        total=total,
         start_time=start_time,
+        current_time=current_time,
+        previous_total=previous_total,
+        previous_time=previous_time,
+        initial_total=initial_total,
     )
     logging.info(progress)
-
-
-def progress_string(
-    current_total: int, total: int, current_created: int, start_time: float
-) -> str:
-    """
-    Generate a formatted string showing the progress of the audio generation process.
-
-    Example output:
-    Progress:   29.8% [==>       ] 2721/9145 phrases, 4.9 phrases/sec, ETA 0h 26m
-    """
-    percentage = (current_total / total) * 100 if total > 0 else 100
-    bar_length = 10
-    filled_length = (
-        int(bar_length * current_total // total) if total > 0 else bar_length
-    )
-
-    if filled_length >= bar_length:
-        bar = "=" * bar_length
-    else:
-        bar = "=" * filled_length + ">" + " " * (bar_length - filled_length - 1)
-
-    elapsed_time = time.time() - start_time
-    phrases_per_sec = current_created / elapsed_time if elapsed_time > 0 else 0
-    remaining_created = total - current_created
-    eta_sec = (
-        remaining_created / phrases_per_sec if phrases_per_sec > 0 else float("inf")
-    )
-    eta_hours = int(eta_sec // 3600)
-    eta_minutes = int((eta_sec % 3600) // 60)
-    eta_string = (
-        f"ETA {eta_hours}h {eta_minutes}m" if eta_sec != float("inf") else "ETA Unknown"
-    )
-
-    progress = (
-        f"Progress: {percentage:4.1f}% [{bar}] {current_total}/{total} phrases, "
-        f"{phrases_per_sec:.1f} phrases/sec, {eta_string}"
-    )
-    return progress
-
-
-def count_wav_files_in_tree(directory: str) -> int:
-    """Count all .wav files in the directory tree under the given directory"""
-    return len(glob.glob(os.path.join(directory, "**", "*.wav"), recursive=True))
 
 
 def process_phrase_entry(entry: CrewChiefAudioFile, args: argparse.Namespace) -> None:
