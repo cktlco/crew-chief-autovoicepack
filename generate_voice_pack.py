@@ -725,19 +725,11 @@ def write_attribution_file(args: argparse.Namespace) -> None:
         if key != "tts_args":  # only include user-specified arguments
             attribution_text += f"{key}: {value}\n"
 
-    try:
-        # Ensure the base directory exists
-        os.makedirs(args.voicepack_base_dir, exist_ok=True)
-
-        with open(attribution_filename, "w", encoding="utf-8") as f:
-            f.write(attribution_text)  # Removed .format()
-
-        logging.info(
-            f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}'."
-        )
-    except Exception as e:
-        logging.error(f"Failed to write attribution file: {e}")
-        raise
+    with open(attribution_filename, "w", encoding="utf-8") as f:
+        f.write(attribution_text)
+    logging.info(
+        f"Attribution file written to {attribution_filename} for voicepack '{args.voice_name}' version {args.voicepack_version}'."
+    )
 
 
 def write_installation_instructions(args: argparse.Namespace) -> None:
