@@ -1,7 +1,6 @@
 import logging
 import argparse
 import datetime
-import glob
 import os
 import random
 import subprocess
@@ -18,7 +17,8 @@ from TTS.tts.models.xtts import Xtts
 from xtts_integrity.transform import InferenceAudioTransform
 from xtts_integrity.infer import AudioInferenceDataset, load_model, run_inference
 
-from utils import CrewChiefAudioFile, parse_phrase_inventory, progress_string, count_wav_files_in_tree
+from utils import CrewChiefAudioFile, parse_phrase_inventory, progress_string, count_wav_files_in_tree, \
+    log_progress_string
 
 # Configure logging
 logging.basicConfig(
@@ -837,26 +837,6 @@ def process_phrase_inventory(args: argparse.Namespace) -> None:
     generate_subtitle_files(entries, args)
 
 
-def log_progress_string(
-    current_total: int,
-    total: int,
-    start_time: float,
-    current_time: float,
-    previous_total: int,
-    previous_time: float,
-    initial_total: int,
-):
-    progress = progress_string(
-        current_total=current_total,
-        total=total,
-        start_time=start_time,
-        current_time=current_time,
-        previous_total=previous_total,
-        previous_time=previous_time,
-        initial_total=initial_total,
-    )
-    logging.info(progress)
-
 
 def process_phrase_entry(entry: CrewChiefAudioFile, args: argparse.Namespace) -> None:
     """Process a single phrase inventory entry"""
@@ -991,11 +971,6 @@ def main():
 
     if not args.skip_radio_check:
         generate_radio_checks(args)
-
-    # TODO: add progress bar in this format:
-    #    phrase (truncated)...      50%[========================>                         ] 56/30,000 phrases, x phrases per second    ETA 12h 14m
-    #    using a "slow" check which counts all the .wav files in the directory tree every 30-60 seconds
-    #    and compares it to the total expected number of phrases to generate
 
     # TODO: generate subtitles.csv for the radio_check folder
 

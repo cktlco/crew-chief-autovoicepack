@@ -1,6 +1,9 @@
+import glob
+import os
 from dataclasses import dataclass
 from typing import List
 import csv
+import logging
 
 
 @dataclass
@@ -59,6 +62,28 @@ def parse_phrase_inventory(
     return entries
 
 
+def log_progress_string(
+    current_total: int,
+    total: int,
+    start_time: float,
+    current_time: float,
+    previous_total: int,
+    previous_time: float,
+    initial_total: int,
+):
+    progress = progress_string(
+        current_total=current_total,
+        total=total,
+        start_time=start_time,
+        current_time=current_time,
+        previous_total=previous_total,
+        previous_time=previous_time,
+        initial_total=initial_total,
+    )
+    logging.info(progress)
+
+
+
 def progress_string(
     current_total: int,
     total: int,
@@ -101,7 +126,7 @@ def progress_string(
         remaining_phrases / phrases_per_sec if phrases_per_sec > 0 else float("inf")
     )
     eta_hours = int(eta_sec // 3600)
-    eta_minutes = int((eta_sec % 3600) // 60)
+    eta_minutes = int((eta_sec % 3600) // 60) + 1
     eta_string = (
         f"ETA {eta_hours}h {eta_minutes}m" if eta_sec != float("inf") else "ETA Unknown"
     )
