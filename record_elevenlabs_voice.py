@@ -1,3 +1,6 @@
+# Usage example
+# python record_elevenlabs_voice.py --eleven_labs_api_key XXXXX --voice_id aTTiK3YzK3dXETpuDE2h --voice_name Leon_de --language de
+
 import os
 import random
 import subprocess
@@ -22,11 +25,17 @@ def parse_arguments():
         required=True,
         help="ID of the voice from the elevenlabs 'Voices' page, such as 'FmJ4FDkdrYIKzBTruTkV'",
     )
+    parser.add_argument(
+        "--language",
+        type=str,
+        default="en",
+        help="Language code, to choose the input phrases",
+    )
     return parser.parse_args()
 
 
 def generate_voice_baseline(
-    eleven_labs_api_key: str, voice_name: str, voice_id: str
+    eleven_labs_api_key: str, voice_name: str, voice_id: str, language: str = "en"
 ) -> None:
     # A high-quality alternative to finding, recording, and editing your own voices.
     #
@@ -34,7 +43,7 @@ def generate_voice_baseline(
     # as the baseline for the local text-to-speech voice cloning process used in `generate_voice_pack.py`
 
     # 500 characters of GPT-4o generated alliterative text with phonetic variety
-    text_samples = [
+    text_samples_en = [
         "Astonishing Aston Martins accelerate at amazing angles.",
         "Blazing Bugattis blast by barriers.",
         "Charging Chevrolets chase championship challenges.",
@@ -48,6 +57,71 @@ def generate_voice_baseline(
         "Kinetic Kias keep kicking karma.",
         "Lightning Lamborghinis leap large loops.",
     ]
+    text_samples_de = [
+        "Atemberaubende Audi beschleunigen an atemberaubenden Ansätzen.",
+        "Blitzschnelle BMWs brausen an Barrikaden vorbei.",
+        "Champagner-Chevrolets kämpfen gegen herausfordernde Rennen.",
+        "Dynamische Dacias dominieren enge Drehungen.",
+        "Energiegeladene Engines erzeugen aufregende Aufregung.",
+        "Furchtlose Ferraris fliegen schnell und stark.",
+        "Glorreiche Getriebe gleiten geschmeidig.",
+        "Hochgeschwindigkeits-Hondas halten Haarnadelkurven.",
+        "Incredible IndyCars entfachen intensives Interesse.",
+        "Sprunghafte Jaguars kämpfen um freudige Duelle.",
+        "Kinetische Kias kicken konsequent weiter.",
+        "Blitzschnelle Lamborghinis springen große Schleifen.",
+    ]
+    text_samples_it = [
+        "Audaci Audi accelerano ad angoli straordinari.",
+        "Blitzante Bugatti battagliano oltre barriere.",
+        "Coraggiosi Chevrolet cercano campionati sfidanti.",
+        "Determinati driver dominano doppi derapaggi.",
+        "Entusiasti motori echeggiano emozionanti eccitazioni.",
+        "Fearless Ferrari volano veloci e vigorosi.",
+        "Gloriosi ingranaggi scivolano fluidamente.",
+        "Honda ad alta velocità affrontano curve a gomito.",
+        "Incredibili IndyCars accendono intenso interesse.",
+        "Giocate Jaguars gareggiano per gioiose duelli.",
+        "Kinetic Kia continuano a calciare il karma.",
+        "Lampo Lamborghini saltano grandi loop.",
+    ]
+    text_samples_es = [
+        "Asombrosos Audis aceleran en ángulos asombrosos.",
+        "Brillantes Bugatti pasan barreras rápidamente.",
+        "Chevrolet cargadas cazan desafíos de campeonato.",
+        "Valientes conductores dominan dobles derrapes.",
+        "Entusiastas motores resuenan excitante emoción.",
+        "Feroces Ferraris vuelan rápidos y fieros.",
+        "Gloriosas transmisiones deslizándose suavemente.",
+        "Hondas de alta velocidad enfrentan curvas cerradas.",
+        "Increíbles IndyCars encienden intenso interés.",
+        "Juguetones Jaguars compiten en justas alegres.",
+        "Kias cinéticas siguen pateando el karma.",
+        "Lamborghinis relampagueantes saltan grandes lazos.",
+    ]
+    text_samples_cs = [
+        "Astonishing Audi akcelerují na úžasných úhlech.",
+        "Bleskoví Bugatti protínají bariéry.",
+        "Chevrolet nabité honí šampionátní výzvy.",
+        "Odvážní řidiči dominují dvojitým driftům.",
+        "Nadšené motory ozývají vzrušující vzrušení.",
+        "Nebojácí Ferrari létají rychle a divoce.",
+        "Slavné převodovky kloužou hladce.",
+        "Vysokorychlostní Hondy zvládají úzké zatáčky.",
+        "Neuvěřitelné IndyCars zapalují intenzivní zájem.",
+        "Skákající Jaguary soupeří o radostné souboje.",
+        "Kinetická Kia stále kopou karmu.",
+        "Bleskoví Lamborghini skáčou velké smyčky.",
+    ]
+
+    # choose the text samples based on the requested language
+    text_samples = {
+        "en": text_samples_en,
+        "de": text_samples_de,
+        "it": text_samples_it,
+        "es": text_samples_es,
+        "cs": text_samples_cs,
+    }[language]
 
     output_dir = f"baseline/{voice_name}"
 
@@ -177,4 +251,6 @@ def remove_file(file_path: str) -> None:
 if __name__ == "__main__":
     args = parse_arguments()
     print("Generating voice baseline using Eleven Labs API...")
-    generate_voice_baseline(args.eleven_labs_api_key, args.voice_name, args.voice_id)
+    generate_voice_baseline(
+        args.eleven_labs_api_key, args.voice_name, args.voice_id, language=args.language
+    )

@@ -74,7 +74,7 @@ COPY baseline/Luis ./baseline/Luis/
 RUN echo 'export PS1="crew-chief-autovoicepack > "' >> /root/.bashrc && \
     echo "python3 translate_phrases.py --target_language German --translated_phrase_inventory phrase_inventory_de.csv" >> ~/.bash_history && \
     echo "python3 record_elevenlabs_voice.py --voice_name XXX --voice_id XXX" >> ~/.bash_history && \
-    echo "python3 generate_voice_pack.py --your_name 'Sieger' --voice_name 'Luis_de' --tts_voice_name 'Looees' --phrase_inventory phrase_inventory_de.csv --variation_count 1" >> ~/.bash_history && \
+    echo "python3 generate_voice_pack.py --your_name 'Sieger' --voice_name 'Luis_de' --voice_name_tts 'Looees' --phrase_inventory phrase_inventory_de.csv --variation_count 1" >> ~/.bash_history && \
     echo "python3 generate_voice_pack.py --your_name 'Champ' --voice_name 'Luis'" >> ~/.bash_history
 
 # Sit at a bash prompt when the container starts

@@ -6,14 +6,16 @@ import os
 import random
 import subprocess
 from dataclasses import dataclass
-import csv
 from functools import lru_cache
 from typing import List, Any, Optional
 import re
 import torch
 import torchaudio
+from torch.utils.data import DataLoader
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
+from xtts_integrity.transform import InferenceAudioTransform
+from xtts_integrity.infer import AudioInferenceDataset, load_model, run_inference
 
 from utils import CrewChiefAudioFile, parse_phrase_inventory
 
@@ -149,6 +151,12 @@ def parse_arguments():
         default=1.6,
         help="Speed factor for the TTS engine. Somewhat arbitrary, but a value of 1.2-1.7 is recommended.",
     )
+    parser.add_argument(
+        "--xtts_integrity_threshold",
+        type=float,
+        default=0.9,
+        help="Threshold for the xtts-integrity model to consider a .wav file valid. This is a value between 0 and 1, where a higher value means the model will be more strict in what it considers valid. Lowering this value will allow more files to pass the validity check, but may also allow more audio artifacts to slip through.",
+    )
     return parser.parse_args()
 
 
@@ -217,7 +225,7 @@ def apply_audio_effects(input_file: str, output_file: str) -> None:
         "channels",
         "1",
         "rate",
-        "22050"
+        "22050",
     ]
 
     try:
@@ -247,20 +255,15 @@ def is_invalid_wav_simple(file_path: str, tts_text: str) -> bool:
     return is_invalid
 
 
-def is_invalid_wav_xtts_integrity(file_path: str) -> bool:
+def is_invalid_wav_xtts_integrity(
+    file_path: str, xtts_integrity_threshold: float = 0.9
+) -> bool:
     """
     Use the xtts-integrity ML model to perform the .wav file validity check.
     Return False if the caller should regenerate this file (ie, try again to make a clean file).
     """
-
-    # conditional imports since these are not needed unless the xtts-integrity model is used
-    from torch.utils.data import DataLoader
-    from xtts_integrity.transform import InferenceAudioTransform
-    from xtts_integrity.infer import AudioInferenceDataset, load_model, run_inference
-
+    model = init_xtts_integrity_model()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model_path = "/app/xtts-integrity/checkpoints/xtts-integrity-20241112.pth"
-    model = load_model(model_path, device)
     transform = InferenceAudioTransform()
 
     wav_files = [file_path]
@@ -271,7 +274,10 @@ def is_invalid_wav_xtts_integrity(file_path: str) -> bool:
         # note that threshold here can be lowered to allow lower-confidence
         # files to be accepted, which will reduce the amount of regeneration
         # at the cost of more audio artifacts slipping through
-        model, inference_loader, device, threshold=0.9
+        model,
+        inference_loader,
+        device,
+        threshold=xtts_integrity_threshold,
     )
 
     is_invalid = len(invalid_files) > 0
@@ -297,7 +303,12 @@ def is_invalid_wav_xtts_integrity(file_path: str) -> bool:
     return is_invalid
 
 
-def is_invalid_wav_file(file_path: str, tts_text: str, use_xtts_integrity=True) -> bool:
+def is_invalid_wav_file(
+    file_path: str,
+    tts_text: str,
+    use_xtts_integrity: bool = True,
+    xtts_integrity_threshold: Optional[float] = None,
+) -> bool:
     """
     Acceptance criteria for a valid file:
     - no periods of silence longer than x seconds
@@ -310,8 +321,10 @@ def is_invalid_wav_file(file_path: str, tts_text: str, use_xtts_integrity=True) 
     Return False if the caller should regenerate this file (ie, try again to make a clean file)
     """
     is_invalid = (
-        is_invalid_wav_xtts_integrity(file_path)
-        if use_xtts_integrity
+        is_invalid_wav_xtts_integrity(
+            file_path, xtts_integrity_threshold=xtts_integrity_threshold
+        )
+        if (use_xtts_integrity and xtts_integrity_threshold is not None)
         else is_invalid_wav_simple(file_path=file_path, tts_text=tts_text)
     )
 
@@ -396,9 +409,11 @@ def detect_excess_silence(file_path: str, silence_threshold: float) -> bool:
 
 
 @lru_cache(maxsize=None)
-def init_xtts_model(cpu_only: bool = False, use_deepspeed: bool = True) -> Any:
+def init_xtts_model(
+    cpu_only: bool = False, use_deepspeed: bool = True, use_xtts_integrity: bool = True
+) -> Any:
     """
-    Initialize the Xtts model. This function is cached, so it will only run
+    Initialize the xtts and xtts-integrity models. This function is cached, so it will only run
     once, and the model will be reused for all subsequent calls.
     """
     logging.info("xtts - Loading model...")
@@ -410,15 +425,33 @@ def init_xtts_model(cpu_only: bool = False, use_deepspeed: bool = True) -> Any:
     )
     config = XttsConfig()
     config.load_json(f"{model_path}/config.json")
-    model = Xtts.init_from_config(config)
-    model.load_checkpoint(
+    xtts_model = Xtts.init_from_config(config)
+    xtts_model.load_checkpoint(
         config,
         checkpoint_dir=model_path,
         use_deepspeed=use_deepspeed,
     )
-    model.cuda() if not cpu_only else model.cpu()
+    xtts_model.cuda() if not cpu_only else xtts_model.cpu()
 
-    return model
+    if use_xtts_integrity:
+        init_xtts_integrity_model()
+
+    return xtts_model
+
+
+@lru_cache(maxsize=None)
+def init_xtts_integrity_model() -> Any:
+    """
+    Initialize the xtts-integrity model. This function is cached, so it will only run
+    once, and the model will be reused for all subsequent calls.
+    """
+    logging.info("xtts_integrity - Loading model...")
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model_path = "/app/xtts-integrity/checkpoints/xtts-integrity-20241112.pth"
+    xtts_integrity_model = load_model(model_path, device)
+
+    return xtts_integrity_model
 
 
 @lru_cache(maxsize=None)
@@ -453,6 +486,7 @@ def generate_speech(
     keep_invalid_files: bool = True,
     max_invalid_attempts: int = 30,
     use_xtts_integrity=True,
+    xtts_integrity_threshold: Optional[float] = None,
 ):
     """
     Create a .wav file based on the input text and the reference speaker's voice.
@@ -460,8 +494,7 @@ def generate_speech(
 
     # until the output passes the is_invalid_wav_file check, keep trying up to this many times
     for attempt_idx in range(max_invalid_attempts):
-        # current implementation: coqui_tts
-        was_generated = generate_speech_coqui_tts(
+        was_generated = generate_speech_coqui_xtts(
             text=text,
             output_path=output_path,
             output_filename=output_filename,
@@ -477,7 +510,10 @@ def generate_speech(
         file_path = f"{output_path}/{output_filename}.wav"
 
         if was_generated and is_invalid_wav_file(
-            file_path=file_path, tts_text=text, use_xtts_integrity=use_xtts_integrity
+            file_path=file_path,
+            tts_text=text,
+            use_xtts_integrity=use_xtts_integrity,
+            xtts_integrity_threshold=xtts_integrity_threshold,
         ):
             # skip the invalid file check if the file already existed from a previous run
             logging.info(f"Regenerating invalid .wav file: {output_filename}")
@@ -503,7 +539,7 @@ def generate_speech(
         )
 
 
-def generate_speech_coqui_tts(
+def generate_speech_coqui_xtts(
     text: str,
     output_path: str,
     output_filename: str,
@@ -658,6 +694,7 @@ def prepare_arguments() -> argparse.Namespace:
         "keep_invalid_files": args.keep_invalid_files,
         "max_invalid_attempts": args.max_invalid_attempts,
         "use_xtts_integrity": True if not args.simple_validity_check else False,
+        "xtts_integrity_threshold": args.xtts_integrity_threshold,
     }
     return args
 
@@ -881,6 +918,11 @@ def main():
 
     if not args.skip_radio_check:
         generate_radio_checks(args)
+
+    # TODO: add progress bar in this format:
+    #    phrase (truncated)...      50%[========================>                         ] 56/30,000 phrases, x phrases per second    ETA 12h 14m
+    #    using a "slow" check which counts all the .wav files in the directory tree every 30-60 seconds
+    #    and compares it to the total expected number of phrases to generate
 
     # TODO: generate subtitles.csv for the radio_check folder
 
