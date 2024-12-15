@@ -42,7 +42,8 @@ services:
     volumes:
 
       # output directory for the generated .wav files
-      - C:\Users\MYUSER\crew-chief-autovoicepack:/app
+      # for Linux, might be something like: /dev_local/crew-chief-autovoicepack/output:/app/output
+      - C:\Users\MYUSER\Desktop\crew-chief-autovoicepack:/app/output
 
       # directory holding the input voice recordings
       - ./baseline:/app/baseline
