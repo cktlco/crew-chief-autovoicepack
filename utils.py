@@ -53,6 +53,8 @@ def parse_phrase_inventory(
             # swap from backslashes (Windows) to forward slashes (Linux)
             if convert_slashes:
                 audio_path = audio_path_windows.replace("\\", "/")
+            else:
+                audio_path = audio_path_windows
 
             # put the csv file data into a more friendly data structure
             entries.append(
