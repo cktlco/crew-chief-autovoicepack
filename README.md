@@ -160,7 +160,9 @@ As an example, consider a voice pack with the root folder `Luis`.
 2) Within the `...\sounds` folder, **create a new folder named `alt`** (if not already there)
 3) **Copy** the entire `Luis` folder into the CrewChief `...\sounds\alt\` folder.
 4) **Radio check voices**: Enter the `...\sounds\alt\Luis` folder and you will see a subfolder named `radio_check_Luis`. **Copy the `radio_check_Luis` folder into the CrewChief main `...\sounds\voice` folder.** This folder has the official Jim voice as well as `radio_check_XXX` for each crew chief or spotter voice.
-5) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
+5) Optional Spotter voice: Copy contents of the `...\sounds\alt\Luis\voice\spotter\` folder to a new folder named `...\sounds\voice\spotter_Leon_de\`
+6) **Done!** Open CrewChief and you will see `Luis` as a choice in the right-side dropdown menu. The UI will restart to load the new voice pack, and you should hear Luis' voice perform a radio check along with your chosen spotter voice.
+
 
 
 ## 🎙️Common Task: Bootstrap your voice pack with an Elevenlabs.io voice 
