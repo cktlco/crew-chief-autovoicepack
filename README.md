@@ -56,6 +56,9 @@ _Pre-requisite: At least three 10-second audio clips of your voice. Or you can t
 
 This is an **automated process**. The only required software on your machine is **a working installation of Docker**.
 
+> Tutorial Video for Windows users: 
+[![tutorial video for windows](/resources/images/video_thumbnail_4.png)](https://youtu.be/c6Obqkt6nVc)
+
 The core concept is to **launch a temporary "Docker container"** which is a lightweight, isolated Linux virtual machine **that runs the crew-chief-autovoicepack processes**. You'll enable the container to access your GPU (optional), phrase inventory, and your baseline audio recordings. A Python **script running in the container will generate the audio files for your new voice pack**, which will be saved to the output folder on your local machine.
 
 Using the Docker container enables you to **run a very sophisticated software environment on your own machine without having to manually install and manage** the dozens of required Python libraries, OS packages, and other dependencies yourself.
@@ -124,7 +127,7 @@ crew-chief-autovoicepack >
 From there, run the `generate_voice_pack.py` script to **start generating audio files** for your new voice pack.
 
 ```
-> python3 generate_voice_pack.py --your_name 'Champ' --voice_name 'Luis'
+python3 generate_voice_pack.py --your_name 'Champ' --voice_name 'Luis'
 ```
 
 You will need to **provide at least the `--voice_name` parameter**, but feel to investigate the other options with `python3 generate_voice_pack.py --help` or see an explanation elsewhere on this page.
