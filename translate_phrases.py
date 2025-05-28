@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 #      qwen2.5:32b    9f13ba1299af    19 GB    7 weeks ago
 #
 #  If you use a different model (especially a smaller one), expect more errors
-#  in the logs as it has to retry the translation reques tmore often before
+#  in the logs as it has to retry the translation request more often before
 #  getting a valid response.
 #
 # 2) Start the crew-chief-autovoicepack Docker container with params enabling
