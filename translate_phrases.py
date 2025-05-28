@@ -10,7 +10,7 @@ from utils import parse_phrase_inventory, CrewChiefAudioFile
 logging.basicConfig(level=logging.INFO)
 
 # Usage:
-# 1) Choose a capable multilingual LLM (such as qwen2.5:32B), install and start
+# 1) Choose a capable multilingual LLM (such as qwen2.5:32b), install and start
 # the Ollama API server locally on all ip addresses (0.0.0.0)
 #
 #   $ OLLAMA_HOST=0.0.0.0:11434 ollama serve
@@ -19,6 +19,10 @@ logging.basicConfig(level=logging.INFO)
 #   $ ollama list
 #      NAME           ID              SIZE     MODIFIED
 #      qwen2.5:32b    9f13ba1299af    19 GB    7 weeks ago
+#
+#  If you use a different model (especially a smaller one), expect more errors
+#  in the logs as it has to retry the translation reques tmore often before
+#  getting a valid response.
 #
 # 2) Start the crew-chief-autovoicepack Docker container with params enabling
 # access to the host machine's network, ie:
@@ -40,7 +44,7 @@ logging.basicConfig(level=logging.INFO)
 #
 # 3) At the `crew-chief-autovoicepack >` command line, run this translation script with the name of the target language and the path to the new phrase inventory CSV file the script will create:
 #
-#  python3 translate_phrases.py --target_language Portuguese --translated_phrase_inventory translated/phrase_inventory_pt.csv
+#  python3 translate_phrases.py --model qwen2.5:32b --target_language Portuguese --translated_phrase_inventory translated/phrase_inventory_pt.csv
 #
 #  ^^^ note the new 'xxx_pt.csv' file above where 'pt' is the language code for Portuguese
 #      this is not required, but helpful to keep things tidy with multiple languages
@@ -76,7 +80,8 @@ def translate_phrase_ollama(
     input_phrase: str,
     source_language_name: str,
     target_language_name: str,
-    ollama_host: str = "host.docker.internal:11434",
+    model: str,
+    ollama_host: str = "host.docker.internal:11434"
 ) -> Optional[str]:
     """
     Translate an input phrase using a locally accessible Ollama API instance.
@@ -98,19 +103,25 @@ def translate_phrase_ollama(
     }
 
     try:
-        response = requests.post(
-            f"http://{ollama_host}/api/generate",
-            json={
-                "model": "qwen2.5:32b",
+        json_request = {
+                "model": model,
                 "prompt": prompt,
                 "options": options,
                 "stream": False,
-            },
+            }
+        response = requests.post(
+            f"http://{ollama_host}/api/generate",
+            json=json_request,
             timeout=20,
         )
         response.raise_for_status()
+
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error communicating with Ollama API: {e}")
+        logging.error(f"Error communicating with Ollama API: {json.dumps(json_request)}\n{e}")
+        return None
+
+    except Exception as e:
+        logging.error(f"Unexpected Ollama error: {e}")
         return None
 
     # Attempt to parse the response as JSON
@@ -118,9 +129,14 @@ def translate_phrase_ollama(
         data = response.json().get("response", {})
         json_payload = json.loads(data)
 
+        # sometimes the model will return a response which has the JSON
+        # body inside a list, other times, its just normal JSON
+        if isinstance(json_payload, list):
+            json_payload = json_payload[0]
+
         if "translation" not in json_payload:
-            raise json.JSONDecodeError(
-                "Invalid LLM response, missing 'translation' key in JSON output."
+            raise Exception(
+                f"Invalid LLM response, missing 'translation' key in JSON output. Response: {json_payload}"
             )
 
         translated_phrase = json_payload.get("translation", "").strip()
@@ -150,6 +166,11 @@ def main():
         "--translated_phrase_inventory",
         help="Path to the output CSV file to save translated phrases, i.e. you may want 'phrase_inventory_de.csv' for German",
         default="phrase_inventory_translated.csv",
+    )
+    parser.add_argument(
+        "--model",
+        help="Name of the Ollama model to load. Defaults to: 'qwen2.5:32b'",
+        default="qwen2.5:32b"
     )
     parser.add_argument(
         "--max_retries",
@@ -203,6 +224,7 @@ def main():
                     english_phrase,
                     source_language_name="English",
                     target_language_name=args.target_language,
+                    model=args.model
                 )
                 if translated_phrase is None:
                     logging.error(
@@ -219,6 +241,7 @@ def main():
                         translated_phrase,
                         source_language_name=args.target_language,
                         target_language_name="English",
+                        model=args.model
                     )
                     or "[Sanity check LLM call failed]"
                 )
