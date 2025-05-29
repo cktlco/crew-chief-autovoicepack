@@ -2,6 +2,7 @@ import logging
 import argparse
 import csv
 import json
+import os
 from typing import List, Optional
 
 import requests
@@ -178,9 +179,9 @@ def main():
         default=100,
     )
     parser.add_argument(
-        "--sanity_check",
-        help="If True, translate the LLM response back to English and display the result in the logs. This will help an observer gain confidence that the translation is accurate, but will slow down the process by approximately half since it requires an extra call to the LLM.",
-        default=True,
+        "--skip_sanity_check",
+        help="If True, skip the step of translating the LLM response back to English and display the result in the logs. This is enabled by default to help an observer gain confidence that the translation is accurate, but slows down the process by approximately half since it requires an extra call to the LLM.",
+        default=False,
     )
     args = parser.parse_args()
 
@@ -192,24 +193,38 @@ def main():
         logging.error("No entries found in the phrase inventory. Exiting.")
         return
 
-    # Open output CSV file for writing
-    with open(
-        args.translated_phrase_inventory, "w", newline="", encoding="utf-8"
-    ) as csvfile_out:
+    # if the translated file already exists, append to it instead of starting
+    # from scratch (remove the file manually if you want to start over)
+    existing_count = 0
+    if os.path.exists(args.translated_phrase_inventory):
+        with open(args.translated_phrase_inventory, "r", newline="", encoding="utf-8") as existing_file:
+            existing_reader = csv.reader(existing_file)
+            existing_lines = list(existing_reader)
+            
+            # if there's at least 2 lines, that's a header plus some data
+            if len(existing_lines) > 1:
+                existing_count = len(existing_lines) - 1
+
+    mode = "a" if existing_count > 0 else "w"
+
+    # open output CSV file for writing
+    with open(args.translated_phrase_inventory, mode, newline="", encoding="utf-8") as csvfile_out:
+
         csvwriter = csv.writer(csvfile_out)
 
-        # Write header row
-        csvwriter.writerow(
-            [
-                "audio_path",
-                "audio_filename",
-                "subtitle",
-                "text_for_tts",
-                "original_english",
-            ]
-        )
+        if existing_count == 0:
+            # write header row
+            csvwriter.writerow(
+                [
+                    "audio_path",
+                    "audio_filename",
+                    "subtitle",
+                    "text_for_tts",
+                    "original_english",
+                ]
+            )
 
-        for entry_idx, entry in enumerate(entries, 1):
+        for entry_idx, entry in enumerate(entries[existing_count:], start=existing_count + 1):
             english_phrase = entry.subtitle
 
             logging.debug(
@@ -219,7 +234,7 @@ def main():
             # run translate in a loop until it returns a valid value (or reach max retries)
             translated_phrase: Optional[str] = None
             num_retries = 0
-            while translated_phrase is None and num_retries < args.max_retries:
+            while translated_phrase is None and num_retries < int(args.max_retries):
                 translated_phrase = translate_phrase_ollama(
                     english_phrase,
                     source_language_name="English",
