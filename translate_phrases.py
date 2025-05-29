@@ -180,8 +180,8 @@ def main():
     )
     parser.add_argument(
         "--skip_sanity_check",
-        help="If True, skip the step of translating the LLM response back to English and display the result in the logs. This is enabled by default to help an observer gain confidence that the translation is accurate, but slows down the process by approximately half since it requires an extra call to the LLM.",
-        default=False,
+        help="If provided, skip the step of translating the LLM response back to English and display the result in the logs. This is enabled by default to help an observer gain confidence that the translation is accurate, but slows down the process by approximately half since it requires an extra call to the LLM.",
+        action="store_true"
     )
     args = parser.parse_args()
 
@@ -260,7 +260,7 @@ def main():
                     )
                     or "[Sanity check LLM call failed]"
                 )
-                if args.sanity_check
+                if not args.skip_sanity_check
                 else "..."
             )
 
