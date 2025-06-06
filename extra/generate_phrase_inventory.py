@@ -1,5 +1,8 @@
 # Build a crew-chief-autovoicepack phrase inventory CSV file from scratch by
-# searching through CrewChief wav file folders and collecting subtitles.csv data
+# searching through CrewChief wav file folders and collecting subtitles.csv data.
+#
+# Note the final CSV file will need manual edits to add and remove rows in order
+# to match with the official version used in the git repo.
 
 from __future__ import annotations
 
