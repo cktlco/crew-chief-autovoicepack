@@ -9,7 +9,7 @@
 # have to manually copy the generated wav files out of the container
 
 # This image is fully-compatible with non-GPU systems, operations will just fall back to the CPU
-FROM nvidia/cuda:12.6.0-base-ubuntu22.04 AS builder
+FROM nvidia/cuda:12.9.1-base-ubuntu22.04 AS builder
 
 WORKDIR /app
 
@@ -23,12 +23,12 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends gcc g++
 # Install nvidia CUDA Toolkit (includes nvcc needed by deepspeed)
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin \
     && mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 \
-    && wget -q https://developer.download.nvidia.com/compute/cuda/12.6.2/local_installers/cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb \
-    && dpkg -i cuda-repo-ubuntu2204-12-6-local_12.6.2-560.35.03-1_amd64.deb > /dev/null \
-    && cp /var/cuda-repo-ubuntu2204-12-6-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
+    && wget -q https://developer.download.nvidia.com/compute/cuda/12.9.1/local_installers/cuda-repo-ubuntu2204-12-9-local_12.9.1-575.57.08-1_amd64.deb \
+    && dpkg -i cuda-repo-ubuntu2204-12-9-local_12.9.1-575.57.08-1_amd64.deb > /dev/null \
+    && cp /var/cuda-repo-ubuntu2204-12-9-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
     && apt-get update > /dev/null \
     && apt-get -q install -y --no-install-recommends \
-    cuda-toolkit-12-6 > /dev/null \
+    cuda-toolkit-12-9 > /dev/null \
     && rm -rf /var/lib/apt/lists/* && apt-get clean && rm -rf /tmp/* /var/tmp/* \
     && rm -rf /app/cuda-repo* /var/cuda-repo* \
     && rm -rf /opt/nvidia/nsight-compute /opt/nvidia/nsight-systems
@@ -36,8 +36,8 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86
 FROM builder
 
 # CUDA env vars
-ENV PATH=/usr/local/cuda-12.6/bin:${PATH}
-ENV LD_LIBRARY_PATH=/usr/local/cuda-12.6/lib64:${LD_LIBRARY_PATH}
+ENV PATH=/usr/local/cuda-12.9/bin:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/cuda-12.9/lib64:${LD_LIBRARY_PATH}
 
 # git Large File Support
 RUN git lfs install
@@ -46,7 +46,7 @@ RUN git lfs install
 RUN pip3 --no-cache-dir install llvmlite --ignore-installed
 
 # Install pytorch
-RUN pip3 --no-cache-dir install torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu126
+RUN pip3 --no-cache-dir install torch torchaudio --extra-index-url https://download.pytorch.org/whl/cu128
 
 # Install coqui-tts python package (framework which runs the text-to-speech model)
 RUN pip --no-cache-dir install coqui-tts
